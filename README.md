@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # XYZ Hospital AI Assistant (Demo)
 
 ## Overview
@@ -7,5 +6,3 @@ Demo hospital appointment assistant with chat & voice (browser STT/TTS), multili
 ## Setup backend
 1. `cd app/backend`
 2. Create virtual env:
-=======
-# AI-chat-Assistant
