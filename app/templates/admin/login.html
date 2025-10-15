@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Login</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            'sky-blue-light': '#87CEEB',
+            'lavender-light': '#E6E6FA',
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    .btn-3d {
+      background: linear-gradient(45deg, #14a1d4, #37c5c5);
+      color: rgba(255, 255, 255, 0.95);
+      font-weight: bold;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 0 #2C7A7B, 0 6px 12px rgba(0, 0, 0, 0.15);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .btn-3d:active {
+      transform: translateY(3px);
+      box-shadow: 0 2px 0 #3489df, 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+    body {
+      background: linear-gradient(to right, #87CEEB, #ffffff, #E6E6FA);
+      min-height: 100vh;
+      font-family: 'Inter', sans-serif;
+    }
+    .flash-message {
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border-radius: 0.5rem;
+      font-weight: 500;
+    }
+    .flash-success {
+      background-color: #d1e7dd;
+      color: #0f5132;
+      border: 1px solid #badbcc;
+    }
+    .flash-danger {
+      background-color: #f8d7da;
+      color: #842029;
+      border: 1px solid #f5c2c7;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-r from-sky-blue-light via-lavender-light to-white flex items-center justify-center h-screen font-sans">
+
+  <form method="POST" action="{{ url_for('admin_bp.login') }}" class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
+    <h2 class="text-2xl font-bold text-center mb-6">Admin Login</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash-message flash-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="mb-4">
+      <label for="username" class="block text-gray-700 font-semibold mb-1">User ID</label>
+      <input type="text" name="username" id="username" required
+        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-blue-light" />
+    </div>
+
+    <div class="mb-4">
+      <label for="password" class="block text-gray-700 font-semibold mb-1">Password</label>
+      <input type="password" name="password" id="password" required
+        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-blue-light" />
+    </div>
+
+    <div class="flex justify-between items-center mb-6">
+      <div class="flex items-center">
+        <input type="checkbox" name="remember" id="remember" class="h-4 w-4 text-sky-blue-light border-gray-300 rounded" />
+        <label for="remember" class="ml-2 block text-sm text-gray-900">Remember Me</label>
+      </div>
+    </div>
+
+    <button type="submit"
+      class="w-full btn-3d font-semibold py-2 rounded-lg text-lg tracking-wider transition-all duration-150 ease-in-out">
+      LOGIN
+    </button>
+  </form>
+
+</body>
+</html>

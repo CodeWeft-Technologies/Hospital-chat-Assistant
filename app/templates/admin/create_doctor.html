@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Add Doctor</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'sky-blue': '#87CEEB',
+            'lavender': '#E6E6FA',
+            'mint': '#D0F0C0',
+            'pale-blue': '#dbeafe',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .btn-3d {
+      background: linear-gradient(to right, #4fd1c5, #38b2ac);
+      color: white;
+      font-weight: bold;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 0 #2c7a7b, 0 6px 12px rgba(0, 0, 0, 0.15);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .btn-3d:active {
+      transform: translateY(3px);
+      box-shadow: 0 2px 0 #2c7a7b;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to right, #87CEEB, #ffffff, #E6E6FA);
+      min-height: 100vh;
+    }
+    .sidebar-link { display: block; font-weight: 700; padding: 0.5rem 1rem; border-radius: 0.5rem; transition: all 0.2s ease-in-out; }
+    .sidebar-link:hover { background-color: #bfdbfe; transform: translateX(5px); }
+    .sidebar-link.active { background-color: #93c5fd; color: #1e40af; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
+  </style>
+</head>
+<body class="flex">
+  <!-- Sidebar -->
+  <aside class="w-64 bg-pale-blue p-6 space-y-4 shadow-lg rounded-r-xl sticky top-0 h-screen">
+    <div class="text-2xl font-bold text-blue-800">Admin Panel</div>
+    <nav>
+      <a href="{{ url_for('admin_bp.admin_dashboard') }}" class="sidebar-link">Dashboard</a>
+      <a href="{{ url_for('admin_bp.departments') }}" class="sidebar-link">Departments</a>
+      <a href="{{ url_for('admin_bp.doctors') }}" class="sidebar-link active">Doctors</a>
+      <a href="{{ url_for('admin_bp.appointments') }}" class="sidebar-link">Appointments</a>
+      <a href="{{ url_for('admin_bp.profile') }}" class="sidebar-link">Profile</a>
+      <a href="{{ url_for('admin_bp.change_password') }}" class="sidebar-link">Change Password</a>
+      <a href="{{ url_for('admin_bp.logout') }}" class="sidebar-link mt-4 text-red-600 hover:bg-red-200">Logout</a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="flex-1 flex flex-col min-h-screen">
+    <main class="p-8 flex-1">
+      <h1 class="text-4xl font-extrabold text-gray-800 mb-8 border-b pb-2">Add New Doctor</h1>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <ul class="mb-6">
+            {% for category, message in messages %}
+              <li class="p-3 rounded-md mb-2 {% if category == 'success' %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}" role="alert">
+                {{ message }}
+              </li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
+
+      <div class="bg-white p-6 rounded-xl shadow-2xl border border-mint max-w-4xl mx-auto">
+        <form id="create-doctor-form" method="POST" action="{{ url_for('admin_bp.create_doctor') }}" class="space-y-5">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <!-- Doctor Name Multilingual -->
+            <div class="md:col-span-2">
+              <h3 class="text-lg font-bold text-gray-700 mb-2 border-b">Doctor Name (Multilingual)</h3>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label for="name_en" class="block mb-1 font-semibold">Name (English) *</label>
+                  <input type="text" id="name_en" name="name_en" required class="w-full border px-4 py-2 rounded-md" placeholder="e.g., Dr. Jane Smith" />
+                </div>
+                <div>
+                  <label for="name_hi" class="block mb-1 font-semibold">Name (Hindi)</label>
+                  <input type="text" id="name_hi" name="name_hi" class="w-full border px-4 py-2 rounded-md" placeholder="उदा. डॉ. शर्मा" />
+                </div>
+                <div>
+                  <label for="name_mr" class="block mb-1 font-semibold">Name (Marathi)</label>
+                  <input type="text" id="name_mr" name="name_mr" class="w-full border px-4 py-2 rounded-md" placeholder="उदा. डॉ. कुलकर्णी" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Department -->
+            <div>
+              <label for="department_id" class="block mb-1 font-semibold">Department *</label>
+              <select id="department_id" name="department_id" required class="w-full border px-4 py-2 rounded-md">
+                <option value="">Select Department</option>
+                {% for dept in departments %}
+                  <option value="{{ dept.id }}">{{ dept.name_en or dept.name.en or dept.id }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <!-- Education -->
+            <div>
+              <label for="education" class="block mb-1 font-semibold">Education/Qualification *</label>
+              <input type="text" id="education" name="education" required class="w-full border px-4 py-2 rounded-md" placeholder="e.g., MBBS, MD Cardiology" />
+            </div>
+
+            <!-- Experience -->
+            <div>
+              <label for="experience" class="block mb-1 font-semibold">Experience (Years) *</label>
+              <input type="number" id="experience" name="experience" required min="0" class="w-full border px-4 py-2 rounded-md" placeholder="e.g., 10" />
+            </div>
+
+            <!-- Fees -->
+            <div>
+              <label for="fees" class="block mb-1 font-semibold">Fees (₹) *</label>
+              <input type="number" id="fees" name="fees" required min="0" class="w-full border px-4 py-2 rounded-md" placeholder="e.g., 500" />
+            </div>
+
+            <!-- Available Days -->
+            <div class="md:col-span-2">
+              <label for="available_days" class="block mb-1 font-semibold">Available Days (Comma Separated) *</label>
+              <input type="text" id="available_days" name="available_days" required class="w-full border px-4 py-2 rounded-md" placeholder="e.g., Monday, Wednesday, Friday" />
+            </div>
+
+            <!-- Time Slots -->
+            <div class="md:col-span-2">
+              <label for="time_slots" class="block mb-1 font-semibold">Time Slots (Comma Separated) *</label>
+              <input type="text" id="time_slots" name="time_slots" required class="w-full border px-4 py-2 rounded-md" placeholder="e.g., 10:00 AM - 12:00 PM, 2:00 PM - 4:00 PM" />
+            </div>
+          </div>
+
+          <div class="pt-4">
+            <button type="submit" class="btn-3d">Add Doctor</button>
+          </div>
+        </form>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
+

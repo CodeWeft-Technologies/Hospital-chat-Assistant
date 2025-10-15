@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'sky-blue-light': '#87CEEB',
+            'lavender-light': '#E6E6FA',
+            'mint-light': '#AAF0D1',
+            'sidebar-bg': '#dbeafe',
+            'yellow-bell': '#FFD700',
+            'yellow-bell-dark': '#CCAC00',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background: linear-gradient(to right, #87CEEB, #ffffff, #E6E6FA);
+      min-height: 100vh;
+      font-family: 'Inter', sans-serif;
+    }
+    .sidebar-link { display: block; font-weight: 700; padding: 0.5rem 1rem; border-radius: 0.5rem; transition: all 0.2s ease-in-out; }
+    .sidebar-link:hover { background-color: #bfdbfe; transform: translateX(5px); }
+    .sidebar-link.active { background-color: #93c5fd; color: #1e40af; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    @keyframes bellRing {
+      0% { transform: rotate(0deg); }
+      15% { transform: rotate(15deg); }
+      30% { transform: rotate(-15deg); }
+      45% { transform: rotate(10deg); }
+      60% { transform: rotate(-10deg); }
+      75% { transform: rotate(5deg); }
+      100% { transform: rotate(0deg); }
+    }
+    .animate-bell { animation: bellRing 1s ease-in-out; }
+    .notification-dot { position: absolute; top: 0px; right: 0px; width: 10px; height: 10px; background-color: red; border-radius: 50%; display: none; }
+
+    /* CSS for 3D Flip Card */
+    .card-3d {
+      perspective: 1000px; /* Establishes the 3D space */
+    }
+    .card-3d > div {
+        /* This is the inner container that flips */
+        transform-style: preserve-3d;
+        transition: transform 0.7s;
+    }
+    .card-3d.flipped > div {
+        transform: rotateY(180deg);
+    }
+    .card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden; /* For Safari */
+    }
+    .card-face-back {
+        transform: rotateY(180deg);
+    }
+  </style>
+</head>
+<body class="flex min-h-screen">
+  <aside class="w-64 bg-sidebar-bg p-6 space-y-4 shadow-lg rounded-r-xl">
+    <div class="text-2xl font-bold text-blue-800">Admin Panel</div>
+    <nav>
+      <a href="{{ url_for('admin_bp.admin_dashboard') }}" class="sidebar-link active">Dashboard</a>
+      <a href="{{ url_for('admin_bp.departments') }}" class="sidebar-link">Departments</a>
+      <a href="{{ url_for('admin_bp.doctors') }}" class="sidebar-link">Doctors</a>
+      <a href="{{ url_for('admin_bp.appointments') }}" class="sidebar-link">Appointments</a>
+      <a href="{{ url_for('admin_bp.profile') }}" class="sidebar-link">Profile</a>
+      <a href="{{ url_for('admin_bp.change_password') }}" class="sidebar-link">Change Password</a>
+      <a href="{{ url_for('admin_bp.logout') }}" class="sidebar-link">Logout</a>
+    </nav>
+  </aside>
+
+  <main class="flex-1 p-8 flex flex-col items-center">
+    <header class="flex items-center mb-8 w-full">
+      <h1 class="flex-grow text-4xl font-bold text-gray-800 text-center">Admin Dashboard</h1>
+      <div id="notificationBellContainer" class="relative flex items-center justify-center w-16 h-16 bg-blue-200 rounded-full shadow-md cursor-pointer hover:bg-blue-300 transition-colors duration-200">
+        <svg id="dashboardNotificationIcon" class="w-10 h-10 text-yellow-bell" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"></path>
+        </svg>
+        <span id="notificationDot" class="notification-dot"></span>
+        <div id="dashboardNotificationPanel" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl z-10 p-4 text-left">
+          <h3 class="text-lg font-semibold mb-3">Notifications</h3>
+          <ul id="notificationList" class="space-y-2"></ul>
+          <button id="markAllAsReadButton" class="w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600 mb-2">Mark All as Read</button>
+          <button id="closeNotificationPanel" class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600">Close</button>
+        </div>
+      </div>
+      <div id="appointmentDetailsCard" class="fixed inset-0 bg-gray-600 bg-opacity-75 hidden flex items-center justify-center p-4 z-50">
+        <div class="relative w-full max-w-lg h-96 card-3d">
+          <div id="card3d" class="absolute inset-0 transition-transform duration-700 ease-in-out"> 
+            
+            <div class="absolute inset-0 bg-white rounded-lg shadow-xl p-6 card-face">
+              <h3 class="text-xl font-bold mb-4 text-blue-800">Appointment Details</h3>
+              
+              <div class="space-y-2 text-sm">
+                <p><strong>Patient Name:</strong> <span id="appointmentDetailName">N/A</span></p>
+                <p><strong>Phone:</strong> <span id="appointmentDetailPhone">N/A</span></p>
+                <p><strong>Department:</strong> <span id="appointmentDetailDept">N/A</span></p>
+                <p><strong>Doctor:</strong> <span id="appointmentDetailDoctor">N/A</span></p>
+                <p><strong>Date:</strong> <span id="appointmentDetailDate">N/A</span></p>
+                <p><strong>Time:</strong> <span id="appointmentDetailTime">N/A</span></p>
+                <p><strong>Status:</strong> <span id="appointmentDetailStatus" class="font-semibold">N/A</span></p>
+                <p class="pt-2 border-t mt-2"><strong>Notification Status:</strong> <span id="appointmentDetailNotificationStatus" class="font-bold">N/A</span></p>
+                <p><strong>Created At:</strong> <span id="appointmentDetailCreated">N/A</span></p>
+              </div>
+              
+              <div class="absolute bottom-4 left-6 right-6 flex justify-between space-x-2">
+                <button id="closeDetailsCardButton" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition">Close</button>
+                <button id="flipCardButton" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">View Actions</button>
+              </div>
+            </div>
+      
+            <div class="absolute inset-0 bg-gray-100 rounded-lg shadow-xl p-6 card-face card-face-back">
+              <h3 class="text-xl font-bold mb-4 text-gray-800">Actions</h3>
+              
+              <p class="text-sm">This is where you would place buttons to Approve, Cancel, or Reassign the appointment, if those routes were implemented.</p>
+              
+              <div class="absolute bottom-4 left-6 right-6 flex justify-between space-x-2">
+                 <button id="closeDetailsCardBackButton" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition">Close</button>
+                <button id="flipCardBackButton" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition">Back to Details</button>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8 w-full">
+      <div class="bg-white p-6 rounded-xl shadow-md text-center">
+        <h2 class="text-2xl font-semibold text-gray-700">Total Departments</h2>
+        <p id="totalDepartments" class="text-5xl font-bold text-blue-800 mt-2">0</p>
+      </div>
+      <div class="bg-white p-6 rounded-xl shadow-md text-center">
+        <h2 class="text-2xl font-semibold text-gray-700">Total Doctors</h2>
+        <p id="totalDoctors" class="text-5xl font-bold text-blue-800 mt-2">0</p>
+      </div>
+      <div class="bg-white p-6 rounded-xl shadow-md text-center">
+        <h2 class="text-2xl font-semibold text-gray-700">Upcoming Appointments</h2>
+        <p id="upcomingAppointments" class="text-5xl font-bold text-blue-800 mt-2">0</p>
+      </div>
+    </section>
+
+    <section class="bg-white p-6 rounded-xl shadow-md w-full mt-8">
+      <h2 class="text-2xl font-semibold text-gray-700 mb-4">Recent Appointments</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Appointment ID</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Patient Name</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Doctor Name</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Time</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+            </tr>
+          </thead>
+          <tbody id="recentAppointmentsTableBody" class="bg-white divide-y divide-gray-200">
+            <tr>
+              <td colspan="6" class="px-6 py-4 text-center text-gray-500">Loading recent appointments...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  let doctorMap = {};
+  let departmentMap = {};
+  let statusChart, trendChart, departmentChart;
+  let currentNotifications = [];
+  async function loadDepartments() {
+    try {
+      const res = await fetch("/admin/api/departments");
+      const departments = await res.json();
+      departmentMap = {};
+      departments.forEach(d => {
+        departmentMap[d.id] = d.name;
+      });
+    } catch (err) {
+      console.error("Error loading departments:", err);
+    }
+  }
+  
+  async function loadDoctors() {
+    try {
+      const res = await fetch("/admin/api/doctors");
+      const doctors = await res.json();
+      doctorMap = {};
+      doctors.forEach(doc => {
+        doctorMap[doc.id] = (typeof doc.name === "object") ? doc.name.en : doc.name;
+      });
+    } catch (err) {
+      console.error("Error loading doctors:", err);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const notificationBellContainer = document.getElementById('notificationBellContainer');
+    const dashboardNotificationIcon = document.getElementById('dashboardNotificationIcon'); 
+    const notificationDot = document.getElementById('notificationDot');
+    const dashboardNotificationPanel = document.getElementById('dashboardNotificationPanel');
+    const notificationList = document.getElementById('notificationList');
+    const closePanelButton = document.getElementById('closeNotificationPanel');
+    const markAllAsReadButton = document.getElementById('markAllAsReadButton');
+
+    // FIX 1: Robust logic for Mark All as Read - Clear currentNotifications array immediately
+    markAllAsReadButton.addEventListener('click', async (e) => {
+  e.stopPropagation();
+  try {
+    const res = await fetch('/admin/notifications/mark_viewed', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ appointmentIds: [] }) // empty = mark all
+    });
+
+    if (res.ok) {
+      notificationList.innerHTML = '<li class="text-gray-500">No new notifications.</li>';
+      notificationDot.style.display = 'none';
+      dashboardNotificationIcon.classList.remove('animate-bell');
+      currentNotifications = [];
+    }
+  } catch (err) {
+    console.error("Error marking all as read:", err);
+  }
+});
+
+    const appointmentDetailsCard = document.getElementById('appointmentDetailsCard');
+    const closeDetailsCardButton = document.getElementById('closeDetailsCardButton'); 
+    const closeDetailsCardBackButton = document.getElementById('closeDetailsCardBackButton');
+    const flipCardButton = document.getElementById('flipCardButton');
+    const flipCardBackButton = document.getElementById('flipCardBackButton');
+    const card3dContainer = document.querySelector('.card-3d'); 
+    const recentAppointmentsTableBody = document.getElementById('recentAppointmentsTableBody');
+
+    let currentNotifications = []; 
+    const notificationSound = new Audio('/static/notification/notification.wav'); 
+
+    async function fetchDashboardCounts() {
+      try {
+        const response = await fetch('/admin/dashboard_counts'); 
+        const counts = await response.json();
+        document.getElementById('totalDepartments').textContent = counts.departments;
+        document.getElementById('totalDoctors').textContent = counts.doctors;
+        document.getElementById('upcomingAppointments').textContent = counts.upcoming;
+      } catch (error) {
+        console.error('Error fetching dashboard counts:', error);
+      }
+    }
+
+    async function fetchAndProcessNotifications() {
+      try {
+        const response = await fetch('/admin/notifications'); 
+        const data = await response.json();
+        const notifications = data.notifications; 
+        
+        // This logic ensures we only play sound and animate for genuinely new notifications
+        const unseenOrUpdatedNotifications = notifications.filter(notif => {
+          const isAlreadySeen = currentNotifications.some(oldNotif => 
+            oldNotif.id === notif.id && 
+            oldNotif.is_new === notif.is_new &&
+            oldNotif.is_updated === notif.is_updated
+          );
+          return !isAlreadySeen;
+        });
+
+        if (notifications.length > 0) {
+          if (unseenOrUpdatedNotifications.length > 0) {
+            notificationSound.play().catch(e => console.error("Error playing sound:", e));
+          }
+          currentNotifications = notifications;
+          renderNotifications(notifications);
+          // Check for *any* unviewed notifications to show the dot
+          const hasUnviewed = notifications.some(notif => !notif.viewed_by_admin);
+          notificationDot.style.display = hasUnviewed ? 'block' : 'none';
+          dashboardNotificationIcon.classList.add('animate-bell');
+        } else {
+          notificationDot.style.display = 'none';
+          dashboardNotificationIcon.classList.remove('animate-bell');
+          notificationList.innerHTML = '<li class="text-gray-500">No new notifications.</li>';
+        }
+      } catch (error) {
+        console.error('Error fetching notifications:', error);
+      }
+    }
+
+    function renderNotifications(notifications) {
+      notificationList.innerHTML = ''; 
+      if (notifications.length === 0) {
+        notificationList.innerHTML = '<li class="text-gray-500">No new notifications.</li>';
+        return;
+      }
+
+      notifications.forEach(appt => {
+        const listItem = document.createElement('li');
+        listItem.className = 'p-2 border-b border-gray-200 last:border-b-0 cursor-pointer hover:bg-blue-50';
+        listItem.dataset.appointmentId = appt.id;
+
+        let notificationTypeText = '';
+        if (appt.is_new) notificationTypeText = '🆕 New Appointment';
+        else if (appt.is_updated) notificationTypeText = '📝 Updated Appointment';
+        else if (appt.Status === 'Cancelled' || appt.Status === 'cancelled') notificationTypeText = '❌ Cancelled Appointment'; 
+        else notificationTypeText = 'Appointment';
+
+        const statusClass = appt.is_new ? 'text-blue-600 font-bold' : (appt.is_updated ? 'text-orange-600 font-bold' : 'text-gray-800');
+
+        listItem.innerHTML = `
+          <p class="${statusClass}">${notificationTypeText}</p>
+          <p class="text-sm text-gray-600">Appointment ID: ${appt.id} | Status: ${appt.Status}</p>
+        `;
+        notificationList.appendChild(listItem);
+      });
+    }
+
+    /**
+     * Marks an appointment as viewed in the database and immediately removes it from the list if successful.
+     * @param {number} appointmentId The ID of the appointment to mark as viewed.
+     * @param {HTMLElement} listItemElement The DOM element of the list item to remove.
+     */
+    async function markAppointmentAsViewed(appointmentId, listItemElement) {
+      try {
+        const response = await fetch(`/admin/api/appointment/mark_viewed/${appointmentId}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+        });
+        
+        if (!response.ok) {
+            console.error(`Failed to mark appointment ${appointmentId} as viewed.`);
+        } else if (listItemElement && listItemElement.parentNode) {
+            // FIX 2a: Remove the item from the DOM immediately
+            listItemElement.parentNode.removeChild(listItemElement);
+            
+            // CRITICAL FIX 2b: Remove the item from the local currentNotifications array
+            currentNotifications = currentNotifications.filter(notif => notif.id != appointmentId);
+        }
+        
+        // Refresh notifications to update the local list array and the bell dot
+        fetchAndProcessNotifications(); 
+        
+      } catch (error) {
+        console.error('Error marking appointment as viewed:', error);
+      }
+    }
+
+    function toggleNotificationPanel() {
+      dashboardNotificationPanel.classList.toggle('hidden');
+      if (!dashboardNotificationPanel.classList.contains('hidden')) {
+        fetchAndProcessNotifications(); 
+      }
+    }
+
+    function closeNotificationPanel() {
+      dashboardNotificationPanel.classList.add('hidden');
+    }
+
+    /**
+     * Fetches and shows appointment details, and triggers the mark-as-viewed process.
+     * @param {number} appointmentId The ID of the appointment.
+     * @param {HTMLElement | null} listItemElement The DOM element of the notification item, or null if opened from the table.
+     */
+    async function showAppointmentDetails(appointmentId, listItemElement = null) {
+        const card = document.getElementById('appointmentDetailsCard');
+        if (card) {
+            card3dContainer.classList.remove('flipped'); 
+            card.classList.remove('hidden');
+        }
+
+        try {
+            const response = await fetch(`/admin/api/appointment/details/${appointmentId}`);
+            
+            if (!response.ok) {
+                const result = await response.json();
+                throw new Error(result.error || `HTTP error! status: ${response.status}`);
+            }
+            
+            const data = (await response.json()).details;
+
+            const detailFields = [
+                { id: 'appointmentDetailName', key: 'patientName' },
+                { id: 'appointmentDetailPhone', key: 'phoneNumber' },
+                { id: 'appointmentDetailDept', key: 'department' },
+                { id: 'appointmentDetailDoctor', key: 'doctorName' },
+                { id: 'appointmentDetailDate', key: 'date' },
+                { id: 'appointmentDetailTime', key: 'time' },
+                { id: 'appointmentDetailStatus', key: 'Status' },
+                { id: 'appointmentDetailCreated', key: 'createdAt' },
+            ];
+
+            detailFields.forEach(field => {
+                const element = document.getElementById(field.id);
+                const value = data[field.key] || 'N/A';
+                if (element) {
+                    element.textContent = value;
+                    if(field.id === 'appointmentDetailStatus') {
+                        element.textContent = value.toUpperCase();
+                        element.style.color = value.toLowerCase() === 'pending' ? 'orange' : (value.toLowerCase() === 'confirmed' ? 'blue' : (value.toLowerCase() === 'completed' ? 'green' : 'black'));
+                    }
+                } else {
+                    console.warn(`Missing detail element in HTML: #${field.id}.`);
+                }
+            });
+            
+            const notificationStatusElement = document.getElementById('appointmentDetailNotificationStatus');
+            if (notificationStatusElement) {
+                let statusText = 'Previously Viewed';
+                if (data.is_new) {
+                    statusText = 'NEW Appointment';
+                    notificationStatusElement.className = 'font-bold text-blue-600';
+                } else if (data.is_updated) {
+                    statusText = 'UPDATED Appointment';
+                    notificationStatusElement.className = 'font-bold text-orange-600';
+                } else {
+                    notificationStatusElement.className = 'font-bold text-green-600';
+                }
+                notificationStatusElement.textContent = statusText;
+            }
+
+            // Mark the single notification as viewed after showing details
+            // This is where the item is removed from the DOM and currentNotifications array
+            await markAppointmentAsViewed(appointmentId, listItemElement);
+
+        } catch (error) {
+            console.error('Error fetching appointment details:', error);
+            const errorElement = document.getElementById('appointmentDetailName');
+            if (errorElement) errorElement.textContent = `Error: ${error.message}.`;
+        }
+    }
+    
+    function closeAppointmentDetailsCard() {
+      appointmentDetailsCard.classList.add('hidden');
+      card3dContainer.classList.remove('flipped'); 
+    }
+
+    async function fetchRecentAppointments() {
+      try {
+        const response = await fetch('/admin/api/appointments');
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const appointments = await response.json();
+        appointments.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        recentAppointmentsTableBody.innerHTML = '';
+        if (appointments.length === 0) {
+          recentAppointmentsTableBody.innerHTML =
+            '<tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">No recent appointments.</td></tr>';
+        } else {
+          const displayAppointments = appointments.slice(0, 5);
+          displayAppointments.forEach(appt => {
+            const row = document.createElement('tr');
+            let statusClass = '';
+            if (appt.Status === 'Completed') statusClass = 'bg-green-100 text-green-800';
+            else if (appt.Status === 'Pending') statusClass = 'bg-yellow-100 text-yellow-800';
+            else if (appt.Status === 'Confirmed' || appt.Status === 'booked') statusClass = 'bg-blue-100 text-blue-800';
+            else if (appt.Status === 'Cancelled' || appt.Status === 'cancelled') statusClass = 'bg-red-100 text-red-800';
+
+            row.innerHTML = `
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${appt.id}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${appt.patientName || "-"}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${appt.doctorName || "-"}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${appt.date || "-"}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${appt.time || "-"}</td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">
+                  ${appt.Status || "Pending"}
+                </span>
+              </td>
+            `;
+            recentAppointmentsTableBody.appendChild(row);
+            row.addEventListener('click', () => showAppointmentDetails(appt.id, null)); 
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching recent appointments:', error);
+        recentAppointmentsTableBody.innerHTML =
+          '<tr><td colspan="6" class="px-6 py-4 text-center text-red-500">Failed to load appointments.</td></tr>';
+      }
+    }
+
+    async function fetchLookups() {
+      try {
+        const deptRes = await fetch("/admin/api/departments");
+        const depts = await deptRes.json();
+        depts.forEach(d => departmentMap[d.id] = d.name);
+        const docRes = await fetch("/admin/api/doctors");
+        const docs = await docRes.json();
+        docs.forEach(doc => {
+          doctorMap[doc.id] = (typeof doc.name === "object") ? doc.name.en : doc.name;
+        });
+      } catch (err) {
+        console.error("Error fetching lookups:", err);
+      }
+    }
+
+    async function fetchAppointmentsForAnalytics() {
+      try {
+        const res = await fetch("/admin/api/appointments");
+        return await res.json();
+      } catch (err) {
+        console.error("Error fetching analytics data:", err);
+        return [];
+      }
+    }
+
+    async function renderAnalytics() {
+        try {
+            const res = await fetch("/admin/api/analytics");
+            const data = await res.json();
+
+            if (!data || !data.status || !data.trend || !data.departments) {
+                console.warn("Analytics data is incomplete or invalid:", data);
+                return;
+            }
+
+            if (statusChart) statusChart.destroy();
+            if (trendChart) trendChart.destroy();
+            if (departmentChart) departmentChart.destroy();
+
+            const statusLabels = Object.keys(data.status);
+            const statusValues = Object.values(data.status);
+            statusChart = new Chart(document.getElementById("statusChart"), {
+                type: "pie",
+                data: { labels: statusLabels, datasets: [{ data: statusValues }] },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+
+            const sortedDates = Object.keys(data.trend).sort();
+            const trendValues = sortedDates.map(d => data.trend[d]);
+            trendChart = new Chart(document.getElementById("trendChart"), {
+                type: "line",
+                data: { labels: sortedDates, datasets: [{ label: "Appointments", data: trendValues }] },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+
+            const deptLabels = Object.keys(data.departments);
+            const deptValues = Object.values(data.departments);
+            departmentChart = new Chart(document.getElementById("departmentChart"), {
+                type: "bar",
+                data: { labels: deptLabels, datasets: [{ data: deptValues }] },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        } catch (err) {
+            console.error("Error rendering analytics:", err);
+        }
+    }
+
+    fetchAndProcessNotifications();
+    fetchDashboardCounts();
+    fetchRecentAppointments();
+
+    setInterval(fetchAndProcessNotifications, 10000);
+    setInterval(fetchDashboardCounts, 10000);
+    setInterval(fetchRecentAppointments, 10000);
+
+    notificationBellContainer.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleNotificationPanel();
+    });
+
+    closePanelButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      closeNotificationPanel();
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!notificationBellContainer.contains(e.target) &&
+          !dashboardNotificationPanel.contains(e.target) &&
+          appointmentDetailsCard.classList.contains('hidden')) { 
+        closeNotificationPanel();
+      }
+    });
+
+    // Event listener to pass the list item element for single notification removal
+    notificationList.addEventListener('click', (e) => {
+      const listItem = e.target.closest('li[data-appointment-id]');
+      if (listItem) {
+        const appointmentId = listItem.dataset.appointmentId;
+        closeNotificationPanel();
+        showAppointmentDetails(appointmentId, listItem); 
+      }
+    });
+
+    closeDetailsCardButton.addEventListener('click', closeAppointmentDetailsCard);
+    closeDetailsCardBackButton.addEventListener('click', closeAppointmentDetailsCard);
+
+    flipCardButton.addEventListener('click', () => {
+      card3dContainer.classList.add('flipped');
+    });
+
+    flipCardBackButton.addEventListener('click', () => {
+      card3dContainer.classList.remove('flipped');
+    });
+
+    appointmentDetailsCard.addEventListener('click', (e) => {
+      if (e.target === appointmentDetailsCard) {
+        closeAppointmentDetailsCard();
+      }
+    });
+  });
+</script>
+</body>
+</html>

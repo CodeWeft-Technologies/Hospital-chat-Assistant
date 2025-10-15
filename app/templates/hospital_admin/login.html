@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Admin Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    <style>
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gradient-primary);
+            padding: var(--space-lg);
+        }
+
+        .login-card {
+            background: linear-gradient(145deg, var(--neutral-white) 0%, var(--neutral-gray-50) 100%);
+            border-radius: var(--radius-3xl);
+            box-shadow: var(--shadow-3d);
+            padding: var(--space-3xl);
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid var(--neutral-gray-200);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-blue-500), var(--secondary-green-500), var(--accent-purple-500));
+            border-radius: var(--radius-3xl) var(--radius-3xl) 0 0;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: var(--space-2xl);
+        }
+
+        .login-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: var(--radius-2xl);
+            background: linear-gradient(135deg, var(--primary-blue-500) 0%, var(--secondary-green-500) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--space-lg);
+            font-size: 36px;
+            color: white;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .login-title {
+            font-size: var(--font-size-3xl);
+            font-weight: 800;
+            color: var(--primary-blue-800);
+            margin-bottom: var(--space-sm);
+        }
+
+        .login-subtitle {
+            font-size: var(--font-size-base);
+            color: var(--neutral-gray-600);
+            font-weight: 500;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-lg);
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--neutral-gray-700);
+            font-size: var(--font-size-sm);
+        }
+
+        .form-input {
+            padding: var(--space-lg) var(--space-xl);
+            border: 2px solid var(--neutral-gray-200);
+            border-radius: var(--radius-xl);
+            font-size: var(--font-size-base);
+            background: var(--neutral-white);
+            transition: all var(--transition-normal);
+            outline: none;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary-blue-400);
+            box-shadow: 0 0 0 4px var(--primary-blue-100);
+            transform: translateY(-2px);
+        }
+
+        .form-input::placeholder {
+            color: var(--neutral-gray-400);
+        }
+
+        .login-button {
+            width: 100%;
+            padding: var(--space-lg) var(--space-xl);
+            border: none;
+            border-radius: var(--radius-xl);
+            background: linear-gradient(135deg, var(--primary-blue-500) 0%, var(--primary-blue-600) 100%);
+            color: var(--neutral-white);
+            font-weight: 700;
+            font-size: var(--font-size-lg);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            box-shadow: var(--shadow-3d);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .login-button:hover {
+            background: linear-gradient(135deg, var(--primary-blue-600) 0%, var(--primary-blue-700) 100%);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .login-button:active {
+            transform: translateY(-1px);
+        }
+
+        .login-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: var(--space-xl);
+            padding-top: var(--space-lg);
+            border-top: 1px solid var(--neutral-gray-200);
+        }
+
+        .login-footer p {
+            color: var(--neutral-gray-500);
+            font-size: var(--font-size-sm);
+            margin: 0;
+        }
+
+        .error-message {
+            background: var(--status-error);
+            color: var(--neutral-white);
+            padding: var(--space-md) var(--space-lg);
+            border-radius: var(--radius-lg);
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+            margin-bottom: var(--space-lg);
+            display: none;
+        }
+
+        .demo-credentials {
+            background: var(--primary-blue-50);
+            border: 1px solid var(--primary-blue-200);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            margin-bottom: var(--space-lg);
+        }
+
+        .demo-credentials h4 {
+            color: var(--primary-blue-800);
+            font-size: var(--font-size-sm);
+            font-weight: 700;
+            margin: 0 0 var(--space-sm) 0;
+        }
+
+        .demo-credentials p {
+            color: var(--primary-blue-700);
+            font-size: var(--font-size-xs);
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: var(--space-md);
+            }
+            
+            .login-card {
+                padding: var(--space-xl);
+            }
+            
+            .login-title {
+                font-size: var(--font-size-2xl);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="login-logo">🏥</div>
+                <h1 class="login-title">Hospital Admin</h1>
+                <p class="login-subtitle">Sign in to manage your hospital</p>
+            </div>
+
+            <div class="error-message" id="error-message"></div>
+
+            <div class="demo-credentials">
+                <h4>Demo Credentials</h4>
+                <p>Hospital ID: xyz_hospital<br>Password: admin123</p>
+            </div>
+
+            <form class="login-form" id="login-form">
+                <div class="form-group">
+                    <label class="form-label" for="hospital-id">Hospital ID</label>
+                    <input 
+                        type="text" 
+                        id="hospital-id" 
+                        name="hospital_id" 
+                        class="form-input" 
+                        placeholder="Enter your hospital ID"
+                        value="xyz_hospital"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        class="form-input" 
+                        placeholder="Enter your password"
+                        value="admin123"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="login-button" id="login-button">
+                    Sign In
+                </button>
+            </form>
+
+            <div class="login-footer">
+                <p>© 2024 Hospital Management System. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class AdminLogin {
+            constructor() {
+                this.form = document.getElementById('login-form');
+                this.errorMessage = document.getElementById('error-message');
+                this.loginButton = document.getElementById('login-button');
+                this.init();
+            }
+
+            init() {
+                this.form.addEventListener('submit', this.handleLogin.bind(this));
+            }
+
+            async handleLogin(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(this.form);
+                const hospitalId = formData.get('hospital_id');
+                const password = formData.get('password');
+
+                if (!hospitalId || !password) {
+                    this.showError('Please fill in all fields');
+                    return;
+                }
+
+                this.setLoading(true);
+
+                try {
+                    const response = await fetch('/api/v1/auth/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            hospital_id: hospitalId,
+                            password: password
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        // Store token and redirect
+                        localStorage.setItem('admin_token', data.token);
+                        localStorage.setItem('hospital_id', data.hospital_id);
+                        
+                        window.location.href = `/admin/dashboard?hospital_id=${data.hospital_id}`;
+                    } else {
+                        this.showError(data.error || 'Login failed');
+                    }
+                } catch (error) {
+                    console.error('Login error:', error);
+                    this.showError('Network error. Please try again.');
+                } finally {
+                    this.setLoading(false);
+                }
+            }
+
+            showError(message) {
+                this.errorMessage.textContent = message;
+                this.errorMessage.style.display = 'block';
+                
+                // Hide error after 5 seconds
+                setTimeout(() => {
+                    this.errorMessage.style.display = 'none';
+                }, 5000);
+            }
+
+            setLoading(loading) {
+                this.loginButton.disabled = loading;
+                this.loginButton.textContent = loading ? 'Signing In...' : 'Sign In';
+            }
+        }
+
+        // Initialize login form
+        document.addEventListener('DOMContentLoaded', () => {
+            new AdminLogin();
+        });
+    </script>
+</body>
+</html>

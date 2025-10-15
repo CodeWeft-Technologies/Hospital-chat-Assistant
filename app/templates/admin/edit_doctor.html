@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Edit Doctor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+  <!-- Container -->
+  <div class="flex-1 flex items-center justify-center py-8">
+    <div class="bg-white w-full max-w-2xl rounded-2xl shadow-lg p-8">
+      <h1 class="text-2xl font-bold text-gray-800 mb-6 text-center">
+        ✏️ Edit Doctor
+      </h1>
+
+      <form method="POST" class="space-y-4">
+        <!-- Department -->
+        <div>
+          <label class="block text-gray-700 font-medium mb-1">Department</label>
+          <select name="department_id" class="w-full border rounded-lg p-2 focus:ring focus:ring-blue-200">
+            {% for dept in departments %}
+              <option value="{{ dept.id }}" {% if doctor.department_id == dept.id %}selected{% endif %}>
+                {{ dept.name_en }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- Names -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-gray-700 font-medium mb-1">Name (EN)</label>
+            <input type="text" name="name_en" value="{{ doctor.name_en }}" 
+                   class="w-full border rounded-lg p-2 focus:ring focus:ring-blue-200" required>
+          </div>
+          <div>
+            <label class="block text-gray-700 font-medium mb-1">Name (HI)</label>
+            <input type="text" name="name_hi" value="{{ doctor.name_hi }}" 
+                   class="w-full border rounded-lg p-2 focus:ring focus:ring-blue-200">
+          </div>
+          <div>
+            <label class="block text-gray-700 font-medium mb-1">Name (MR)</label>
+            <input type="text" name="name_mr" value="{{ doctor.name_mr }}" 
+                   class="w-full border rounded-lg p-2 focus:ring focus:ring-blue-200">
+          </div>
+        </div>
+
+        <!-- Education -->
+        <div>
+          <label class="block text-gray-700 font-medium mb-1">Education</label>
+          <input type="text" name="education" value="{{ doctor.education }}" 
+                 class="w-full border rounded-lg p-2 focus:ring focus:ring-blue-200">
+        </div>
+
+        <!-- Experience and Fees -->
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-gray-700 font-medium mb-1">Experience (yrs)</label>
+            <input type="text" name="experience" value="{{ doctor.experience }}" 
+                   class="w-full border rounded-lg p-2 focus:ring focus:ring-blue-200">
+          </div>
+          <div>
+            <label class="block text-gray-700 font-medium mb-1">Fees (₹)</label>
+            <input type="number" name="fees" value="{{ doctor.fees }}" 
+                   class="w-full border rounded-lg p-2 focus:ring focus:ring-blue-200">
+          </div>
+        </div>
+
+        <!-- Available Days -->
+        <div>
+          <label class="block text-gray-700 font-medium mb-2">Available Days</label>
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+            {% set days = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"] %}
+            {% for day in days %}
+              <label class="flex items-center space-x-2">
+                <input type="checkbox" name="available_days" value="{{ day }}"
+                       {% if day in doctor.available_days %}checked{% endif %}>
+                <span>{{ day }}</span>
+              </label>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Timings -->
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-gray-700 font-medium mb-1">Start Time</label>
+            <input type="text" name="start_time" value="{{ doctor.start_time }}" 
+                   placeholder="e.g. 09:00 AM"
+                   class="w-full border rounded-lg p-2 focus:ring focus:ring-blue-200">
+          </div>
+          <div>
+            <label class="block text-gray-700 font-medium mb-1">End Time</label>
+            <input type="text" name="end_time" value="{{ doctor.end_time }}" 
+                   placeholder="e.g. 05:00 PM"
+                   class="w-full border rounded-lg p-2 focus:ring focus:ring-blue-200">
+          </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="flex justify-between mt-6">
+          <a href="{{ url_for('admin_bp.doctors') }}" 
+             class="px-4 py-2 rounded-lg bg-gray-300 hover:bg-gray-400 text-gray-800 font-medium">
+            ← Cancel
+          </a>
+          <button type="submit" 
+                  class="px-6 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow">
+            💾 Save Changes
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</body>
+</html>

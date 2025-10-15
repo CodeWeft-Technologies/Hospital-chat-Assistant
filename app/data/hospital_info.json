@@ -1,0 +1,416 @@
+{
+  "hospital": {
+    "name": {
+      "english": "XYZ Hospital",
+      "hindi": "एक्सवाईजेड अस्पताल",
+      "marathi": "XYZ हॉस्पिटल"
+    },
+    "address": {
+      "english": "123 Main Road, Pune, Maharashtra",
+      "hindi": "123 मेन रोड, पुणे, महाराष्ट्र",
+      "marathi": "१२३ मेन रोड, पुणे, महाराष्ट्र"
+    },
+    "phone": "+91 9921142657",
+    "email": "info@xyzhospital.com",
+    "website": "www.xyzhospital.com",
+    "timings": {
+      "general_opd": {
+        "english": "9:00 AM - 5:00 PM (Mon - Sat)",
+        "hindi": "सुबह 9 बजे - शाम 5 बजे (सोम - शनि)",
+        "marathi": "सकाळी ९ - संध्याकाळी ५ (सोमवार - शनिवार)"
+      },
+      "emergency": {
+        "english": "24/7",
+        "hindi": "२४/७",
+        "marathi": "२४/७"
+      },
+      "visiting_hours": {
+        "english": "4:00 PM - 7:00 PM",
+        "hindi": "शाम 4 बजे - 7 बजे",
+        "marathi": "सायं ४ - ७"
+      }
+    }
+  },
+
+  "departments": [
+    {
+      "name": {
+        "english": "General Medicine",
+        "hindi": "जनरल मेडिसिन",
+        "marathi": "जनरल मेडिसिन"
+      },
+      "head": {
+        "english": "Dr. Khan",
+        "hindi": "डॉ. खान",
+        "marathi": "डॉ. खान"
+      },
+      "fees": 400,
+      "doctors": [
+        {
+          "name": {
+            "english": "Dr. Khan",
+            "hindi": "डॉ. खान",
+            "marathi": "डॉ. खान"
+          },
+          "qualification": "MBBS, MD",
+          "experience": "10 years",
+          "fees": 400,
+          "timings": {
+            "english": "10:00 AM - 2:00 PM",
+            "hindi": "सुबह 10 बजे - दोपहर 2 बजे",
+            "marathi": "सकाळी १० - दुपारी २"
+          }
+        },
+        {
+          "name": {
+            "english": "Dr. Shalini Mehta",
+            "hindi": "डॉ. शालिनी मेहता",
+            "marathi": "डॉ. शालिनी मेहता"
+          },
+          "qualification": "MBBS, MD",
+          "experience": "8 years",
+          "fees": 400,
+          "timings": {
+            "english": "2:30 PM - 6:00 PM",
+            "hindi": "दोपहर 2:30 बजे - शाम 6 बजे",
+            "marathi": "दुपारी २:३० - संध्याकाळी ६"
+          }
+        }
+      ]
+    },
+    {
+      "name": {
+        "english": "Cardiology",
+        "hindi": "कार्डियोलॉजी",
+        "marathi": "कार्डिओलॉजी"
+      },
+      "head": {
+        "english": "Dr. Arvind Joshi",
+        "hindi": "डॉ. अरविंद जोशी",
+        "marathi": "डॉ. अरविंद जोशी"
+      },
+      "fees": 600,
+      "doctors": [
+        {
+          "name": {
+            "english": "Dr. Arvind Joshi",
+            "hindi": "डॉ. अरविंद जोशी",
+            "marathi": "डॉ. अरविंद जोशी"
+          },
+          "qualification": "MBBS, DM (Cardiology)",
+          "experience": "12 years",
+          "fees": 600,
+          "timings": {
+            "english": "11:00 AM - 3:00 PM",
+            "hindi": "सुबह 11 बजे - दोपहर 3 बजे",
+            "marathi": "सकाळी ११ - दुपारी ३"
+          }
+        },
+        {
+          "name": {
+            "english": "Dr. Priya Kulkarni",
+            "hindi": "डॉ. प्रिया कुलकर्णी",
+            "marathi": "डॉ. प्रिया कुलकर्णी"
+          },
+          "qualification": "MBBS, MD, DM",
+          "experience": "10 years",
+          "fees": 600,
+          "timings": {
+            "english": "3:30 PM - 6:30 PM",
+            "hindi": "दोपहर 3:30 बजे - शाम 6:30 बजे",
+            "marathi": "दुपारी ३:३० - संध्याकाळी ६:३०"
+          }
+        }
+      ]
+    },
+    {
+      "name": {
+        "english": "Orthopedics",
+        "hindi": "ऑर्थोपेडिक्स",
+        "marathi": "ऑर्थोपेडिक्स"
+      },
+      "head": {
+        "english": "Dr. Sunil Patil",
+        "hindi": "डॉ. सुनील पाटील",
+        "marathi": "डॉ. सुनील पाटील"
+      },
+      "fees": 500,
+      "doctors": [
+        {
+          "name": {
+            "english": "Dr. Sunil Patil",
+            "hindi": "डॉ. सुनील पाटील",
+            "marathi": "डॉ. सुनील पाटील"
+          },
+          "qualification": "MBBS, MS (Ortho)",
+          "experience": "15 years",
+          "fees": 500,
+          "timings": {
+            "english": "10:30 AM - 1:30 PM",
+            "hindi": "सुबह 10:30 बजे - दोपहर 1:30 बजे",
+            "marathi": "सकाळी १०:३० - दुपारी १:३०"
+          }
+        },
+        {
+          "name": {
+            "english": "Dr. Ritu Sharma",
+            "hindi": "डॉ. ऋतु शर्मा",
+            "marathi": "डॉ. ऋतु शर्मा"
+          },
+          "qualification": "MBBS, MS (Ortho)",
+          "experience": "12 years",
+          "fees": 500,
+          "timings": {
+            "english": "2:00 PM - 5:00 PM",
+            "hindi": "दोपहर 2 बजे - शाम 5 बजे",
+            "marathi": "दुपारी २ - संध्याकाळी ५"
+          }
+        }
+      ]
+    }
+  ],
+
+  "services": {
+    "emergency": {
+      "english": "24/7 Emergency and Trauma Care",
+      "hindi": "२४/७ आपातकालीन और ट्रॉमा केयर",
+      "marathi": "२४/७ आपत्कालीन आणि ट्रॉमा केअर"
+    },
+    "ambulance": {
+      "english": "24/7 Ambulance Service (Call +91 9921142657)",
+      "hindi": "२४/७ एम्बुलेंस सेवा (कॉल करें +91 9921142657)",
+      "marathi": "२४/७ रुग्णवाहिका सेवा (कॉल करा +91 9921142657)"
+    },
+    "pharmacy": {
+      "english": "24/7 In-house Pharmacy",
+      "hindi": "२४/७ इन-हाउस फार्मेसी",
+      "marathi": "२४/७ इन-हाऊस फार्मसी"
+    },
+    "lab": {
+      "english": "Pathology and Diagnostic Lab - 8:00 AM to 8:00 PM",
+      "hindi": "पैथोलॉजी और डायग्नोस्टिक लैब - सुबह 8 बजे से रात 8 बजे तक",
+      "marathi": "पॅथॉलॉजी आणि डायग्नॉस्टिक लॅब - सकाळी ८ ते रात्री ८"
+    },
+    "insurance": {
+      "english": "Cashless facility available with major insurance providers",
+      "hindi": "मुख्य बीमा प्रदाताओं के साथ कैशलेस सुविधा उपलब्ध",
+      "marathi": "प्रमुख विमा प्रदात्यांसोबत कॅशलेस सुविधा उपलब्ध"
+    }
+  },
+
+  "faqs": [
+    {
+      "question": {
+        "english": "What are the hospital's working hours?",
+        "hindi": "अस्पताल का कार्य समय क्या है?",
+        "marathi": "रुग्णालयाचे कामकाजाचे तास काय आहेत?"
+      },
+      "answer": {
+        "english": "Our OPD runs from 9 AM to 5 PM (Monday to Saturday). Emergency services are available 24/7.",
+        "hindi": "हमारा ओपीडी सुबह 9 बजे से शाम 5 बजे तक (सोमवार से शनिवार) चलता है। आपातकालीन सेवाएँ 24/7 उपलब्ध हैं।",
+        "marathi": "आमचा ओपीडी सकाळी 9 ते सायं 5 (सोमवार ते शनिवार) चालतो. आपत्कालीन सेवा २४/७ उपलब्ध आहे."
+      }
+    },
+    {
+      "question": {
+        "english": "Do you have ambulance services?",
+        "hindi": "क्या आपके पास एम्बुलेंस सेवा है?",
+        "marathi": "तुमच्याकडे रुग्णवाहिका सेवा आहे का?"
+      },
+      "answer": {
+        "english": "Yes, our hospital provides 24/7 ambulance service. You can call +91 9921142657.",
+        "hindi": "हाँ, हमारा अस्पताल 24/7 एम्बुलेंस सेवा प्रदान करता है। आप +91 9921142657 पर कॉल कर सकते हैं।",
+        "marathi": "होय, आमचा रुग्णालय २४/७ रुग्णवाहिका सेवा पुरवतो. आपण +91 9921142657 वर कॉल करू शकता."
+      }
+    },
+    {
+      "question": {
+        "english": "Is cashless insurance available?",
+        "hindi": "क्या कैशलेस बीमा उपलब्ध है?",
+        "marathi": "कॅशलेस विमा उपलब्ध आहे का?"
+      },
+      "answer": {
+        "english": "Yes, we support cashless insurance with all leading insurance providers.",
+        "hindi": "हाँ, हम सभी प्रमुख बीमा प्रदाताओं के साथ कैशलेस बीमा का समर्थन करते हैं।",
+        "marathi": "होय, आम्ही सर्व प्रमुख विमा प्रदात्यांसोबत कॅशलेस विमा समर्थन करतो."
+      }
+    },
+    {
+      "question": {
+        "english": "How can I book an appointment?",
+        "hindi": "मैं अपॉइंटमेंट कैसे बुक कर सकता हूं?",
+        "marathi": "मी अपॉइंटमेंट कसे बुक करू शकतो?"
+      },
+      "answer": {
+        "english": "You can book an appointment through our online system, by calling +91 9921142657, or by visiting our reception desk.",
+        "hindi": "आप हमारे ऑनलाइन सिस्टम के माध्यम से, +91 9921142657 पर कॉल करके, या हमारे रिसेप्शन डेस्क पर जाकर अपॉइंटमेंट बुक कर सकते हैं।",
+        "marathi": "आपण आमच्या ऑनलाइन सिस्टमद्वारे, +91 9921142657 वर कॉल करून किंवा आमच्या रिसेप्शन डेस्कवर जाऊन अपॉइंटमेंट बुक करू शकता."
+      }
+    },
+    {
+      "question": {
+        "english": "What documents do I need to bring?",
+        "hindi": "मुझे कौन से दस्तावेज लाने होंगे?",
+        "marathi": "मला कोणते कागदपत्रे आणावी लागतील?"
+      },
+      "answer": {
+        "english": "Please bring your ID proof, insurance card (if applicable), previous medical reports, and any current medications you are taking.",
+        "hindi": "कृपया अपना पहचान पत्र, बीमा कार्ड (यदि लागू हो), पिछली चिकित्सा रिपोर्ट, और आपके द्वारा ली जा रही कोई भी वर्तमान दवाएं लाएं।",
+        "marathi": "कृपया आपले ओळखपत्र, विमा कार्ड (लागू असल्यास), मागील वैद्यकीय अहवाल आणि आपण घेत असलेली कोणतीही सध्याची औषधे आणा."
+      }
+    },
+    {
+      "question": {
+        "english": "Can I cancel or reschedule my appointment?",
+        "hindi": "क्या मैं अपना अपॉइंटमेंट रद्द या पुनर्निर्धारित कर सकता हूं?",
+        "marathi": "मी माझे अपॉइंटमेंट रद्द किंवा पुन्हा शेड्यूल करू शकतो का?"
+      },
+      "answer": {
+        "english": "Yes, you can cancel or reschedule your appointment up to 6 hours before the scheduled time. Please call +91 9921142657 or use our online system.",
+        "hindi": "हाँ, आप अपना अपॉइंटमेंट निर्धारित समय से 6 घंटे पहले तक रद्द या पुनर्निर्धारित कर सकते हैं। कृपया +91 9921142657 पर कॉल करें या हमारे ऑनलाइन सिस्टम का उपयोग करें।",
+        "marathi": "होय, आपण निर्धारित वेळेपासून 6 तास आधीपर्यंत आपले अपॉइंटमेंट रद्द किंवा पुन्हा शेड्यूल करू शकता. कृपया +91 9921142657 वर कॉल करा किंवा आमच्या ऑनलाइन सिस्टमचा वापर करा."
+      }
+    },
+    {
+      "question": {
+        "english": "What are the consultation fees?",
+        "hindi": "परामर्श शुल्क क्या है?",
+        "marathi": "सल्लागार शुल्क काय आहे?"
+      },
+      "answer": {
+        "english": "Consultation fees vary by department: General Medicine - ₹400, Cardiology - ₹600, Orthopedics - ₹500. Emergency consultation is ₹800.",
+        "hindi": "परामर्श शुल्क विभाग के अनुसार भिन्न होता है: जनरल मेडिसिन - ₹400, कार्डियोलॉजी - ₹600, ऑर्थोपेडिक्स - ₹500। आपातकालीन परामर्श ₹800 है।",
+        "marathi": "सल्लागार शुल्क विभागानुसार बदलते: जनरल मेडिसिन - ₹400, कार्डिओलॉजी - ₹600, ऑर्थोपेडिक्स - ₹500. आपत्कालीन सल्लागार ₹800 आहे."
+      }
+    },
+    {
+      "question": {
+        "english": "Do you have parking facilities?",
+        "hindi": "क्या आपके पास पार्किंग सुविधा है?",
+        "marathi": "तुमच्याकडे पार्किंग सुविधा आहे का?"
+      },
+      "answer": {
+        "english": "Yes, we have free parking facilities for patients and visitors. The parking area is located in front of the main building.",
+        "hindi": "हाँ, हमारे पास रोगियों और आगंतुकों के लिए निःशुल्क पार्किंग सुविधा है। पार्किंग क्षेत्र मुख्य भवन के सामने स्थित है।",
+        "marathi": "होय, आमच्याकडे रुग्ण आणि भेट देणाऱ्यांसाठी विनामूल्य पार्किंग सुविधा आहे. पार्किंग क्षेत्र मुख्य इमारतीच्या समोर आहे."
+      }
+    },
+    {
+      "question": {
+        "english": "Is there a pharmacy in the hospital?",
+        "hindi": "क्या अस्पताल में फार्मेसी है?",
+        "marathi": "रुग्णालयात फार्मसी आहे का?"
+      },
+      "answer": {
+        "english": "Yes, we have a 24/7 in-house pharmacy that stocks all essential medicines and medical supplies.",
+        "hindi": "हाँ, हमारे पास 24/7 इन-हाउस फार्मेसी है जो सभी आवश्यक दवाओं और चिकित्सा आपूर्ति को स्टॉक करती है।",
+        "marathi": "होय, आमच्याकडे २४/७ इन-हाऊस फार्मसी आहे जी सर्व आवश्यक औषधे आणि वैद्यकीय पुरवठा स्टॉक करते."
+      }
+    },
+    {
+      "question": {
+        "english": "What emergency services do you provide?",
+        "hindi": "आप कौन सी आपातकालीन सेवाएं प्रदान करते हैं?",
+        "marathi": "तुम्ही कोणत्या आपत्कालीन सेवा पुरवता?"
+      },
+      "answer": {
+        "english": "We provide 24/7 emergency services including trauma care, cardiac emergency, stroke care, and general emergency treatment.",
+        "hindi": "हम 24/7 आपातकालीन सेवाएं प्रदान करते हैं जिसमें ट्रॉमा केयर, कार्डियक इमरजेंसी, स्ट्रोक केयर, और सामान्य आपातकालीन उपचार शामिल है।",
+        "marathi": "आम्ही २४/७ आपत्कालीन सेवा पुरवतो ज्यामध्ये ट्रॉमा केअर, कार्डियक इमरजन्सी, स्ट्रोक केअर आणि सामान्य आपत्कालीन उपचार समाविष्ट आहे."
+      }
+    },
+    {
+      "question": {
+        "english": "How can I contact the hospital?",
+        "hindi": "मैं अस्पताल से कैसे संपर्क कर सकता हूं?",
+        "marathi": "मी रुग्णालयाशी कसे संपर्क साधू शकतो?"
+      },
+      "answer": {
+        "english": "You can contact us at +91 9921142657 for appointments and emergencies, or email us at info@xyzhospital.com. Our address is 123 Main Road, Pune, Maharashtra.",
+        "hindi": "आप अपॉइंटमेंट और आपातकाल के लिए +91 9921142657 पर हमसे संपर्क कर सकते हैं, या हमें info@xyzhospital.com पर ईमेल कर सकते हैं। हमारा पता 123 मेन रोड, पुणे, महाराष्ट्र है।",
+        "marathi": "आपण अपॉइंटमेंट आणि आपत्कालीन परिस्थितीसाठी +91 9921142657 वर आमच्याशी संपर्क साधू शकता, किंवा info@xyzhospital.com वर ईमेल करू शकता. आमचा पत्ता १२३ मेन रोड, पुणे, महाराष्ट्र आहे."
+      }
+    },
+    {
+      "question": {
+        "english": "Do you have lab facilities?",
+        "hindi": "क्या आपके पास लैब सुविधा है?",
+        "marathi": "तुमच्याकडे लॅब सुविधा आहे का?"
+      },
+      "answer": {
+        "english": "Yes, we have a fully equipped pathology and diagnostic lab open from 8 AM to 8 PM daily. We provide blood tests, urine tests, X-rays, and other diagnostic services.",
+        "hindi": "हाँ, हमारे पास पूरी तरह से सुसज्जित पैथोलॉजी और डायग्नोस्टिक लैब है जो प्रतिदिन सुबह 8 बजे से रात 8 बजे तक खुली रहती है। हम रक्त परीक्षण, मूत्र परीक्षण, एक्स-रे, और अन्य नैदानिक सेवाएं प्रदान करते हैं।",
+        "marathi": "होय, आमच्याकडे पूर्णपणे सुसज्जित पॅथॉलॉजी आणि डायग्नॉस्टिक लॅब आहे जी दररोज सकाळी ८ ते रात्री ८ पर्यंत उघडी असते. आम्ही रक्त चाचण्या, मूत्र चाचण्या, एक्स-रे आणि इतर निदान सेवा पुरवतो."
+      }
+    }
+  ],
+
+  "appointment_process": {
+    "booking": {
+      "english": [
+        "Select 'Booking Appointment' from the menu.",
+        "Provide your full name and phone number.",
+        "Choose the department and doctor.",
+        "Select date and time slot.",
+        "Confirm the booking."
+      ],
+      "hindi": [
+        "मेनू से 'अपॉइंटमेंट बुकिंग' चुनें।",
+        "अपना पूरा नाम और फ़ोन नंबर दर्ज करें।",
+        "विभाग और डॉक्टर चुनें।",
+        "तारीख और समय स्लॉट चुनें।",
+        "बुकिंग की पुष्टि करें।"
+      ],
+      "marathi": [
+        "मेनू मधून 'अपॉइंटमेंट बुकिंग' निवडा.",
+        "आपले पूर्ण नाव आणि फोन नंबर द्या.",
+        "विभाग आणि डॉक्टर निवडा.",
+        "तारीख आणि वेळ निवडा.",
+        "बुकिंगची पुष्टी करा."
+      ]
+    },
+    "edit": {
+      "english": [
+        "Go to 'My Appointments'.",
+        "Enter your Appointment ID / Phone.",
+        "Choose 'Edit Appointment'.",
+        "Update date, time, or doctor.",
+        "Confirm the changes."
+      ],
+      "hindi": [
+        "'मेरे अपॉइंटमेंट्स' पर जाएं।",
+        "अपॉइंटमेंट आईडी / फ़ोन दर्ज करें।",
+        "'अपॉइंटमेंट एडिट' चुनें।",
+        "तारीख, समय या डॉक्टर अपडेट करें।",
+        "बदलाव की पुष्टि करें।"
+      ],
+      "marathi": [
+        "'माय अपॉइंटमेंट्स' वर जा.",
+        "अपॉइंटमेंट आयडी / फोन टाका.",
+        "'अपॉइंटमेंट एडिट' निवडा.",
+        "तारीख, वेळ किंवा डॉक्टर अपडेट करा.",
+        "बदलांची पुष्टी करा."
+      ]
+    },
+    "cancel": {
+      "english": [
+        "Go to 'My Appointments'.",
+        "Enter your Appointment ID / Phone.",
+        "Select 'Cancel Appointment'.",
+        "Confirm cancellation."
+      ],
+      "hindi": [
+        "'मेरे अपॉइंटमेंट्स' पर जाएं।",
+        "अपॉइंटमेंट आईडी / फ़ोन दर्ज करें।",
+        "'अपॉइंटमेंट रद्द करें' चुनें।",
+        "रद्द करने की पुष्टि करें।"
+      ],
+      "marathi": [
+        "'माय अपॉइंटमेंट्स' वर जा.",
+        "अपॉइंटमेंट आयडी / फोन टाका.",
+        "'अपॉइंटमेंट रद्द करा' निवडा.",
+        "रद्दीकरणाची पुष्टी करा."
+      ]
+    }
+  }
+}

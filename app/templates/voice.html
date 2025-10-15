@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>XYZ Hospital - Voice Assistant</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+    /* Ensure body takes full viewport height and centers content */
+    body[data-page="voice"] {
+        background: linear-gradient(135deg, #ffffff, #e6e6fa); /* Light gradient background */
+        color: #222;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, "Helvetica Neue", Arial;
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center; /* Center content both horizontally and vertically */
+    }
+
+    /* Assistant container adapts for mobile */
+    .assistant-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+        width: 100%;
+        max-width: 900px;
+        padding: 0 16px;
+        transition: all 0.3s ease-in-out;
+    }
+
+    /* Main Content Card (similar to chat.html's card-3d) */
+    .card-3d {
+        background: linear-gradient(145deg, #f8f9ff, #e0e6ff);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        border-radius: 24px;
+        padding: 22px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+        width: 95%;
+        max-width: 700px; /* Max width for desktop */
+        display: flex;
+        flex-direction: column;
+        min-height: 500px;
+        height: 85vh;
+        max-height: 90vh;
+        position: relative;
+        justify-content: space-between;
+        transition: all 0.3s ease-in-out;
+    }
+
+    /* New styles for header structure to center titles and position back button */
+    .top-header-area {
+        display: flex;
+        justify-content: space-between; /* Pushes back button and placeholder to ends */
+        align-items: center;
+        width: 100%;
+        margin-bottom: 16px; /* Space below header */
+    }
+
+    .header-info-center {
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Centers text horizontally */
+        flex-grow: 1; /* Allows it to take up available space */
+        text-align: center; /* Ensures text itself is centered within its flex space */
+    }
+
+    /* This div ensures the centered content remains centered by providing
+       a balancing space on the opposite side of the back button. */
+    .placeholder-for-back-btn {
+        width: 60px; /* Match width of back-btn for visual balance */
+        height: 36px; /* Match height of back-btn */
+    }
+
+    /* Hospital Name in header */
+    .hospital-title-card {
+        font-weight: 800;
+        font-size: 1.2rem; /* Adjusted for header */
+        color: #333;
+        letter-spacing: .03em;
+        text-shadow: 0 2px 5px rgba(0,0,0,0.08);
+        margin: 0; /* Remove default margin */
+    }
+
+    /* Language Pill */
+    .lang-pill {
+        opacity: .9;
+        font-weight: 600;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        padding: .4rem .7rem;
+        border-radius: 999px;
+        background: linear-gradient(145deg, #ffffff, #f0f4ff);
+        font-size: 0.85rem;
+        margin: 0; /* Remove default margin */
+    }
+
+    /* Back button general styles */
+    .back-btn {
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        border-radius: 20px;
+        background: linear-gradient(145deg, #ffffff, #f0f4ff);
+        cursor: pointer;
+        padding: 8px 14px;
+        font-weight: 600;
+        z-index: 1000;
+        transition: 0.18s transform, .18s box-shadow;
+        flex-shrink: 0;
+        font-size: 0.9rem;
+    }
+    .back-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Voice Heading */
+    .voice-heading {
+        flex-grow: 0; /* No longer needs to grow in new flex structure */
+        text-align: center;
+        margin: 0;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #444;
+    }
+
+    /* Voice Message Box (similar to chat-box) */
+    .voice-message-box {
+        flex: 1; /* Allow to grow and shrink */
+        min-height: 0; /* Important for flex items in a column with overflow */
+        border-radius: 20px;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        background: linear-gradient(145deg, #ffffff, #f0f4ff);
+        padding: 16px;
+        overflow-y: auto; /* Enable vertical scrolling */
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 10px; /* Space above button */
+    }
+
+    /* Voice message styles (bot and user) */
+    .voice-message {
+        padding: 10px 15px;
+        border-radius: 20px;
+        max-width: 80%;
+        word-wrap: break-word;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        font-size: 0.95rem;
+    }
+
+    .voice-message.bot {
+        background-color: #f1f0f0;
+        color: #000;
+        align-self: flex-start;
+    }
+
+    .voice-message.user {
+        background-color: #25D366; /* WhatsApp green */
+        color: #fff;
+        align-self: flex-end;
+    }
+
+    /* Voice control button */
+    .voice-control-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+        padding-top: 10px;
+    }
+
+    .voice-btn-3d {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px; /* Circle shape */
+        width: 120px; /* Increased width to fit "Start Voice Assistant" */
+        height: 80px; /* Kept height */
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        background: linear-gradient(145deg, #e0e6ff, #ffffff);
+        color: #004c99; /* A distinct color for the button */
+        font-size: 1rem; /* Adjusted font size for button text */
+        font-weight: 700;
+        cursor: pointer;
+        transition: .2s transform, .2s box-shadow;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        text-align: center; /* Center text vertically */
+        line-height: 1.2; /* Adjust line height for multiline text */
+        padding: 5px; /* Add some padding */
+    }
+
+    .voice-btn-3d:hover {
+        transform: translateY(-4px) scale(1.03);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .voice-btn-3d.recording {
+        background: linear-gradient(145deg, #ff6b6b, #fa9090); /* Reddish for recording */
+        color: #fff;
+        box-shadow: 0 0 15px rgba(255, 0, 0, 0.5), inset 0 0 5px rgba(255, 255, 255, 0.8);
+        animation: pulse 1.5s infinite alternate; /* Pulsing effect when recording */
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(1); box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15); }
+        100% { transform: scale(1.05); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25), 0 0 20px rgba(255, 0, 0, 0.7); }
+    }
+
+    /* New navigation buttons */
+    .flow-nav-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    .flow-nav-buttons button {
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        border-radius: 12px;
+        background: linear-gradient(145deg, #ffffff, #f0f4ff);
+        cursor: pointer;
+        padding: 8px 12px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        transition: 0.18s transform, .18s box-shadow;
+        flex-shrink: 0;
+    }
+
+    .flow-nav-buttons button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+    }
+
+
+    /* Responsive for mobile */
+    @media (max-width: 768px) {
+        body[data-page="voice"] {
+            place-items: flex-start;
+        }
+        .assistant-container {
+            padding: 0;
+            gap: 0;
+            height: 100vh;
+            justify-content: flex-start;
+        }
+        .card-3d {
+            width: 100%;
+            height: 100vh;
+            max-width: unset;
+            border-radius: 0;
+            min-height: unset;
+            max-height: unset;
+            padding: 16px;
+        }
+        .voice-message-box {
+            padding: 10px;
+        }
+        .voice-message {
+            font-size: 0.9rem;
+            padding: 8px 12px;
+        }
+        .voice-btn-3d {
+            width: 100px; /* Adjust for smaller screens */
+            height: 70px;
+            font-size: 0.9rem;
+        }
+
+        .top-header-area {
+            flex-wrap: wrap; /* Allow wrapping on small screens */
+            justify-content: center; /* Center items if they wrap */
+            margin-bottom: 8px;
+        }
+
+        .back-btn {
+            order: 1; /* Place back button first */
+            width: auto;
+        }
+
+        .header-info-center {
+            order: 2; /* Place info in the middle */
+            flex-basis: 100%; /* Take full width for stacking */
+            margin-bottom: 10px;
+        }
+
+        .placeholder-for-back-btn {
+            order: 3; /* Place placeholder last */
+            display: none; /* Hide placeholder on mobile if not needed for centering */
+        }
+
+        .flow-nav-buttons {
+            flex-direction: column; /* Stack buttons vertically on small screens */
+            gap: 8px;
+        }
+    }
+  </style>
+</head>
+<body data-page="voice">
+  <div class="assistant-container">
+    <div class="card-3d">
+      <div class="top-header-area">
+        <button class="back-btn" id="voiceHomeBtn">Home</button>
+        <div class="header-info-center">
+          <div class="hospital-title-card" id="hospitalNameVoicePage"></div>
+          <h2 class="voice-heading" id="voiceHeading"></h2>
+          <div class="lang-pill" id="currentLangPillVoice"></div>
+        </div>
+        <div class="placeholder-for-back-btn"></div>
+      </div>
+      
+      <div class="voice-message-box" id="voiceMessages"></div>
+
+      <div class="voice-control-container">
+        <button id="toggleVoiceBtn" class="voice-btn-3d">
+          <span id="voiceButtonLabel">Start Voice Assistant</span>
+        </button>
+      </div>
+
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/voice.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/voice_booking.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/voice_my_appointments.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/voice_general_query.js') }}"></script>
+</body>
+</html>

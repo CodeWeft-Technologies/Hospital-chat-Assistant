@@ -1,0 +1,80 @@
+[
+  {
+    "id": "dr_khan",
+    "department_id": "general_medicine",
+    "name": {
+      "en": "Dr. Khan",
+      "hi": "डॉ. खान",
+      "mr": "डॉ. खान"
+    },
+    "education": "MBBS, MD",
+    "experience": "10 years",
+    "fees": 400,
+    "available_days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+  },
+  {
+    "id": "dr_shalini_mehta",
+    "department_id": "general_medicine",
+    "name": {
+      "en": "Dr. Shalini Mehta",
+      "hi": "डॉ. शालिनी मेहता",
+      "mr": "डॉ. शालिनी मेहता"
+    },
+    "education": "MBBS, MD",
+    "experience": "8 years",
+    "fees": 400,
+    "available_days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+  },
+  {
+    "id": "dr_arvind_joshi",
+    "department_id": "cardiology",
+    "name": {
+      "en": "Dr. Arvind Joshi",
+      "hi": "डॉ. अरविंद जोशी",
+      "mr": "डॉ. अरविंद जोशी"
+    },
+    "education": "MBBS, DM (Cardiology)",
+    "experience": "12 years",
+    "fees": 600,
+    "available_days": ["Monday", "Wednesday", "Friday"]
+  },
+  {
+    "id": "dr_priya_kulkarni",
+    "department_id": "cardiology",
+    "name": {
+      "en": "Dr. Priya Kulkarni",
+      "hi": "डॉ. प्रिया कुलकर्णी",
+      "mr": "डॉ. प्रिया कुलकर्णी"
+    },
+    "education": "MBBS, MD, DM",
+    "experience": "10 years",
+    "fees": 600,
+    "available_days": ["Tuesday", "Thursday"]
+  },
+  {
+    "id": "dr_sunil_patil",
+    "department_id": "orthopedics",
+    "name": {
+      "en": "Dr. Sunil Patil",
+      "hi": "डॉ. सुनील पाटिल",
+      "mr": "डॉ. सुनील पाटिल"
+    },
+    "education": "MBBS, MS (Ortho)",
+    "experience": "15 years",
+    "fees": 500,
+    "available_days": ["Monday", "Wednesday", "Friday"]
+  },
+  {
+    "id": "dr_ritu_sharma",
+    "department_id": "orthopedics",
+    "name": {
+      "en": "Dr. Ritu Sharma",
+      "hi": "डॉ. रीतु  शर्मा",
+      "mr": "डॉ. रीतु शर्मा"
+    },
+    "education": "MBBS, MS (Ortho)",
+    "experience": "12 years",
+    "fees": 500,
+    "available_days": ["Tuesday", "Thursday", "Saturday"]
+  }
+]
