@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Admin Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="admin-body">
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="sidebar-header">
+                <div class="hospital-logo">
+                    <img src="{{ hospital.logo_url or '/static/images/xyz_logo/logo.png' }}" alt="{{ hospital.name }}">
+                </div>
+                <h2 class="hospital-name">{{ hospital.name }}</h2>
+                <p class="hospital-subtitle">Admin Dashboard</p>
+            </div>
+            
+            <nav class="admin-nav">
+                <a href="#dashboard" class="nav-link active" data-section="dashboard">
+                    <span class="nav-icon">📊</span>
+                    Dashboard
+                </a>
+                <a href="#appointments" class="nav-link" data-section="appointments">
+                    <span class="nav-icon">📅</span>
+                    Appointments
+                </a>
+                <a href="#departments" class="nav-link" data-section="departments">
+                    <span class="nav-icon">🏥</span>
+                    Departments
+                </a>
+                <a href="#doctors" class="nav-link" data-section="doctors">
+                    <span class="nav-icon">👨‍⚕️</span>
+                    Doctors
+                </a>
+                <a href="#settings" class="nav-link" data-section="settings">
+                    <span class="nav-icon">⚙️</span>
+                    Settings
+                </a>
+                <a href="#widget" class="nav-link" data-section="widget">
+                    <span class="nav-icon">🔗</span>
+                    Widget Setup
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button class="btn btn-secondary" onclick="logout()">Logout</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <!-- Header -->
+            <header class="admin-header">
+                <div class="header-left">
+                    <h1 id="page-title">Dashboard</h1>
+                    <p id="page-subtitle">Welcome back, Admin</p>
+                </div>
+                <div class="header-right">
+                    <div class="hospital-status">
+                        <span class="status-indicator online"></span>
+                        <span>System Online</span>
+                    </div>
+                    <button class="btn btn-primary" onclick="refreshData()">Refresh</button>
+                </div>
+            </header>
+
+            <!-- Dashboard Section -->
+            <section id="dashboard-section" class="admin-section active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📅</div>
+                        <div class="stat-content">
+                            <div class="stat-number" id="total-appointments">0</div>
+                            <div class="stat-label">Total Appointments</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-content">
+                            <div class="stat-number" id="confirmed-appointments">0</div>
+                            <div class="stat-label">Confirmed Today</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">👨‍⚕️</div>
+                        <div class="stat-content">
+                            <div class="stat-number" id="total-doctors">0</div>
+                            <div class="stat-label">Active Doctors</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💬</div>
+                        <div class="stat-content">
+                            <div class="stat-number" id="chat-sessions">0</div>
+                            <div class="stat-label">Chat Sessions</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="chart-container">
+                        <h3>Appointments Overview</h3>
+                        <canvas id="appointmentsChart"></canvas>
+                    </div>
+                    <div class="recent-activity">
+                        <h3>Recent Activity</h3>
+                        <div class="activity-list" id="recent-activity-list">
+                            <!-- Activity items will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Appointments Section -->
+            <section id="appointments-section" class="admin-section">
+                <div class="section-header">
+                    <h2>Appointment Management</h2>
+                    <div class="section-actions">
+                        <input type="text" id="appointment-search" placeholder="Search appointments..." class="search-input">
+                        <select id="appointment-filter" class="filter-select">
+                            <option value="all">All Appointments</option>
+                            <option value="today">Today</option>
+                            <option value="confirmed">Confirmed</option>
+                            <option value="pending">Pending</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table class="table" id="appointments-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Patient Name</th>
+                                <th>Phone</th>
+                                <th>Department</th>
+                                <th>Doctor</th>
+                                <th>Date & Time</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="appointments-tbody">
+                            <!-- Appointments will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Departments Section -->
+            <section id="departments-section" class="admin-section">
+                <div class="section-header">
+                    <h2>Department Management</h2>
+                    <button class="btn btn-primary" onclick="openDepartmentModal()">Add Department</button>
+                </div>
+                
+                <div class="departments-grid" id="departments-grid">
+                    <!-- Departments will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Doctors Section -->
+            <section id="doctors-section" class="admin-section">
+                <div class="section-header">
+                    <h2>Doctor Management</h2>
+                    <button class="btn btn-primary" onclick="openDoctorModal()">Add Doctor</button>
+                </div>
+                
+                <div class="doctors-grid" id="doctors-grid">
+                    <!-- Doctors will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section id="settings-section" class="admin-section">
+                <div class="settings-container">
+                    <div class="settings-card">
+                        <h3>Hospital Information</h3>
+                        <form id="hospital-settings-form">
+                            <div class="form-group">
+                                <label>Hospital Name</label>
+                                <input type="text" id="hospital-name" value="{{ hospital.name }}" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label>Contact Phone</label>
+                                <input type="text" id="hospital-phone" value="{{ hospital.contact_info.phone }}" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label>Contact Email</label>
+                                <input type="email" id="hospital-email" value="{{ hospital.contact_info.email }}" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label>Address</label>
+                                <textarea id="hospital-address" class="form-input">{{ hospital.contact_info.address }}</textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </form>
+                    </div>
+                    
+                    <div class="settings-card">
+                        <h3>Chat Assistant Settings</h3>
+                        <form id="chat-settings-form">
+                            <div class="form-group">
+                                <label>Welcome Message</label>
+                                <textarea id="welcome-message" class="form-input" placeholder="Welcome to our hospital..."></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Available Languages</label>
+                                <div class="checkbox-group">
+                                    <label><input type="checkbox" value="english" checked> English</label>
+                                    <label><input type="checkbox" value="hindi"> Hindi</label>
+                                    <label><input type="checkbox" value="marathi"> Marathi</label>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save Settings</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Widget Section -->
+            <section id="widget-section" class="admin-section">
+                <div class="widget-setup-container">
+                    <div class="widget-preview">
+                        <h3>Widget Preview</h3>
+                        <div class="widget-demo" id="widget-demo">
+                            <!-- Widget preview will be shown here -->
+                        </div>
+                    </div>
+                    
+                    <div class="widget-code">
+                        <h3>Embed Code</h3>
+                        <div class="code-container">
+                            <textarea id="embed-code" readonly class="code-textarea">
+<!-- Hospital Chat Assistant Widget -->
+<div id="hospital-chat-widget"></div>
+<script>
+(function() {
+    var script = document.createElement('script');
+    script.src = '{{ request.url_root }}widget/{{ hospital.id }}/embed.js';
+    script.async = true;
+    document.head.appendChild(script);
+})();
+</script>
+                            </textarea>
+                            <button class="btn btn-secondary" onclick="copyEmbedCode()">Copy Code</button>
+                        </div>
+                    </div>
+                    
+                    <div class="widget-settings">
+                        <h3>Widget Customization</h3>
+                        <form id="widget-settings-form">
+                            <div class="form-group">
+                                <label>Widget Position</label>
+                                <select id="widget-position" class="form-input">
+                                    <option value="bottom-right">Bottom Right</option>
+                                    <option value="bottom-left">Bottom Left</option>
+                                    <option value="top-right">Top Right</option>
+                                    <option value="top-left">Top Left</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Widget Size</label>
+                                <select id="widget-size" class="form-input">
+                                    <option value="small">Small</option>
+                                    <option value="medium" selected>Medium</option>
+                                    <option value="large">Large</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Primary Color</label>
+                                <input type="color" id="widget-primary-color" value="{{ hospital.primary_color }}" class="form-input">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Update Widget</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="department-modal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Add Department</h3>
+                <button class="modal-close" onclick="closeDepartmentModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="department-form">
+                    <div class="form-group">
+                        <label>Department Name (English)</label>
+                        <input type="text" id="dept-name-en" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Department Name (Hindi)</label>
+                        <input type="text" id="dept-name-hi" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label>Department Name (Marathi)</label>
+                        <input type="text" id="dept-name-mr" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="dept-description" class="form-input"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeDepartmentModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveDepartment()">Save Department</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="doctor-modal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Add Doctor</h3>
+                <button class="modal-close" onclick="closeDoctorModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="doctor-form">
+                    <div class="form-group">
+                        <label>Doctor Name (English)</label>
+                        <input type="text" id="doctor-name-en" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Doctor Name (Hindi)</label>
+                        <input type="text" id="doctor-name-hi" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label>Doctor Name (Marathi)</label>
+                        <input type="text" id="doctor-name-mr" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label>Department</label>
+                        <select id="doctor-department" class="form-input" required>
+                            <!-- Options will be loaded dynamically -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Education</label>
+                        <input type="text" id="doctor-education" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label>Experience</label>
+                        <input type="text" id="doctor-experience" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label>Fees</label>
+                        <input type="text" id="doctor-fees" class="form-input">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeDoctorModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveDoctor()">Save Doctor</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+    <script>
+        // Initialize admin dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeAdminDashboard();
+        });
+    </script>
+</body>
+</html>

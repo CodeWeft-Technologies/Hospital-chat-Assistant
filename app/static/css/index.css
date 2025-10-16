@@ -1,0 +1,62 @@
+body {
+    background: linear-gradient(to right, lavender, white, pink);
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 20px;
+}
+
+/* 3D Hospital Title Card */
+.hospital-title-card {
+    background: skyblue;
+    color: white;
+    font-size: 2rem;
+    font-weight: bold;
+    padding: 20px 40px;
+    margin: 20px auto;
+    width: fit-content;
+    border-radius: 15px;
+    box-shadow: 6px 6px 12px rgba(0,0,0,0.2),
+                -6px -6px 12px rgba(255,255,255,0.8);
+}
+
+/* Chat Box in 3D */
+.chat-box-3d {
+    background: white;
+    padding: 30px;
+    margin: 30px auto;
+    width: 300px;
+    border-radius: 20px;
+    box-shadow: 8px 8px 16px rgba(0,0,0,0.2),
+                -8px -8px 16px rgba(255,255,255,0.8);
+}
+
+/* Subtitle inside Chat Box */
+.subtitle {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* Language Buttons */
+.language-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.lang-btn {
+    background: skyblue;
+    border: none;
+    color: white;
+    padding: 12px;
+    font-size: 1rem;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 4px 4px 8px rgba(0,0,0,0.2),
+                -4px -4px 8px rgba(255,255,255,0.8);
+    transition: transform 0.1s ease;
+}
+
+.lang-btn:hover {
+    transform: scale(1.05);
+}

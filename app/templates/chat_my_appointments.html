@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>XYZ Hospital - My Appointments</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body data-page="myappointments">
+
+  <header>
+    <h1 id="hospitalName">XYZ Hospital</h1>
+    <h2 id="chatHeading">Chat Assistant - My Appointments</h2>
+  </header>
+
+  <div class="top-buttons">
+    <button id="backBtn">← Home</button>
+    <button id="languageBtn">Language</button>
+    <button id="voiceAssistantBtn">Voice Assistant</button>
+  </div>
+
+  <main class="chat-shell">
+    <div id="chatMessages"></div>
+    <div class="chat-input-container">
+      <input id="chatInput" type="text" placeholder="Type your message..."/>
+      <button id="sendBtn">Send</button>
+    </div>
+  </main>
+
+  <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/chat_myappointments.js') }}"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      if (typeof window.startMyAppointmentChatFlow === "function") window.startMyAppointmentChatFlow();
+    });
+  </script>
+</body>
+</html>

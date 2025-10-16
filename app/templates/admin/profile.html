@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Profile</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'sky-blue': '#87CEEB',
+            'lavender': '#E6E6FA',
+            'mint': '#D0F0C0',
+            'pale-blue': '#dbeafe',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* ... (CSS styles omitted for brevity) ... */
+    .btn-3d {
+      background: linear-gradient(to right, #4fd1c5, #38b2ac);
+      color: white;
+      font-weight: bold;
+      padding: 0.5rem 1.2rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 0 #2c7a7b;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .btn-3d:active {
+      transform: translateY(3px);
+      box-shadow: 0 2px 0 #2c7a7b;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to right, #87CEEB, #ffffff, #E6E6FA);
+      min-height: 100vh;
+    }
+    .sidebar-link {
+      display: block;
+      font-weight: 700;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      transition: all 0.2s ease-in-out;
+    }
+    .sidebar-link:hover {
+      background-color: #bfdbfe;
+      transform: translateX(5px);
+    }
+    .sidebar-link.active {
+      background-color: #93c5fd;
+      color: #1e40af;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+<body class="flex">
+  <aside class="w-64 bg-pale-blue p-6 space-y-4 shadow-lg rounded-r-xl sticky top-0 h-screen">
+    <div class="text-2xl font-bold text-blue-800">Admin Panel</div>
+    <nav>
+      <a href="{{ url_for('admin_bp.admin_dashboard') }}" class="sidebar-link">Dashboard</a>
+      <a href="{{ url_for('admin_bp.departments') }}" class="sidebar-link">Departments</a>
+      <a href="{{ url_for('admin_bp.doctors') }}" class="sidebar-link">Doctors</a>
+      <a href="{{ url_for('admin_bp.appointments') }}" class="sidebar-link">Appointments</a>
+      <a href="{{ url_for('admin_bp.profile') }}" class="sidebar-link active">Profile</a>
+      <a href="{{ url_for('admin_bp.change_password') }}" class="sidebar-link">Change Password</a>
+      <a href="{{ url_for('admin_bp.logout') }}" class="sidebar-link mt-4 text-red-600 hover:bg-red-200">Logout</a>
+    </nav>
+  </aside>
+
+  <div class="flex-1 flex flex-col min-h-screen">
+    <main class="p-8 flex-1">
+      <h1 class="text-4xl font-extrabold text-gray-800 mb-8 border-b pb-2">Hospital Profile</h1>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <ul class="mb-6">
+            {% for category, message in messages %}
+            <li class="p-3 rounded-md mb-2 {% if category == 'success' %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}" role="alert">
+              {{ message }}
+            </li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
+
+      <div class="bg-white p-6 rounded-xl shadow-2xl border border-mint max-w-4xl mx-auto">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">Update Hospital Information</h2>
+        
+        <form method="POST" action="{{ url_for('admin_bp.profile') }}" class="space-y-5">
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                  <label for="name_en" class="font-semibold block mb-1">Hospital Name (English)</label>
+                  <input type="text" id="name_en" name="name_en" value="{{ hospital.name.en }}" class="w-full border px-4 py-2 rounded-md" />
+              </div>
+              <div>
+                  <label for="name_hi" class="font-semibold block mb-1">Hospital Name (Hindi)</label>
+                  <input type="text" id="name_hi" name="name_hi" value="{{ hospital.name.hi }}" class="w-full border px-4 py-2 rounded-md" />
+              </div>
+              <div>
+                  <label for="name_mr" class="font-semibold block mb-1">Hospital Name (Marathi)</label>
+                  <input type="text" id="name_mr" name="name_mr" value="{{ hospital.name.mr }}" class="w-full border px-4 py-2 rounded-md" />
+              </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                  <label for="address_en" class="font-semibold block mb-1">Address (English)</label>
+                  <textarea id="address_en" name="address_en" class="w-full border px-4 py-2 rounded-md" rows="2">{{ hospital.address.en }}</textarea>
+              </div>
+              <div>
+                  <label for="address_hi" class="font-semibold block mb-1">Address (Hindi)</label>
+                  <textarea id="address_hi" name="address_hi" class="w-full border px-4 py-2 rounded-md" rows="2">{{ hospital.address.hi }}</textarea>
+              </div>
+              <div>
+                  <label for="address_mr" class="font-semibold block mb-1">Address (Marathi)</label>
+                  <textarea id="address_mr" name="address_mr" class="w-full border px-4 py-2 rounded-md" rows="2">{{ hospital.address.mr }}</textarea>
+              </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="font-semibold block mb-1">Phone Number</label>
+              <input type="text" name="Phone" value="{{ hospital.Phone }}" class="w-full border px-4 py-2 rounded-md" />
+            </div>
+            <div>
+              <label class="font-semibold block mb-1">Email</label>
+              <input type="email" name="Email" value="{{ hospital.Email }}" class="w-full border px-4 py-2 rounded-md" />
+            </div>
+          </div>
+        
+          <div>
+            <label class="font-semibold block mb-1">Working Hours</label>
+            <input type="text" name="working_hours" value="{{ hospital.working_hours }}" class="w-full border px-4 py-2 rounded-md" />
+          </div>
+          
+          <div class="text-center pt-4">
+            <button type="submit" class="btn-3d">Update Profile</button>
+          </div>
+        </form>
+        
+      </div>
+    </div>
+  </main>
+  
+  <footer class="text-center text-sm text-gray-500 py-4 bg-white border-t mt-auto">
+    &copy; 2025 Powered by CodeWeft. All rights reserved.
+  </footer>
+</body>
+</html>

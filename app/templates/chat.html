@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>XYZ Hospital - Chat Assistant</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}"/>
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: var(--gradient-primary);
+      min-height: 100vh;        
+      display: flex;
+      justify-content: center;  
+      align-items: center;      
+    }
+    
+    .container {
+      width: 100%;
+      max-width: 950px;
+      text-align: center;
+    }
+    
+    .header { 
+      margin-bottom: var(--space-lg);
+      background: var(--gradient-card);
+      padding: var(--space-xl);
+      border-radius: var(--radius-2xl);
+      box-shadow: var(--shadow-3d);
+    }
+    .title { 
+      font-size: var(--font-size-4xl); 
+      font-weight: 800; 
+      color: var(--primary-blue-800);
+      margin-bottom: var(--space-sm);
+    }
+    .subtitle { 
+      font-size: var(--font-size-xl); 
+      margin-top: var(--space-xs); 
+      color: var(--primary-blue-600);
+      font-weight: 600;
+    }
+    .language-label { 
+      font-size: var(--font-size-base); 
+      margin-top: var(--space-sm); 
+      color: var(--neutral-gray-600);
+      font-weight: 500;
+    }
+    
+    .action-buttons {
+      display: flex; 
+      justify-content: center; 
+      flex-wrap: wrap;
+      gap: var(--space-md); 
+      margin: var(--space-lg) 0;
+    }
+    .action-buttons button {
+      background: var(--gradient-card); 
+      border: 2px solid var(--neutral-gray-200); 
+      padding: var(--space-md) var(--space-lg);
+      border-radius: var(--radius-xl); 
+      box-shadow: var(--shadow-3d);
+      cursor: pointer; 
+      font-size: var(--font-size-base); 
+      font-weight: 600;
+      transition: all var(--transition-normal);
+      color: var(--primary-blue-600);
+    }
+    .action-buttons button:hover {
+      transform: translateY(-3px); 
+      background: var(--primary-blue-50);
+      border-color: var(--primary-blue-300);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    /* ✅ Chat Shell */
+    .chat-shell {
+      margin: 0 auto;
+      margin-top: var(--space-lg);
+      width: 100%;
+      max-width: 650px;
+      height: 75vh; 
+      display: flex;
+      flex-direction: column;
+      background: var(--gradient-card);
+      border-radius: var(--radius-3xl);
+      box-shadow: var(--shadow-3d);
+      border: 1px solid var(--neutral-gray-200);
+      overflow: hidden;
+    }
+    
+    /* ✅ Chat messages area */
+    .chat-messages {
+      flex: 1;
+      background: linear-gradient(145deg, var(--neutral-white) 0%, var(--neutral-gray-50) 100%);
+      border-radius: var(--radius-2xl);
+      box-shadow: var(--shadow-3d);
+      padding: var(--space-lg);
+      overflow-y: auto; 
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+      margin: var(--space-md);
+    }
+    
+    /* Message bubbles */
+    .chat-messages .msg {
+      display: inline-block;
+      padding: var(--space-lg) var(--space-xl);
+      border-radius: var(--radius-2xl);
+      max-width: 75%;
+      word-wrap: break-word;
+      line-height: 1.6;
+      font-size: var(--font-size-lg);
+      font-weight: 500;
+      box-shadow: var(--shadow-3d);
+      transition: all var(--transition-normal);
+    }
+    .chat-messages .msg:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+    .chat-messages .bot {
+      background: linear-gradient(145deg, var(--neutral-white) 0%, var(--neutral-gray-50) 100%);
+      align-self: flex-start;
+      border-bottom-left-radius: var(--radius-sm);
+      border: 1px solid var(--neutral-gray-200);
+      color: var(--neutral-gray-800);
+    }
+    .chat-messages .user {
+      background: linear-gradient(135deg, var(--primary-blue-500) 0%, var(--primary-blue-600) 100%);
+      align-self: flex-end;
+      border-bottom-right-radius: var(--radius-sm);
+      color: var(--neutral-white);
+    }
+    
+    /* Info / Tip messages */
+    .chat-messages .info-msg {
+      background: #f8faff;
+      font-size: 13px;
+      line-height: 1.4;
+      color: #333;
+      padding: 8px 12px;
+      border-radius: 12px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      max-width: 90%;
+      word-break: break-word;
+      align-self: flex-start;
+    }
+    
+    /* Input box */
+    .chat-input {
+      display: flex;
+      gap: var(--space-md);
+      margin: var(--space-md);
+      background: linear-gradient(145deg, var(--neutral-white) 0%, var(--neutral-gray-50) 100%);
+      border-radius: var(--radius-2xl);
+      padding: var(--space-lg);
+      box-shadow: var(--shadow-3d);
+      border: 1px solid var(--neutral-gray-200);
+    }
+    .chat-input input {
+      flex: 1;
+      padding: var(--space-lg) var(--space-xl);
+      border-radius: var(--radius-xl);
+      border: 2px solid var(--neutral-gray-200);
+      outline: none;
+      font-size: var(--font-size-lg);
+      background: var(--neutral-white);
+      color: var(--neutral-gray-800);
+      font-weight: 500;
+      transition: all var(--transition-normal);
+    }
+    .chat-input input:focus {
+      border-color: var(--primary-blue-400);
+      box-shadow: 0 0 0 4px var(--primary-blue-100);
+      transform: translateY(-2px);
+    }
+    .chat-input button {
+      padding: var(--space-lg) var(--space-2xl);
+      border-radius: var(--radius-xl);
+      border: none;
+      background: var(--gradient-button);
+      color: var(--neutral-white);
+      cursor: pointer;
+      box-shadow: var(--shadow-3d);
+      font-size: var(--font-size-lg);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: all var(--transition-normal);
+    }
+    .chat-input button:hover {
+      background: var(--gradient-button-hover);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-xl);
+    }
+    
+    /* ✅ Menu / Dept / Doctor cards */
+    .menu, .department-list, .doctor-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: var(--space-lg);
+      margin-top: var(--space-lg);
+    }
+    
+    .menu-card, .dept-card, .doctor-card {
+      background: linear-gradient(145deg, var(--neutral-white) 0%, var(--neutral-gray-50) 100%);
+      border: 1px solid var(--neutral-gray-200);
+      padding: var(--space-xl);
+      border-radius: var(--radius-2xl);
+      box-shadow: var(--shadow-3d);
+      cursor: pointer;
+      transition: all var(--transition-normal);
+      text-align: center;
+      flex: 1 1 200px;   
+      max-width: 240px; 
+      word-wrap: break-word;
+      line-height: 1.4;
+      font-weight: 600;
+      color: var(--neutral-gray-800);
+      min-height: 100px;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .menu-card:hover, .dept-card:hover, .doctor-card:hover {
+      transform: translateY(-4px);
+      background: linear-gradient(145deg, var(--primary-blue-50) 0%, var(--neutral-white) 100%);
+      border-color: var(--primary-blue-300);
+      box-shadow: var(--shadow-xl);
+      color: var(--primary-blue-700);
+    }
+
+    /* Title big + subtitle small */
+    .menu-card .menu-title,
+    .dept-card .dept-title,
+    .doctor-card .doctor-name {
+      font-size: var(--font-size-xl);
+      font-weight: 700;
+      margin-bottom: var(--space-sm);
+      color: var(--primary-blue-800);
+    }
+    .menu-card .menu-sub,
+    .dept-card .dept-sub,
+    .doctor-card .doctor-info {
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      color: var(--neutral-gray-600);
+      line-height: 1.4;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 992px) {
+      .chat-shell { height: 70vh; }
+      .title { font-size: var(--font-size-3xl); }
+      .subtitle { font-size: var(--font-size-lg); }
+      .menu-card, .dept-card, .doctor-card {
+        font-size: var(--font-size-base);
+        padding: var(--space-lg);
+        flex: 1 1 160px;
+        max-width: 200px;
+      }
+      .chat-messages .msg { font-size: var(--font-size-base); }
+      .chat-messages .info-msg { font-size: var(--font-size-sm); }
+      .chat-input input, .chat-input button { font-size: var(--font-size-base); }
+    }
+    
+    @media (max-width: 600px) {
+      .chat-shell { height: 65vh; }
+      .chat-input { flex-direction: row; }
+      .menu-card, .dept-card, .doctor-card {
+        font-size: var(--font-size-sm);
+        padding: var(--space-md);
+        flex: 1 1 120px;
+        max-width: 150px;
+      }
+      .chat-messages .msg { font-size: var(--font-size-sm); }
+      .chat-messages .info-msg { font-size: var(--font-size-xs); }
+    }
+    
+    @media (max-width: 400px) {
+      .menu-card, .dept-card, .doctor-card {
+        font-size: var(--font-size-xs);
+        padding: var(--space-sm);
+        flex: 1 1 100px;
+        max-width: 120px;
+      }
+      .chat-messages .msg { font-size: var(--font-size-xs); }
+      .chat-messages .info-msg { font-size: var(--font-size-xs); }
+    }
+    .appt-card {
+  background: linear-gradient(145deg, var(--neutral-white) 0%, var(--neutral-gray-50) 100%);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-xl);
+  margin: var(--space-md) 0;
+  box-shadow: var(--shadow-3d);
+  animation: fadeIn 0.3s ease-in-out;
+  text-align: left;
+  border: 1px solid var(--neutral-gray-200);
+}
+
+.appt-name {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--primary-blue-800);
+  margin-bottom: var(--space-sm);
+}
+
+.appt-phone, .appt-dept, .appt-datetime, .appt-status {
+  font-size: var(--font-size-base);
+  margin: var(--space-xs) 0;
+  color: var(--neutral-gray-700);
+  font-weight: 500;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+    .hidden { display: none; }
+
+    .appt-card {
+  background: linear-gradient(145deg, var(--neutral-white) 0%, var(--neutral-gray-50) 100%);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-xl);
+  margin: var(--space-md) 0;
+  box-shadow: var(--shadow-3d);
+  text-align: left;
+  font-size: var(--font-size-base);
+  line-height: 1.6;
+  border: 1px solid var(--neutral-gray-200);
+}
+
+.appt-title {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--primary-blue-800);
+  margin-bottom: var(--space-md);
+  border-bottom: 2px solid var(--neutral-gray-200);
+  padding-bottom: var(--space-sm);
+}
+
+.appt-field {
+  margin: var(--space-xs) 0;
+  font-weight: 500;
+  color: var(--neutral-gray-700);
+}
+
+  </style>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <div id="hospitalName" class="title">XYZ Hospital</div>
+      <div id="chatHeading" class="subtitle">Chat Assistant - Main Menu</div>
+      <div id="languageDisplay" class="language-label">Language: English</div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <button id="backBtn">⬅ Back</button>
+      <button id="languageBtn">🌐 Change Language</button>
+    </div>
+
+    <!-- Menu Options -->
+    <div id="menuSection" class="menu">
+      <div id="menuBookingCard" class="menu-card">
+        <span id="menuBookingTitle" class="menu-title">Booking Appointment</span>
+        <span id="menuBookingSub" class="menu-sub">Schedule a new visit</span>
+      </div>
+      <div id="menuMyAppointmentCard" class="menu-card">
+        <span id="menuMyAppointmentTitle" class="menu-title">My Appointment</span>
+        <span id="menuMyAppointmentSub" class="menu-sub">Check or edit your booking</span>
+      </div>
+      <div id="menuGeneralCard" class="menu-card">
+        <span id="menuGeneralTitle" class="menu-title">General Query</span>
+        <span id="menuGeneralSub" class="menu-sub">Ask a general question</span>
+      </div>
+    </div>
+
+    <!-- Chat Shell -->
+    <div id="chatShell" class="chat-shell" style="display:none;">
+      <div class="chat-messages" id="chatMessages"></div>
+      <div class="chat-input">
+        <input type="text" id="chatInput" placeholder="Type your message..." />
+        <input type="text" id="appointmentDatePicker" class="hidden" />
+        <button id="sendBtn">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JS -->
+  <script src="{{ url_for('static', filename='js/chat_booking.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/chat_myappointments.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/chat_general_query.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+
+  <!-- Auto-start flow -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const path = window.location.pathname;
+      if (path.includes("/booking") && window.startBookingFlow) {
+        sessionStorage.setItem("currentFlow", "booking");
+        document.getElementById("menuSection").style.display = "none";
+        document.getElementById("chatShell").style.display = "";
+        document.getElementById("chatHeading").textContent = "Booking Appointment";
+        window.startBookingFlow();
+      } else if (path.includes("/myappointments") && window.startMyAppointmentChatFlow) {
+        sessionStorage.setItem("currentFlow", "myAppointment");
+        document.getElementById("menuSection").style.display = "none";
+        document.getElementById("chatShell").style.display = "";
+        document.getElementById("chatHeading").textContent = "My Appointments";
+        window.startMyAppointmentChatFlow(window.currentLang || "english");
+
+      } else if (path.includes("/general") && window.startGeneralQueryFlow) {
+        sessionStorage.setItem("currentFlow", "general");
+        document.getElementById("menuSection").style.display = "none";
+        document.getElementById("chatShell").style.display = "";
+        document.getElementById("chatHeading").textContent = "General Query";
+        window.startGeneralQueryFlow(window.currentLang || "english");
+      }
+    });
+  </script>
+</body>
+</html>

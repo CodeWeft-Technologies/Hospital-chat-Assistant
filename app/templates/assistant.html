@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>XYZ Hospital - Assistant</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<style>
+  body[data-page="assistant"] {
+    background: linear-gradient(135deg, #f5f8ff, #e0f0ff);
+    font-family: system-ui, "-apple-system", "Segoe UI", "Roboto", "Ubuntu", "Helvetica Neue", Arial;
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #222;
+    padding: 16px;
+  }
+
+  .assistant-container {
+    width: 100%;
+    max-width: 700px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    animation: fadeIn 0.6s ease;
+  }
+
+  .assistant-header {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .assistant-header h1 {
+    margin: 0;
+    font-size: clamp(1.8rem, 5vw, 2.5rem);
+    font-weight: 700;
+    color: #1a3c5e;
+  }
+
+  .assistant-header h2 {
+    margin: 0;
+    font-size: clamp(1.2rem, 3vw, 1.6rem);
+    font-weight: 500;
+    color: #3a4f6f;
+  }
+
+  .lang-pill {
+    margin-top: 4px;
+    font-weight: 600;
+    color: #1a3c5e;
+    font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+  }
+
+  .assistant-options {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .btn-3d {
+    flex: 1;
+    min-width: 220px;
+    max-width: 300px;
+    background: linear-gradient(145deg, #ffffff, #d0e4ff);
+    border-radius: 24px;
+    padding: 20px;
+    border: 1px solid rgba(0,0,0,0.08);
+    text-align: center;
+    cursor: pointer;
+    transition: 0.3s transform, 0.3s box-shadow, 0.3s background;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .btn-3d:hover {
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15), -5px -5px 20px rgba(255,255,255,0.7);
+    background: linear-gradient(145deg, #c0e0ff, #a0cfff);
+  }
+
+  .btn-title {
+    font-weight: 700;
+    font-size: clamp(1rem, 3vw, 1.3rem);
+  }
+
+  .btn-sub {
+    font-weight: 500;
+    opacity: 0.85;
+    font-size: clamp(0.85rem, 2.5vw, 1.1rem);
+  }
+
+  @keyframes fadeIn {
+    0% {opacity:0; transform: translateY(-20px);}
+    100% {opacity:1; transform: translateY(0);}
+  }
+
+  @media (max-width: 480px) {
+    .assistant-options { flex-direction: column; gap: 12px; }
+  }
+</style>
+</head>
+<body data-page="assistant">
+
+<div class="assistant-container">
+  <!-- Header -->
+  <div class="assistant-header">
+    <h1 id="hospitalName">XYZ Hospital</h1>
+    <h2>Our Assistant – Please choose an option</h2>
+    <span class="lang-pill" id="currentLangPill"></span>
+  </div>
+  <div class="assistant-header">
+    <h2></h2>
+    <button id="backBtn" class="btn-back"></button>
+  </div>
+  
+  <!-- Option Buttons -->
+  <div class="assistant-options">
+    <div class="btn-3d" id="chatAssistantBtn">
+      <span class="btn-title" id="chatBtnTitle">Chat Assistant</span>
+      <span class="btn-sub" id="chatBtnSub">Ask or manage via chat</span>
+    </div>
+    <div class="btn-3d" id="voiceAssistantBtn">
+      <span class="btn-title" id="voiceBtnTitle">Voice Assistant</span>
+      <span class="btn-sub" id="voiceBtnSub">Talk to the assistant</span>
+    </div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/assistant.js') }}"></script>
+</body>
+</html>

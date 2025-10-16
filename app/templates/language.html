@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>XYZ Hospital - Select Language</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
+  <style>
+    .language-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      gap: var(--space-2xl);
+      padding: var(--space-lg);
+    }
+
+    .language-title {
+      font-weight: 800;
+      text-align: center;
+      font-size: clamp(var(--font-size-2xl), 5vw, var(--font-size-5xl));
+      color: var(--primary-blue-800);
+      background: var(--gradient-card);
+      padding: var(--space-xl) var(--space-2xl);
+      border-radius: var(--radius-2xl);
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--neutral-gray-200);
+    }
+
+    .language-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: var(--space-lg);
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .lang-btn {
+      padding: var(--space-lg) var(--space-2xl);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--neutral-gray-200);
+      font-weight: 600;
+      cursor: pointer;
+      background: var(--gradient-card);
+      color: var(--neutral-gray-800);
+      transition: all var(--transition-normal);
+      font-size: clamp(var(--font-size-lg), 3vw, var(--font-size-2xl));
+      min-width: 140px;
+      min-height: 60px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .lang-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+      background: var(--primary-blue-50);
+      border-color: var(--primary-blue-300);
+      color: var(--primary-blue-700);
+    }
+
+    .lang-btn:active {
+      transform: translateY(-1px);
+    }
+
+    @media (max-width: 640px) {
+      .language-container {
+        gap: var(--space-xl);
+        padding: var(--space-md);
+      }
+      
+      .language-title {
+        padding: var(--space-lg);
+        font-size: var(--font-size-2xl);
+      }
+      
+      .language-buttons {
+        gap: var(--space-md);
+      }
+      
+      .lang-btn {
+        min-width: 120px;
+        min-height: 50px;
+        padding: var(--space-md) var(--space-lg);
+        font-size: var(--font-size-base);
+      }
+    }
+  </style>
+</head>
+<body data-page="language">
+  <div class="language-container">
+    <h1 id="langTitle" class="language-title">Language / भाषा</h1>
+    <div class="language-buttons">
+      <button class="lang-btn" data-lang="english">English</button>
+      <button class="lang-btn" data-lang="hindi">हिंदी</button>
+      <button class="lang-btn" data-lang="marathi">मराठी</button>
+    </div>
+  </div>
+
+  <!-- Link to separate JS file -->
+  <script src="{{ url_for('static', filename='js/language.js') }}"></script>
+</body>
+</html>

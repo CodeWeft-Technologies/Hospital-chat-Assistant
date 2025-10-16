@@ -1,0 +1,68 @@
+[
+  {
+    "id": "admin_xyz",
+    "name": "XYZ Hospital",
+    "password": "admin@123",
+    "hospital_id": "xyz",
+    "address": "123 Main St, pune",
+    "about": "XYZ Hospital offers multi-specialty healthcare services.",
+    "services": "Cardiology, Neurology, Emergency",
+    "staff": "7 doctors, 10 staff",
+    "working_hours": "Mon-Sat 9AM to 9PM"
+  },
+  {
+    "id": "admin_reliance",
+    "name": "Reliance Hospital",
+    "password": "admin@reliance123",
+    "hospital_id": "Reliance",
+    "address": "Reliance Rd, Navi Mumbai",
+    "about": "Reliance Hospital is known for advanced surgical care.",
+    "services": "Orthopedics, Surgery, ENT",
+    "staff": "60 doctors, 130 staff",
+    "working_hours": "24/7"
+  },
+  {
+    "id": "admin_J.P.",
+    "name": "J.P. Hospital",
+    "password": "admin@jp123",
+    "hospital_id": "J.P.",
+    "address": "Ring Road, Surat",
+    "about": "J.P. Hospital provides general and emergency services.",
+    "services": "General Medicine, Emergency, Pediatrics",
+    "staff": "40 doctors, 90 staff",
+    "working_hours": "Mon-Sun 8AMâ€“10PM"
+  },
+  {
+    "id": "admin_Patil",
+    "name": "Patil Healthcare",
+    "password": "admin@patil123",
+    "hospital_id": "Patil_H",
+    "address": "Sector 5, Pune",
+    "about": "Patil Healthcare is a modern facility with specialist care.",
+    "services": "Gynecology, Dermatology, Pathology",
+    "staff": "35 doctors, 70 staff",
+    "working_hours": "Mon-Fri 10AMâ€“6PM"
+  },
+  {
+    "id": "admin_ghi",
+    "name": "AIMS Hospital",
+    "password": "admin@AIMS123",
+    "hospital_id": "AIMS",
+    "address": "City Center, Ahmedabad",
+    "about": "AIMS Hospital offers top-tier medical research and services.",
+    "services": "Research, Oncology, ICU",
+    "staff": "70 doctors, 150 staff",
+    "working_hours": "24/7"
+  },
+  {
+    "id": "admin_dhirubhai",
+    "name": "Dhirubhai Hospital",
+    "password": "admin@dhirubhai123",
+    "hospital_id": "Dhirubhai_H",
+    "address": "Rajkot Highway, Gujarat",
+    "about": "Multi-specialty hospital with 24/7 emergency care.",
+    "services": "Emergency, Cardiology, Surgery, Pediatrics",
+    "staff": "50+ doctors and 100+ supporting staff",
+    "working_hours": "Mon-Sun, 24 hours"
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "id": "general_medicine",
+    "name": {
+      "en": "General Medicine",
+      "hi": "जनरल मेडिसिन",
+      "mr": "सामान्य वैद्यक"
+    }
+  },
+  {
+    "id": "cardiology",
+    "name": {
+      "en": "Cardiology",
+      "hi": "हृदय रोग विभाग",
+      "mr": "हृदयरोग विभाग"
+    }
+  },
+  {
+    "id": "orthopedics",
+    "name": {
+      "en": "Orthopedics",
+      "hi": "ऑर्थोपेडिक्स",
+      "mr": "ऑर्थोपेडिक्स"
+    }
+  }
+]
