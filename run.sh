@@ -66,5 +66,5 @@ else
              --max-requests-jitter 100 \
              --access-logfile - \
              --error-logfile - \
-             app:app
+             app.app:app
 fi
