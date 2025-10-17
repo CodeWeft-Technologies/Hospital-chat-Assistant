@@ -3,11 +3,23 @@ services:
     name: hospital-chat-assistant
     env: python
     plan: free
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn --bind 0.0.0.0:$PORT --workers 2 --timeout 120 app:app
+    buildCommand: pip install -r requirements.txt && python migrate_db.py
+    startCommand: gunicorn --bind 0.0.0.0:$PORT --workers 2 --timeout 120 wsgi:application
     envVars:
       - key: FLASK_ENV
         value: production
       - key: PYTHON_VERSION
         value: 3.11.9
+      - key: DATABASE_URL
+        value: postgresql://postgres:ykxVXJk0Tj0dcLSY@db.mldyhilykclbfogcavre.supabase.co:5432/postgres
+      - key: DB_HOST
+        value: db.mldyhilykclbfogcavre.supabase.co
+      - key: DB_PORT
+        value: 5432
+      - key: DB_NAME
+        value: postgres
+      - key: DB_USER
+        value: postgres
+      - key: DB_PASSWORD
+        value: ykxVXJk0Tj0dcLSY
     healthCheckPath: /health
