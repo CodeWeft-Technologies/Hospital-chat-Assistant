@@ -189,6 +189,9 @@
       
       // First, get all doctors to find the matching doctor
       const doctorsResponse = await fetch("/meta/doctors");
+      if (!doctorsResponse.ok) {
+        throw new Error(`HTTP error! status: ${doctorsResponse.status}`);
+      }
       const allDoctors = await doctorsResponse.json();
       
       // Find doctor by name (case insensitive, partial match)
@@ -541,7 +544,10 @@
     currentStep = 4; saveState();
 
     fetch(`/meta/doctors?department_id=${bookingData.department_id}`)
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        return res.json();
+      })
       .then(doctors => {
         let docCards = document.createElement("div");
         docCards.className = "menu-cards"; // Reuse menu-cards style for doctor selection

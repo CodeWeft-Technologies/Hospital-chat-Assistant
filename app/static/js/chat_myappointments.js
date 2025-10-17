@@ -80,8 +80,14 @@ window.startMyAppointmentChatFlow = function (lang) {
     const currentLang = window.currentLang || "en";
 
     Promise.all([
-      fetch("/meta/departments").then((res) => res.json()),
-      fetch("/meta/doctors").then((res) => res.json()),
+      fetch("/meta/departments").then((res) => {
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        return res.json();
+      }),
+      fetch("/meta/doctors").then((res) => {
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        return res.json();
+      }),
     ]).then(([depts, docs]) => {
       const dept = depts.find((d) => d.id === appointmentData.department_id);
       const doc = docs.find((d) => d.id === appointmentData.doctor_id);
@@ -178,6 +184,11 @@ window.startMyAppointmentChatFlow = function (lang) {
         translations["what_you_want"] || "What do you want to do?"
       );
       showActionCards();
+    }).catch((error) => {
+      console.error("Error loading appointment data:", error);
+      appendSystemLine(
+        translations["error_loading_appointment"] || "❌ Error loading appointment data. Please refresh the page and try again."
+      );
     });
   }
 
@@ -256,8 +267,14 @@ window.startMyAppointmentChatFlow = function (lang) {
 
     // Department & Doctor with translations
     Promise.all([
-      fetch("/meta/departments").then((res) => res.json()),
-      fetch("/meta/doctors").then((res) => res.json()),
+      fetch("/meta/departments").then((res) => {
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        return res.json();
+      }),
+      fetch("/meta/doctors").then((res) => {
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        return res.json();
+      }),
     ]).then(([depts, docs]) => {
       const dept = depts.find((d) => d.id === appointmentData.department_id);
       const doc = docs.find((d) => d.id === appointmentData.doctor_id);
@@ -300,6 +317,11 @@ window.startMyAppointmentChatFlow = function (lang) {
         )
       );
       chatBox.appendChild(wrap);
+    }).catch((error) => {
+      console.error("Error loading editable fields data:", error);
+      appendSystemLine(
+        translations["error_loading_edit_data"] || "❌ Error loading edit data. Please refresh the page and try again."
+      );
     });
   }
 
@@ -496,8 +518,14 @@ window.startMyAppointmentChatFlow = function (lang) {
     chatBox.innerHTML = "";
 
     Promise.all([
-      fetch("/meta/departments").then((res) => res.json()),
-      fetch("/meta/doctors").then((res) => res.json()),
+      fetch("/meta/departments").then((res) => {
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        return res.json();
+      }),
+      fetch("/meta/doctors").then((res) => {
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        return res.json();
+      }),
     ]).then(([depts, docs]) => {
       const dept = depts.find((d) => d.id === appointmentData.department_id);
       const doc = docs.find((d) => d.id === appointmentData.doctor_id);
@@ -581,6 +609,11 @@ window.startMyAppointmentChatFlow = function (lang) {
       wrap.appendChild(createCard("Yes", () => saveUpdatedAppointment(), "✅"));
       wrap.appendChild(createCard("No", () => showEditableFields(), "❌"));
       chatBox.appendChild(wrap);
+    }).catch((error) => {
+      console.error("Error loading update preview data:", error);
+      appendSystemLine(
+        translations["error_loading_update_preview"] || "❌ Error loading update preview. Please refresh the page and try again."
+      );
     });
   }
 
