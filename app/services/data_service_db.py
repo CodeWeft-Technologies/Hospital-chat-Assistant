@@ -5,7 +5,7 @@ from config_db import SessionLocal
 from models import Appointment, Doctor, Department, User, HospitalInfo
 from sqlalchemy.orm.exc import NoResultFound
 
-# ✅ Departments
+# Departments
 def list_departments():
     session = SessionLocal()
     rows = session.query(Department).all()
@@ -18,7 +18,7 @@ def list_departments():
     session.close()
     return result
 
-# ✅ Doctors
+# Doctors
 def list_doctors(department_id=None):
     session = SessionLocal()
     q = session.query(Doctor)
@@ -33,15 +33,16 @@ def list_doctors(department_id=None):
             "name": {"en": doc.name_en, "hi": doc.name_hi, "mr": doc.name_mr},
             "education": doc.education,
             "experience": doc.experience,
-            "fees": doc.fees,
+            "fees": float(doc.fees) if doc.fees else None,
             "available_days": doc.available_days,
             "start_time": doc.start_time,
-            "end_time": doc.end_time
+            "end_time": doc.end_time,
+            "photo": doc.photo
         })
     session.close()
     return result
 
-# ✅ Appointments
+# Appointments
 def list_appointments(status=None):
     session = SessionLocal()
     q = session.query(Appointment)
@@ -84,11 +85,11 @@ def get_appointment_by_id(appt_id):
 def create_preview(data):
     session = SessionLocal()
     try:
-        # ✅ Validate required data
+        # Validate required data
         if not data.get("name") or not data.get("phone") or not data.get("date") or not data.get("time"):
              raise ValueError("Missing required fields: name, phone, date, or time")
 
-        # ✅ Ensure time is normalized to HH:MM format
+        # Ensure time is normalized to HH:MM format
         time_str = data.get("time")
         time_val = None
         try:
@@ -104,14 +105,14 @@ def create_preview(data):
         if time_val is None:
             raise ValueError("Invalid time format. Must be HH:MM or HH:MM AM/PM.")
 
-        # ✅ Safe casting for IDs: Keep them as strings, consistent with models.py
+        # Safe casting for IDs: Keep them as strings, consistent with models.py
         dept_id = str(data.get("department_id")) if data.get("department_id") else None
         doc_id = str(data.get("doctor_id")) if data.get("doctor_id") else None
 
         if not dept_id or not doc_id:
             raise ValueError("department_id and doctor_id must be provided as strings")
 
-        # ✅ Create appointment
+        # Create appointment
         obj = Appointment(
             name=str(data.get("name", "")),
             phone=str(data.get("phone", "")),
@@ -126,19 +127,19 @@ def create_preview(data):
         session.add(obj)
         session.commit()
 
-        # ✅ Force DB refresh so ID is guaranteed
+        # Force DB refresh so ID is guaranteed
         session.refresh(obj) 
         if not getattr(obj, "id", None):
             raise ValueError("Database did not return appointment ID")
 
         d = obj.__dict__.copy()
         d.pop("_sa_instance_state", None)
-        print("✅ create_preview success with ID:", d.get("id"))
+        print("[SUCCESS] create_preview success with ID:", d.get("id"))
         return d
 
     except Exception as e:
         session.rollback()
-        print("❌ create_preview error:", e)
+        print("[ERROR] create_preview error:", e)
         traceback.print_exc()
         # Return only the error string
         return {"error": str(e)}
@@ -260,14 +261,14 @@ def list_slots(doctor_id, date_str):
     try:
         doctor = session.query(Doctor).filter_by(id=doctor_id).first()
         if not doctor:
-            print(f"❌ list_slots: Doctor ID {doctor_id} not found.")
+            print(f"[ERROR] list_slots: Doctor ID {doctor_id} not found.")
             return {"slots": []}
 
         # parse date
         try:
             date = datetime.strptime(date_str, "%Y-%m-%d").date()
         except ValueError:
-             print(f"❌ list_slots: Invalid date format received: {date_str}")
+             print(f"[ERROR] list_slots: Invalid date format received: {date_str}")
              return {"slots": []}
 
         # normalize doctor available_days into list
@@ -281,13 +282,13 @@ def list_slots(doctor_id, date_str):
         weekday = date.strftime("%A").lower()
         
         # --- DEBUG LOGGING ---
-        print(f"✅ list_slots: Doctor {doctor_id}, Date {date_str}, Weekday {weekday}")
-        print(f"✅ list_slots: Doctor's DB available_days (RAW): {doctor.available_days}")
-        print(f"✅ list_slots: Normalized available_days: {available_days}")
+        print(f"[DEBUG] list_slots: Doctor {doctor_id}, Date {date_str}, Weekday {weekday}")
+        print(f"[DEBUG] list_slots: Doctor's DB available_days (RAW): {doctor.available_days}")
+        print(f"[DEBUG] list_slots: Normalized available_days: {available_days}")
         # ---------------------
         
         if weekday not in available_days:
-            print(f"❌ list_slots: {weekday} is NOT in doctor's available days.")
+            print(f"[DEBUG] list_slots: {weekday} is NOT in doctor's available days.")
             return {"slots": []}
 
         # generate slots between start_time and end_time (default 10:00–17:00 if missing)
@@ -314,7 +315,7 @@ def list_slots(doctor_id, date_str):
 
         available = [s for s in slots if s["value"] not in booked_times]
         
-        print(f"✅ list_slots: Found {len(available)} available slots.")
+        print(f"[DEBUG] list_slots: Found {len(available)} available slots.")
 
         return {"slots": available}
 
@@ -322,14 +323,14 @@ def list_slots(doctor_id, date_str):
         return {"slots": []}
     except Exception as e:
         # Print error for debugging
-        print("❌ list_slots error:", e)
+        print("[ERROR] list_slots error:", e)
         traceback.print_exc()
         # Return an error structure for the route to handle
         return {"error": str(e)}
     finally:
         session.close()
 
-# ✅ User authentication
+# User authentication
 def find_user(name):
     session = SessionLocal()
     try:
@@ -342,7 +343,7 @@ def find_user(name):
     finally:
         session.close()
 
-# ✅ Misc
+# Misc
 def check_for_appointments_by_phone(phone):
     session = SessionLocal()
     try:

@@ -107,19 +107,70 @@ window.startMyAppointmentChatFlow = function (lang) {
         window.currentLang
       );
 
+      // Create doctor photo URL
+      let doctorPhotoHtml = '';
+      if (doc && doc.photo) {
+        doctorPhotoHtml = `
+          <div class="doctor-photo-container">
+            <img src="/static/uploads/doctors/${doc.photo}" 
+                 alt="${docName}" 
+                 class="doctor-photo"
+                 onerror="this.style.display='none'">
+          </div>
+        `;
+      }
+
       const card = document.createElement("div");
       card.className = "appt-card";
       card.innerHTML = `
-        📋 <strong>${translations["your_appt_details"] || "Your Appointment Details"}</strong><br><br>
-        ${translations["appt_id"] || "Appointment ID"}: XYZ_${appointmentData.id}<br>
-        ${translations["name"] || "Name"}: ${appointmentData.name}<br>
-        ${translations["phone"] || "Phone"}: ${appointmentData.phone}<br>
-        ${translations["department"] || "Department"}: ${deptName}<br>
-        ${translations["doctor"] || "Doctor"}: ${docName}<br>
-        ${translations["date"] || "Date"}: ${appointmentData.date}<br>
-        ${translations["time"] || "Time"}: ${formattedTime}<br>
-        ${translations["fees"] || "Fees"}: ${docFees}<br>
-        ${translations["status"] || "Status"}: ${appointmentData.status || "confirmed"}
+        <div class="appt-header">
+          <div class="appt-icon">📋</div>
+          <div class="appt-title">
+            <strong>${translations["your_appt_details"] || "Your Appointment Details"}</strong>
+          </div>
+        </div>
+        
+        <div class="appt-content">
+          <div class="appt-info-grid">
+            <div class="appt-info-item">
+              <span class="appt-label">${translations["appt_id"] || "Appointment ID"}:</span>
+              <span class="appt-value">XYZ_${appointmentData.id}</span>
+            </div>
+            <div class="appt-info-item">
+              <span class="appt-label">${translations["name"] || "Name"}:</span>
+              <span class="appt-value">${appointmentData.name}</span>
+            </div>
+            <div class="appt-info-item">
+              <span class="appt-label">${translations["phone"] || "Phone"}:</span>
+              <span class="appt-value">${appointmentData.phone}</span>
+            </div>
+            <div class="appt-info-item">
+              <span class="appt-label">${translations["department"] || "Department"}:</span>
+              <span class="appt-value">${deptName}</span>
+            </div>
+            <div class="appt-info-item doctor-info-item">
+              <span class="appt-label">${translations["doctor"] || "Doctor"}:</span>
+              <span class="appt-value">${docName}</span>
+              ${doctorPhotoHtml}
+            </div>
+            <div class="appt-info-item">
+              <span class="appt-label">${translations["date"] || "Date"}:</span>
+              <span class="appt-value">${appointmentData.date}</span>
+            </div>
+            <div class="appt-info-item">
+              <span class="appt-label">${translations["time"] || "Time"}:</span>
+              <span class="appt-value">${formattedTime}</span>
+            </div>
+            <div class="appt-info-item">
+              <span class="appt-label">${translations["fees"] || "Fees"}:</span>
+              <span class="appt-value">${docFees}</span>
+            </div>
+            <div class="appt-info-item">
+              <span class="appt-label">${translations["status"] || "Status"}:</span>
+              <span class="appt-value status-${appointmentData.status || 'confirmed'}">${appointmentData.status || "confirmed"}</span>
+            </div>
+          </div>
+        </div>
       `;
       chatBox.appendChild(card);
 
@@ -151,7 +202,8 @@ window.startMyAppointmentChatFlow = function (lang) {
     // Edit Appointment button
     const editCard = createCard(
       translations["edit_appt"] || "Edit Appointment",
-      () => showEditableFields()
+      () => showEditableFields(),
+      "✏️"
     );
     if (!allowEdit) {
       editCard.classList.add("disabled-card");
@@ -168,7 +220,8 @@ window.startMyAppointmentChatFlow = function (lang) {
     wrap.appendChild(
       createCard(
         translations["cancel_appt"] || "Cancel Appointment",
-        () => askCancel()
+        () => askCancel(),
+        "❌"
       )
     );
 
@@ -189,13 +242,15 @@ window.startMyAppointmentChatFlow = function (lang) {
     wrap.appendChild(
       createCard(
         `${translations["name"] || "Name"}: ${appointmentData.name}`,
-        () => editName()
+        () => editName(),
+        "👤"
       )
     );
     wrap.appendChild(
       createCard(
         `${translations["phone"] || "Phone"}: ${appointmentData.phone}`,
-        () => editPhone()
+        () => editPhone(),
+        "📱"
       )
     );
 
@@ -217,19 +272,22 @@ window.startMyAppointmentChatFlow = function (lang) {
       wrap.appendChild(
         createCard(
           `${translations["department"] || "Department"}: ${deptName}`,
-          () => selectDepartment()
+          () => selectDepartment(),
+          "🏥"
         )
       );
       wrap.appendChild(
         createCard(
           `${translations["doctor"] || "Doctor"}: ${docName}`,
-          () => selectDoctor()
+          () => selectDoctor(),
+          "👨‍⚕️"
         )
       );
       wrap.appendChild(
         createCard(
           `${translations["date"] || "Date"}: ${appointmentData.date}`,
-          () => selectDate()
+          () => selectDate(),
+          "📅"
         )
       );
       const formattedTime = formatTimeSlot(appointmentData.time, window.currentLang);
@@ -237,7 +295,8 @@ window.startMyAppointmentChatFlow = function (lang) {
       wrap.appendChild(
         createCard(
           `${translations["time"] || "Time"}: ${formattedTime}`,
-          () => selectTime()
+          () => selectTime(),
+          "⏰"
         )
       );
       chatBox.appendChild(wrap);
@@ -455,17 +514,62 @@ window.startMyAppointmentChatFlow = function (lang) {
         window.currentLang
       );
 
+      // Create doctor photo URL
+      let doctorPhotoHtml = '';
+      if (doc && doc.photo) {
+        doctorPhotoHtml = `
+          <div class="doctor-photo-container">
+            <img src="/static/uploads/doctors/${doc.photo}" 
+                 alt="${docName}" 
+                 class="doctor-photo"
+                 onerror="this.style.display='none'">
+          </div>
+        `;
+      }
+
       const card = document.createElement("div");
       card.className = "appt-card";
       card.innerHTML = `
-        📋 <strong>${translations["your_appt_details"] || "Your Appointment Details"}</strong><br><br>
-        ${translations["appt_id"] || "Appointment ID"}: XYZ_${appointmentData.id}<br>
-        ${translations["name"] || "Name"}: ${appointmentData.name}<br>
-        ${translations["phone"] || "Phone"}: ${appointmentData.phone}<br>
-        ${translations["department"] || "Department"}: ${deptName}<br>
-        ${translations["doctor"] || "Doctor"}: ${docName}<br>
-        ${translations["date"] || "Date"}: ${appointmentData.date}<br>
-        ${translations["time"] || "Time"}: ${formattedTime}
+        <div class="appt-header">
+          <div class="appt-icon">📋</div>
+          <div class="appt-title">
+            <strong>${translations["your_appt_details"] || "Your Appointment Details"}</strong>
+          </div>
+        </div>
+        
+        <div class="appt-content">
+          <div class="appt-info-grid">
+            <div class="appt-info-item">
+              <span class="appt-label">${translations["appt_id"] || "Appointment ID"}:</span>
+              <span class="appt-value">XYZ_${appointmentData.id}</span>
+            </div>
+            <div class="appt-info-item">
+              <span class="appt-label">${translations["name"] || "Name"}:</span>
+              <span class="appt-value">${appointmentData.name}</span>
+            </div>
+            <div class="appt-info-item">
+              <span class="appt-label">${translations["phone"] || "Phone"}:</span>
+              <span class="appt-value">${appointmentData.phone}</span>
+            </div>
+            <div class="appt-info-item">
+              <span class="appt-label">${translations["department"] || "Department"}:</span>
+              <span class="appt-value">${deptName}</span>
+            </div>
+            <div class="appt-info-item doctor-info-item">
+              <span class="appt-label">${translations["doctor"] || "Doctor"}:</span>
+              <span class="appt-value">${docName}</span>
+              ${doctorPhotoHtml}
+            </div>
+            <div class="appt-info-item">
+              <span class="appt-label">${translations["date"] || "Date"}:</span>
+              <span class="appt-value">${appointmentData.date}</span>
+            </div>
+            <div class="appt-info-item">
+              <span class="appt-label">${translations["time"] || "Time"}:</span>
+              <span class="appt-value">${formattedTime}</span>
+            </div>
+          </div>
+        </div>
       `;
       chatBox.appendChild(card);
 
@@ -474,8 +578,8 @@ window.startMyAppointmentChatFlow = function (lang) {
       );
       const wrap = document.createElement("div");
       wrap.className = "menu";
-      wrap.appendChild(createCard("Yes", () => saveUpdatedAppointment()));
-      wrap.appendChild(createCard("No", () => showEditableFields()));
+      wrap.appendChild(createCard("Yes", () => saveUpdatedAppointment(), "✅"));
+      wrap.appendChild(createCard("No", () => showEditableFields(), "❌"));
       chatBox.appendChild(wrap);
     });
   }
@@ -505,8 +609,8 @@ window.startMyAppointmentChatFlow = function (lang) {
     );
     const wrap = document.createElement("div");
     wrap.className = "menu";
-    wrap.appendChild(createCard("Yes", () => cancelAppointment()));
-    wrap.appendChild(createCard("No", () => showActionCards()));
+    wrap.appendChild(createCard("Yes", () => cancelAppointment(), "✅"));
+    wrap.appendChild(createCard("No", () => showActionCards(), "❌"));
     chatBox.appendChild(wrap);
     step = 99;
   }
@@ -551,13 +655,15 @@ window.startMyAppointmentChatFlow = function (lang) {
     wrap.appendChild(
       createCard(
         translations["download_slip"] || "Download Slip",
-        () => window.open(`/appointments/${id}/slip`, "_blank")
+        () => window.open(`/appointments/${id}/slip`, "_blank"),
+        "📄"
       )
     );
     wrap.appendChild(
       createCard(
         translations["main_menu"] || "Back to Main Menu",
-        () => (window.location.href = "/chat")
+        () => (window.location.href = "/chat"),
+        "🏠"
       )
     );
     chatBox.appendChild(wrap);
@@ -581,10 +687,14 @@ window.startMyAppointmentChatFlow = function (lang) {
     chatBox.scrollTop = chatBox.scrollHeight;
   }
 
-  function createCard(title, callback) {
+  function createCard(title, callback, icon = null) {
     const card = document.createElement("div");
     card.className = "menu-card";
-    card.textContent = title;
+    if (icon) {
+      card.innerHTML = `${icon} ${title}`;
+    } else {
+      card.textContent = title;
+    }
     card.onclick = () => callback();
     return card;
   }

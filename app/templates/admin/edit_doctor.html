@@ -2,117 +2,665 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Edit Doctor</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Edit Doctor - XYZ Hospital Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/ai-icon.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/admin-modern.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <style>
+    /* 3D Edit Doctor Form Styling */
+    .form-group-3d {
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label-3d {
+      display: block;
+      font-weight: 700;
+      color: #374151;
+      margin-bottom: 0.75rem;
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .form-input-3d {
+      width: 100%;
+      padding: 1rem 1.25rem;
+      border: 3px solid #e5e7eb;
+      border-radius: 16px;
+      background: linear-gradient(145deg, #ffffff, #f8fafc);
+      box-shadow: 
+        inset 0 2px 4px rgba(0, 0, 0, 0.1),
+        0 4px 8px rgba(0, 0, 0, 0.1);
+      font-size: 1rem;
+      font-weight: 500;
+      color: #374151;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+
+    .form-input-3d:focus {
+      outline: none;
+      border-color: #3b82f6;
+      background: linear-gradient(145deg, #ffffff, #f1f5f9);
+      box-shadow: 
+        inset 0 2px 4px rgba(59, 130, 246, 0.1),
+        0 0 0 4px rgba(59, 130, 246, 0.1),
+        0 8px 16px rgba(59, 130, 246, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .form-input-3d::placeholder {
+      color: #9ca3af;
+      font-weight: 400;
+    }
+
+    .form-select-3d {
+      width: 100%;
+      padding: 1rem 1.25rem;
+      border: 3px solid #e5e7eb;
+      border-radius: 16px;
+      background: linear-gradient(145deg, #ffffff, #f8fafc);
+      box-shadow: 
+        inset 0 2px 4px rgba(0, 0, 0, 0.1),
+        0 4px 8px rgba(0, 0, 0, 0.1);
+      font-size: 1rem;
+      font-weight: 500;
+      color: #374151;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+    }
+
+    .form-select-3d:focus {
+      outline: none;
+      border-color: #3b82f6;
+      background: linear-gradient(145deg, #ffffff, #f1f5f9);
+      box-shadow: 
+        inset 0 2px 4px rgba(59, 130, 246, 0.1),
+        0 0 0 4px rgba(59, 130, 246, 0.1),
+        0 8px 16px rgba(59, 130, 246, 0.2);
+      transform: translateY(-2px);
+    }
+
+    /* 3D Checkbox Styling */
+    .checkbox-group-3d {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .checkbox-item-3d {
+      position: relative;
+    }
+
+    .checkbox-item-3d input[type="checkbox"] {
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border: 3px solid #e5e7eb;
+      border-radius: 6px;
+      background: linear-gradient(145deg, #ffffff, #f8fafc);
+      box-shadow: 
+        inset 0 2px 4px rgba(0, 0, 0, 0.1),
+        0 2px 4px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      margin-right: 0.5rem;
+      vertical-align: middle;
+    }
+
+    .checkbox-item-3d input[type="checkbox"]:checked {
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      border-color: #3b82f6;
+      box-shadow: 
+        inset 0 2px 4px rgba(59, 130, 246, 0.3),
+        0 4px 8px rgba(59, 130, 246, 0.2);
+    }
+
+    .checkbox-item-3d input[type="checkbox"]:checked::after {
+      content: '✓';
+      position: absolute;
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .checkbox-item-3d label {
+      font-weight: 600;
+      color: #374151;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      padding: 0.75rem;
+      border-radius: 12px;
+      background: linear-gradient(145deg, #f8fafc, #f1f5f9);
+      border: 2px solid transparent;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .checkbox-item-3d input[type="checkbox"]:checked + label {
+      background: linear-gradient(145deg, #dbeafe, #bfdbfe);
+      border-color: #3b82f6;
+      color: #1e40af;
+      box-shadow: 0 4px 8px rgba(59, 130, 246, 0.2);
+    }
+
+    /* 3D Buttons */
+    .btn-3d-update {
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+      color: white;
+      font-weight: 700;
+      padding: 1rem 2rem;
+      border-radius: 16px;
+      border: none;
+      box-shadow: 
+        0 8px 20px rgba(59, 130, 246, 0.3),
+        0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-3d-update::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .btn-3d-update:hover::before {
+      left: 100%;
+    }
+
+    .btn-3d-update:hover {
+      transform: translateY(-3px);
+      box-shadow: 
+        0 12px 25px rgba(59, 130, 246, 0.4),
+        0 8px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-3d-update:active {
+      transform: translateY(-1px);
+      box-shadow: 
+        0 6px 12px rgba(59, 130, 246, 0.3),
+        0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-3d-secondary {
+      background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+      color: white;
+      font-weight: 700;
+      padding: 1rem 2rem;
+      border-radius: 16px;
+      border: none;
+      box-shadow: 
+        0 8px 20px rgba(107, 114, 128, 0.3),
+        0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-3d-secondary::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .btn-3d-secondary:hover::before {
+      left: 100%;
+    }
+
+    .btn-3d-secondary:hover {
+      transform: translateY(-3px);
+      box-shadow: 
+        0 12px 25px rgba(107, 114, 128, 0.4),
+        0 8px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-3d-secondary:active {
+      transform: translateY(-1px);
+      box-shadow: 
+        0 6px 12px rgba(107, 114, 128, 0.3),
+        0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Section Headers */
+    .section-header-3d {
+      display: flex;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid #e5e7eb;
+    }
+
+    .section-icon {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.25rem;
+      margin-right: 1rem;
+      box-shadow: 0 6px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1f2937;
+      margin: 0;
+    }
+
+    /* Flash Messages 3D */
+    .flash-message-3d {
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+      border: 2px solid;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .flash-message-3d.success {
+      background: linear-gradient(145deg, #dcfce7, #bbf7d0);
+      border-color: #22c55e;
+      color: #166534;
+    }
+
+    .flash-message-3d.error {
+      background: linear-gradient(145deg, #fef2f2, #fecaca);
+      border-color: #ef4444;
+      color: #dc2626;
+    }
+
+    /* Empty State 3D */
+    .empty-state-3d {
+      text-align: center;
+      padding: 4rem 2rem;
+      background: linear-gradient(145deg, #f8fafc, #f1f5f9);
+      border-radius: 20px;
+      border: 2px dashed #d1d5db;
+    }
+
+    .empty-icon {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #fecaca, #fca5a5);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      color: #dc2626;
+      font-size: 2rem;
+    }
+
+    .empty-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #dc2626;
+      margin: 0 0 0.5rem 0;
+    }
+
+    .empty-description {
+      color: #6b7280;
+      font-size: 1rem;
+      margin: 0 0 1.5rem 0;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .form-input-3d, .form-select-3d {
+        padding: 0.875rem 1rem;
+      }
+
+      .btn-3d-update, .btn-3d-secondary {
+        padding: 0.875rem 1.5rem;
+        font-size: 0.875rem;
+      }
+
+      .section-header-3d {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+      }
+
+      .section-icon {
+        margin-right: 0;
+      }
+
+      .checkbox-group-3d {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      }
+    }
+
+    @media (max-width: 480px) {
+      .form-input-3d, .form-select-3d {
+        padding: 0.75rem 0.875rem;
+        font-size: 0.875rem;
+      }
+
+      .btn-3d-update, .btn-3d-secondary {
+        padding: 0.75rem 1.25rem;
+        font-size: 0.875rem;
+      }
+
+      .checkbox-group-3d {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col">
-
-  <!-- Container -->
-  <div class="flex-1 flex items-center justify-center py-8">
-    <div class="bg-white w-full max-w-2xl rounded-2xl shadow-lg p-8">
-      <h1 class="text-2xl font-bold text-gray-800 mb-6 text-center">
-        ✏️ Edit Doctor
-      </h1>
-
-      <form method="POST" class="space-y-4">
-        <!-- Department -->
-        <div>
-          <label class="block text-gray-700 font-medium mb-1">Department</label>
-          <select name="department_id" class="w-full border rounded-lg p-2 focus:ring focus:ring-blue-200">
-            {% for dept in departments %}
-              <option value="{{ dept.id }}" {% if doctor.department_id == dept.id %}selected{% endif %}>
-                {{ dept.name_en }}
-              </option>
-            {% endfor %}
-          </select>
+<body>
+  <!-- Modern 3D Sidebar -->
+  <aside class="modern-sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <div class="ai-doctor-icon">
+          <i class="fas fa-user-md"></i>
+          <div class="ai-pulse"></div>
+          <div class="ai-circuit"></div>
         </div>
-
-        <!-- Names -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label class="block text-gray-700 font-medium mb-1">Name (EN)</label>
-            <input type="text" name="name_en" value="{{ doctor.name_en }}" 
-                   class="w-full border rounded-lg p-2 focus:ring focus:ring-blue-200" required>
-          </div>
-          <div>
-            <label class="block text-gray-700 font-medium mb-1">Name (HI)</label>
-            <input type="text" name="name_hi" value="{{ doctor.name_hi }}" 
-                   class="w-full border rounded-lg p-2 focus:ring focus:ring-blue-200">
-          </div>
-          <div>
-            <label class="block text-gray-700 font-medium mb-1">Name (MR)</label>
-            <input type="text" name="name_mr" value="{{ doctor.name_mr }}" 
-                   class="w-full border rounded-lg p-2 focus:ring focus:ring-blue-200">
-          </div>
-        </div>
-
-        <!-- Education -->
-        <div>
-          <label class="block text-gray-700 font-medium mb-1">Education</label>
-          <input type="text" name="education" value="{{ doctor.education }}" 
-                 class="w-full border rounded-lg p-2 focus:ring focus:ring-blue-200">
-        </div>
-
-        <!-- Experience and Fees -->
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="block text-gray-700 font-medium mb-1">Experience (yrs)</label>
-            <input type="text" name="experience" value="{{ doctor.experience }}" 
-                   class="w-full border rounded-lg p-2 focus:ring focus:ring-blue-200">
-          </div>
-          <div>
-            <label class="block text-gray-700 font-medium mb-1">Fees (₹)</label>
-            <input type="number" name="fees" value="{{ doctor.fees }}" 
-                   class="w-full border rounded-lg p-2 focus:ring focus:ring-blue-200">
-          </div>
-        </div>
-
-        <!-- Available Days -->
-        <div>
-          <label class="block text-gray-700 font-medium mb-2">Available Days</label>
-          <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
-            {% set days = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"] %}
-            {% for day in days %}
-              <label class="flex items-center space-x-2">
-                <input type="checkbox" name="available_days" value="{{ day }}"
-                       {% if day in doctor.available_days %}checked{% endif %}>
-                <span>{{ day }}</span>
-              </label>
-            {% endfor %}
-          </div>
-        </div>
-
-        <!-- Timings -->
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="block text-gray-700 font-medium mb-1">Start Time</label>
-            <input type="text" name="start_time" value="{{ doctor.start_time }}" 
-                   placeholder="e.g. 09:00 AM"
-                   class="w-full border rounded-lg p-2 focus:ring focus:ring-blue-200">
-          </div>
-          <div>
-            <label class="block text-gray-700 font-medium mb-1">End Time</label>
-            <input type="text" name="end_time" value="{{ doctor.end_time }}" 
-                   placeholder="e.g. 05:00 PM"
-                   class="w-full border rounded-lg p-2 focus:ring focus:ring-blue-200">
-          </div>
-        </div>
-
-        <!-- Buttons -->
-        <div class="flex justify-between mt-6">
-          <a href="{{ url_for('admin_bp.doctors') }}" 
-             class="px-4 py-2 rounded-lg bg-gray-300 hover:bg-gray-400 text-gray-800 font-medium">
-            ← Cancel
-          </a>
-          <button type="submit" 
-                  class="px-6 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow">
-            💾 Save Changes
-          </button>
-        </div>
-      </form>
+        <h1>Admin Panel</h1>
+      </div>
     </div>
-  </div>
+    
+    <nav class="sidebar-nav">
+      <div class="nav-item">
+        <a href="{{ url_for('admin_bp.admin_dashboard') }}" class="nav-link">
+          <i class="fas fa-tachometer-alt nav-icon"></i>
+          <span>Dashboard</span>
+        </a>
+      </div>
+      <div class="nav-item">
+        <a href="{{ url_for('admin_bp.departments') }}" class="nav-link">
+          <i class="fas fa-building nav-icon"></i>
+          <span>Departments</span>
+        </a>
+      </div>
+      <div class="nav-item">
+        <a href="{{ url_for('admin_bp.doctors') }}" class="nav-link active">
+          <i class="fas fa-user-md nav-icon"></i>
+          <span>Doctors</span>
+        </a>
+      </div>
+      <div class="nav-item">
+        <a href="{{ url_for('admin_bp.appointments') }}" class="nav-link">
+          <i class="fas fa-calendar-alt nav-icon"></i>
+          <span>Appointments</span>
+        </a>
+      </div>
+      <div class="nav-item">
+        <a href="{{ url_for('admin_bp.profile') }}" class="nav-link">
+          <i class="fas fa-hospital nav-icon"></i>
+          <span>Hospital Profile</span>
+        </a>
+      </div>
+      <div class="nav-item">
+        <a href="{{ url_for('admin_bp.change_password') }}" class="nav-link">
+          <i class="fas fa-key nav-icon"></i>
+          <span>Change Password</span>
+        </a>
+      </div>
+      <div class="nav-item">
+        <a href="{{ url_for('admin_bp.logout') }}" class="nav-link">
+          <i class="fas fa-sign-out-alt nav-icon"></i>
+          <span>Logout</span>
+        </a>
+      </div>
+    </nav>
+  </aside>
 
+  <!-- Main Content Area -->
+  <main class="main-content">
+    <!-- Header -->
+    <header class="main-header">
+      <div class="header-title">
+        <div class="ai-doctor-icon">
+          <i class="fas fa-user-edit"></i>
+          <div class="ai-pulse"></div>
+          <div class="ai-circuit"></div>
+        </div>
+        <h1>Edit Doctor</h1>
+      </div>
+    </header>
+
+    <!-- Edit Doctor Form -->
+    <section class="analytics-section">
+      <div class="analytics-header">
+        <h2 class="analytics-title">
+          <i class="fas fa-user-md"></i>
+          Doctor Information
+        </h2>
+      </div>
+      
+      <!-- Flash Messages -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="mb-6">
+            {% for category, message in messages %}
+              <div class="flash-message-3d {{ 'success' if category == 'success' else 'error' }}">
+                <div class="flex items-center">
+                  <i class="fas {{ 'fa-check-circle' if category == 'success' else 'fa-exclamation-circle' }} mr-2"></i>
+                  <span>{{ message }}</span>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      {% if doctor %}
+        <form method="POST" enctype="multipart/form-data" class="space-y-8">
+          <!-- Basic Information -->
+          <div class="space-y-6">
+            <div class="section-header-3d">
+              <div class="section-icon">
+                <i class="fas fa-user"></i>
+              </div>
+              <h3 class="section-title">Basic Information</h3>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="form-group-3d">
+                <label class="form-label-3d">Department *</label>
+                <select name="department_id" required class="form-select-3d">
+                  {% for dept in departments %}
+                    <option value="{{ dept.id }}" {% if doctor.department_id == dept.id %}selected{% endif %}>
+                      {{ dept.name_en }}
+                    </option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="form-group-3d">
+                <label class="form-label-3d">Name (English) *</label>
+                <input type="text" name="name_en" value="{{ doctor.name_en }}" required
+                       class="form-input-3d" 
+                       placeholder="e.g., Dr. John Smith" />
+              </div>
+              <div class="form-group-3d">
+                <label class="form-label-3d">Name (Hindi)</label>
+                <input type="text" name="name_hi" value="{{ doctor.name_hi or '' }}"
+                       class="form-input-3d" 
+                       placeholder="e.g., डॉ. जॉन स्मिथ" />
+              </div>
+              <div class="form-group-3d">
+                <label class="form-label-3d">Name (Marathi)</label>
+                <input type="text" name="name_mr" value="{{ doctor.name_mr or '' }}"
+                       class="form-input-3d" 
+                       placeholder="e.g., डॉ. जॉन स्मिथ" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Professional Information -->
+          <div class="space-y-6">
+            <div class="section-header-3d">
+              <div class="section-icon">
+                <i class="fas fa-graduation-cap"></i>
+              </div>
+              <h3 class="section-title">Professional Information</h3>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="form-group-3d">
+                <label class="form-label-3d">Education</label>
+                <input type="text" name="education" value="{{ doctor.education or '' }}"
+                       class="form-input-3d" 
+                       placeholder="e.g., MBBS, MD" />
+              </div>
+              <div class="form-group-3d">
+                <label class="form-label-3d">Experience</label>
+                <input type="text" name="experience" value="{{ doctor.experience or '' }}"
+                       class="form-input-3d" 
+                       placeholder="e.g., 10 years" />
+              </div>
+              <div class="form-group-3d">
+                <label class="form-label-3d">Fees</label>
+                <input type="number" name="fees" value="{{ doctor.fees or '' }}"
+                       class="form-input-3d" 
+                       placeholder="e.g., 500" />
+              </div>
+            </div>
+            
+            <!-- Doctor Photo -->
+            <div class="form-group-3d">
+              <label class="form-label-3d">Doctor Photo</label>
+              {% if doctor.photo %}
+                <div class="mb-4">
+                  <img src="{{ url_for('static', filename='uploads/doctors/' + doctor.photo) }}" 
+                       alt="Current Photo" 
+                       class="w-24 h-24 object-cover rounded-lg border-2 border-gray-300">
+                  <p class="text-sm text-gray-600 mt-1">Current Photo</p>
+                </div>
+              {% endif %}
+              <input type="file" name="photo" accept="image/*" class="form-input-3d" />
+              <p class="text-xs text-gray-500 mt-1">Upload a professional photo (JPG, PNG, max 2MB)</p>
+            </div>
+          </div>
+
+          <!-- Schedule Information -->
+          <div class="space-y-6">
+            <div class="section-header-3d">
+              <div class="section-icon">
+                <i class="fas fa-clock"></i>
+              </div>
+              <h3 class="section-title">Schedule Information</h3>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="form-group-3d">
+                <label class="form-label-3d">Start Time</label>
+                <input type="time" name="start_time" value="{{ doctor.start_time or '' }}"
+                       class="form-input-3d" />
+              </div>
+              <div class="form-group-3d">
+                <label class="form-label-3d">End Time</label>
+                <input type="time" name="end_time" value="{{ doctor.end_time or '' }}"
+                       class="form-input-3d" />
+              </div>
+            </div>
+            
+            <div class="form-group-3d">
+              <label class="form-label-3d">Available Days</label>
+              <div class="checkbox-group-3d">
+                <div class="checkbox-item-3d">
+                  <input type="checkbox" name="available_days" value="Monday" 
+                         {% if doctor.available_days and 'Monday' in doctor.available_days %}checked{% endif %}>
+                  <label>Monday</label>
+                </div>
+                <div class="checkbox-item-3d">
+                  <input type="checkbox" name="available_days" value="Tuesday"
+                         {% if doctor.available_days and 'Tuesday' in doctor.available_days %}checked{% endif %}>
+                  <label>Tuesday</label>
+                </div>
+                <div class="checkbox-item-3d">
+                  <input type="checkbox" name="available_days" value="Wednesday"
+                         {% if doctor.available_days and 'Wednesday' in doctor.available_days %}checked{% endif %}>
+                  <label>Wednesday</label>
+                </div>
+                <div class="checkbox-item-3d">
+                  <input type="checkbox" name="available_days" value="Thursday"
+                         {% if doctor.available_days and 'Thursday' in doctor.available_days %}checked{% endif %}>
+                  <label>Thursday</label>
+                </div>
+                <div class="checkbox-item-3d">
+                  <input type="checkbox" name="available_days" value="Friday"
+                         {% if doctor.available_days and 'Friday' in doctor.available_days %}checked{% endif %}>
+                  <label>Friday</label>
+                </div>
+                <div class="checkbox-item-3d">
+                  <input type="checkbox" name="available_days" value="Saturday"
+                         {% if doctor.available_days and 'Saturday' in doctor.available_days %}checked{% endif %}>
+                  <label>Saturday</label>
+                </div>
+                <div class="checkbox-item-3d">
+                  <input type="checkbox" name="available_days" value="Sunday"
+                         {% if doctor.available_days and 'Sunday' in doctor.available_days %}checked{% endif %}>
+                  <label>Sunday</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="flex gap-4 pt-6">
+            <button type="submit" class="btn-3d-update">
+              <i class="fas fa-save mr-2"></i>
+              Update Doctor
+            </button>
+            <a href="{{ url_for('admin_bp.doctors') }}" class="btn-3d-secondary">
+              <i class="fas fa-arrow-left mr-2"></i>
+              Back to Doctors
+            </a>
+          </div>
+        </form>
+      {% else %}
+        <div class="empty-state-3d">
+          <div class="empty-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+          </div>
+          <h3 class="empty-title">Doctor not found!</h3>
+          <p class="empty-description">The doctor you're looking for doesn't exist or has been removed.</p>
+          <a href="{{ url_for('admin_bp.doctors') }}" class="btn-3d-update">
+            <i class="fas fa-arrow-left mr-2"></i>
+            Back to Doctors
+          </a>
+        </div>
+      {% endif %}
+    </section>
+  </main>
 </body>
 </html>

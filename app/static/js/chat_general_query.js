@@ -86,13 +86,31 @@
         <div class="appt-title">👨‍⚕️ ${window.tOr("doctors_in")} ${department}</div>
     `;
     doctors.forEach((doc) => {
+      // Create doctor photo URL
+      let doctorPhotoHtml = '';
+      if (doc.photo) {
+        doctorPhotoHtml = `
+          <div class="doctor-photo-container">
+            <img src="/static/uploads/doctors/${doc.photo}" 
+                 alt="${doc.name}" 
+                 class="doctor-photo"
+                 onerror="this.style.display='none'">
+          </div>
+        `;
+      }
+      
       html += `
-        <div class="appt-field">
-          <b>${doc.name}</b><br/>
-          🎓 ${doc.qualification || "-"}<br/>
-          💼 ${window.tOr("experience")}: ${doc.experience || window.tOr("na")}<br/>
-          🕒 ${formatTimeRange(doc.timings)}<br/>
-          💰 ${window.tOr("fees")}: ₹${doc.fees || deptFees || "-"}
+        <div class="appt-field doctor-info-field">
+          <div class="doctor-info-content">
+            ${doctorPhotoHtml}
+            <div class="doctor-details">
+              <b>${doc.name}</b><br/>
+              🎓 ${doc.qualification || "-"}<br/>
+              💼 ${window.tOr("experience")}: ${doc.experience || window.tOr("na")}<br/>
+              🕒 ${formatTimeRange(doc.timings)}<br/>
+              💰 ${window.tOr("fees")}: ₹${doc.fees || deptFees || "-"}
+            </div>
+          </div>
         </div>`;
     });
     html += `</div>`;
@@ -164,13 +182,31 @@
         <div class="appt-subtitle">${window.tOr("available_doctors")}</div>
     `;
     doctors.forEach((doc) => {
+      // Create doctor photo URL
+      let doctorPhotoHtml = '';
+      if (doc.photo) {
+        doctorPhotoHtml = `
+          <div class="doctor-photo-container">
+            <img src="/static/uploads/doctors/${doc.photo}" 
+                 alt="${doc.name}" 
+                 class="doctor-photo"
+                 onerror="this.style.display='none'">
+          </div>
+        `;
+      }
+      
       html += `
-        <div class="appt-field">
-          <b>${doc.name}</b><br/>
-          🎓 ${doc.qualification || "-"}<br/>
-          💼 ${window.tOr("experience")}: ${doc.experience || window.tOr("na")}<br/>
-          🕒 ${formatTimeRange(doc.timings)}<br/>
-          💰 ${window.tOr("fees")}: ₹${doc.fees || fees || "-"}
+        <div class="appt-field doctor-info-field">
+          <div class="doctor-info-content">
+            ${doctorPhotoHtml}
+            <div class="doctor-details">
+              <b>${doc.name}</b><br/>
+              🎓 ${doc.qualification || "-"}<br/>
+              💼 ${window.tOr("experience")}: ${doc.experience || window.tOr("na")}<br/>
+              🕒 ${formatTimeRange(doc.timings)}<br/>
+              💰 ${window.tOr("fees")}: ₹${doc.fees || fees || "-"}
+            </div>
+          </div>
         </div>`;
     });
     html += `</div>`;

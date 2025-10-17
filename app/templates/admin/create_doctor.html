@@ -78,7 +78,7 @@
       {% endwith %}
 
       <div class="bg-white p-6 rounded-xl shadow-2xl border border-mint max-w-4xl mx-auto">
-        <form id="create-doctor-form" method="POST" action="{{ url_for('admin_bp.create_doctor') }}" class="space-y-5">
+        <form id="create-doctor-form" method="POST" action="{{ url_for('admin_bp.create_doctor') }}" enctype="multipart/form-data" class="space-y-5">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             <!-- Doctor Name Multilingual -->
             <div class="md:col-span-2">
@@ -128,16 +128,57 @@
               <input type="number" id="fees" name="fees" required min="0" class="w-full border px-4 py-2 rounded-md" placeholder="e.g., 500" />
             </div>
 
-            <!-- Available Days -->
-            <div class="md:col-span-2">
-              <label for="available_days" class="block mb-1 font-semibold">Available Days (Comma Separated) *</label>
-              <input type="text" id="available_days" name="available_days" required class="w-full border px-4 py-2 rounded-md" placeholder="e.g., Monday, Wednesday, Friday" />
+            <!-- Doctor Photo -->
+            <div>
+              <label for="photo" class="block mb-1 font-semibold">Doctor Photo</label>
+              <input type="file" id="photo" name="photo" accept="image/*" class="w-full border px-4 py-2 rounded-md" />
+              <p class="text-xs text-gray-500 mt-1">Upload a professional photo (JPG, PNG, max 2MB)</p>
             </div>
 
-            <!-- Time Slots -->
+            <!-- Available Days -->
             <div class="md:col-span-2">
-              <label for="time_slots" class="block mb-1 font-semibold">Time Slots (Comma Separated) *</label>
-              <input type="text" id="time_slots" name="time_slots" required class="w-full border px-4 py-2 rounded-md" placeholder="e.g., 10:00 AM - 12:00 PM, 2:00 PM - 4:00 PM" />
+              <label class="block mb-2 font-semibold">Available Days *</label>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <label class="flex items-center space-x-2 cursor-pointer">
+                  <input type="checkbox" name="available_days" value="Monday" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                  <span class="text-sm font-medium">Monday</span>
+                </label>
+                <label class="flex items-center space-x-2 cursor-pointer">
+                  <input type="checkbox" name="available_days" value="Tuesday" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                  <span class="text-sm font-medium">Tuesday</span>
+                </label>
+                <label class="flex items-center space-x-2 cursor-pointer">
+                  <input type="checkbox" name="available_days" value="Wednesday" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                  <span class="text-sm font-medium">Wednesday</span>
+                </label>
+                <label class="flex items-center space-x-2 cursor-pointer">
+                  <input type="checkbox" name="available_days" value="Thursday" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                  <span class="text-sm font-medium">Thursday</span>
+                </label>
+                <label class="flex items-center space-x-2 cursor-pointer">
+                  <input type="checkbox" name="available_days" value="Friday" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                  <span class="text-sm font-medium">Friday</span>
+                </label>
+                <label class="flex items-center space-x-2 cursor-pointer">
+                  <input type="checkbox" name="available_days" value="Saturday" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                  <span class="text-sm font-medium">Saturday</span>
+                </label>
+                <label class="flex items-center space-x-2 cursor-pointer">
+                  <input type="checkbox" name="available_days" value="Sunday" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                  <span class="text-sm font-medium">Sunday</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Working Time -->
+            <div>
+              <label for="start_time" class="block mb-1 font-semibold">Start Time *</label>
+              <input type="time" id="start_time" name="start_time" required class="w-full border px-4 py-2 rounded-md" />
+            </div>
+
+            <div>
+              <label for="end_time" class="block mb-1 font-semibold">End Time *</label>
+              <input type="time" id="end_time" name="end_time" required class="w-full border px-4 py-2 rounded-md" />
             </div>
           </div>
 
@@ -148,6 +189,75 @@
       </div>
     </main>
   </div>
+
+  <script>
+    // Function to convert 24-hour time to 12-hour format
+    function convertTo12Hour(time24) {
+      if (!time24) return '';
+      
+      const [hours, minutes] = time24.split(':');
+      let hour = parseInt(hours);
+      const minute = parseInt(minutes);
+      const ampm = hour >= 12 ? 'PM' : 'AM';
+      
+      hour = hour % 12;
+      hour = hour ? hour : 12; // the hour '0' should be '12'
+      
+      return `${hour}:${minute.toString().padStart(2, '0')} ${ampm}`;
+    }
+
+    // Function to convert 12-hour time to 24-hour format
+    function convertTo24Hour(time12) {
+      if (!time12) return '';
+      
+      const [time, modifier] = time12.split(' ');
+      let [hours, minutes] = time.split(':');
+      
+      if (hours === '12') {
+        hours = '00';
+      }
+      
+      if (modifier === 'PM') {
+        hours = parseInt(hours, 10) + 12;
+      }
+      
+      return `${hours}:${minutes}`;
+    }
+
+    // Update time inputs to show 12-hour format
+    document.addEventListener('DOMContentLoaded', function() {
+      const startTimeInput = document.getElementById('start_time');
+      const endTimeInput = document.getElementById('end_time');
+      
+      // Add event listeners to show 12-hour format on blur
+      startTimeInput.addEventListener('blur', function() {
+        if (this.value) {
+          const time12 = convertTo12Hour(this.value);
+          // Store the original 24-hour value in a data attribute
+          this.setAttribute('data-12hour', time12);
+        }
+      });
+      
+      endTimeInput.addEventListener('blur', function() {
+        if (this.value) {
+          const time12 = convertTo12Hour(this.value);
+          // Store the original 24-hour value in a data attribute
+          this.setAttribute('data-12hour', time12);
+        }
+      });
+
+      // Form validation for available days
+      const form = document.getElementById('create-doctor-form');
+      form.addEventListener('submit', function(e) {
+        const availableDays = document.querySelectorAll('input[name="available_days"]:checked');
+        if (availableDays.length === 0) {
+          e.preventDefault();
+          alert('Please select at least one available day.');
+          return false;
+        }
+      });
+    });
+  </script>
 </body>
 </html>
 

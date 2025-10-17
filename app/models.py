@@ -3,7 +3,7 @@ from config_db import Base
 
 class User(Base):
     __tablename__ = "users"
-    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    id = Column(String, primary_key=True)
     name = Column(String)
     password = Column(String)
     hospital_id = Column(String)
@@ -33,6 +33,7 @@ class Doctor(Base):
     available_days = Column(ARRAY(String))
     start_time = Column(String)
     end_time = Column(String)
+    photo = Column(String)  # Store photo filename/path
 
 class Appointment(Base):
     __tablename__ = "appointments"

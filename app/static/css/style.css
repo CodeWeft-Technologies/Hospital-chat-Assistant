@@ -3,13 +3,33 @@
 
 /* ===== Global Light Theme ===== */
 body {
-  background: var(--gradient-primary);
+  background: linear-gradient(135deg, #87CEEB 0%, #B0E0E6 25%, #E0F6FF 50%, #F0F8FF 75%, #87CEEB 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
   color: var(--neutral-gray-800);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   margin: 0;
   min-height: 100vh;
-  display: grid;
-  place-items: center;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(135, 206, 235, 0.4) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(176, 224, 230, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(224, 246, 255, 0.3) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -1;
+  animation: float 20s ease-in-out infinite;
 }
 
 /* ===== Hospital Title ===== */
@@ -50,7 +70,8 @@ body {
   border-radius: var(--radius-2xl);
   padding: var(--space-xl);
   box-shadow: var(--shadow-3d);
-  min-width: min(90vw, 500px);
+  width: 100%;
+  max-width: 100%;
   min-height: min(70vh, 600px);
   display: flex;
   flex-direction: column;
@@ -119,10 +140,13 @@ body {
 
 /* ===== Layout ===== */
 .wrap {
-  max-width: 1100px;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 24px;
+  padding: var(--space-md);
   width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .menu-card.disabled-card {
@@ -177,8 +201,11 @@ body {
   border: 1px solid var(--neutral-gray-200);
   background: linear-gradient(145deg, var(--neutral-white) 0%, var(--neutral-gray-50) 100%);
   cursor: pointer;
-  transition: all var(--transition-normal);
-  box-shadow: var(--shadow-3d);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
   font-weight: 600;
   font-size: var(--font-size-lg);
   color: var(--neutral-gray-800);
@@ -187,17 +214,404 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  overflow: hidden;
 }
 .menu-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-xl);
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04),
+    0 0 0 1px rgba(59, 130, 246, 0.1);
   background: linear-gradient(145deg, var(--primary-blue-50) 0%, var(--neutral-white) 100%);
   border-color: var(--primary-blue-300);
   color: var(--primary-blue-700);
 }
 .menu-card:active {
+  transform: translateY(-2px) scale(0.98);
+  transition: all 0.1s ease;
+}
+
+/* Enhanced Form Button Styles */
+.menu-card:has(✅) {
+  background: linear-gradient(145deg, #dcfce7 0%, #f0fdf4 100%);
+  border-color: #22c55e;
+  color: #166534;
+}
+
+.menu-card:has(✅):hover {
+  background: linear-gradient(145deg, #bbf7d0 0%, #dcfce7 100%);
+  border-color: #16a34a;
+  color: #14532d;
+}
+
+.menu-card:has(❌) {
+  background: linear-gradient(145deg, #fef2f2 0%, #fef7f7 100%);
+  border-color: #ef4444;
+  color: #991b1b;
+}
+
+.menu-card:has(❌):hover {
+  background: linear-gradient(145deg, #fecaca 0%, #fef2f2 100%);
+  border-color: #dc2626;
+  color: #7f1d1d;
+}
+
+.menu-card:has(🏥) {
+  background: linear-gradient(145deg, #dbeafe 0%, #eff6ff 100%);
+  border-color: #3b82f6;
+  color: #1e40af;
+}
+
+.menu-card:has(🏥):hover {
+  background: linear-gradient(145deg, #bfdbfe 0%, #dbeafe 100%);
+  border-color: #2563eb;
+  color: #1e3a8a;
+}
+
+.menu-card:has(⏰) {
+  background: linear-gradient(145deg, #fef3c7 0%, #fffbeb 100%);
+  border-color: #f59e0b;
+  color: #92400e;
+}
+
+.menu-card:has(⏰):hover {
+  background: linear-gradient(145deg, #fde68a 0%, #fef3c7 100%);
+  border-color: #d97706;
+  color: #78350f;
+}
+
+/* Date Picker Styling */
+#appointmentDatePicker {
+  display: flex;
+  gap: var(--space-md);
+  margin-top: var(--space-md);
+  align-items: center;
+  justify-content: center;
+}
+
+#appointmentDatePicker input[type="date"] {
+  padding: var(--space-lg) var(--space-xl);
+  border-radius: var(--radius-2xl);
+  border: 2px solid var(--neutral-gray-200);
+  outline: none;
+  background: linear-gradient(145deg, var(--neutral-white) 0%, var(--neutral-gray-50) 100%);
+  color: var(--neutral-gray-800);
+  font-size: var(--font-size-lg);
+  font-weight: 500;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+#appointmentDatePicker input[type="date"]:focus {
+  border-color: var(--primary-blue-400);
+  background: linear-gradient(135deg, #87CEEB 0%, #ffffff 100%);
+  box-shadow: 
+    0 0 0 4px var(--primary-blue-100), 
+    0 8px 16px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
   transform: translateY(-2px);
 }
+
+#appointmentDatePicker input[type="date"]:hover {
+  border-color: var(--primary-blue-300);
+  transform: translateY(-1px);
+  box-shadow: 
+    0 6px 8px -1px rgba(0, 0, 0, 0.1),
+    0 3px 6px -1px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+/* Enhanced System Messages with Icons */
+.chat-messages .bot:has(👤),
+.chat-messages .bot:has(📱),
+.chat-messages .bot:has(🏥),
+.chat-messages .bot:has(👨‍⚕️),
+.chat-messages .bot:has(📅),
+.chat-messages .bot:has(⏰),
+.chat-messages .bot:has(✅) {
+  background: linear-gradient(145deg, #f0f9ff 0%, #e0f2fe 100%);
+  border: 2px solid #0ea5e9;
+  color: #0c4a6e;
+  font-weight: 600;
+  animation: messageSlideIn 0.5s ease-out;
+  box-shadow: 
+    0 8px 16px -4px rgba(14, 165, 233, 0.2),
+    0 4px 8px -2px rgba(14, 165, 233, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+@keyframes messageSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+/* Special styling for confirmation messages */
+.chat-messages .bot:has(✅) {
+  background: linear-gradient(145deg, #f0fdf4 0%, #dcfce7 100%);
+  border: 2px solid #22c55e;
+  color: #166534;
+  box-shadow: 
+    0 8px 16px -4px rgba(34, 197, 94, 0.2),
+    0 4px 8px -2px rgba(34, 197, 94, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* My Appointments - Edit Button Styles */
+.menu-card:has(✏️) {
+  background: linear-gradient(145deg, #fef3c7 0%, #fffbeb 100%);
+  border-color: #f59e0b;
+  color: #92400e;
+}
+
+.menu-card:has(✏️):hover {
+  background: linear-gradient(145deg, #fde68a 0%, #fef3c7 100%);
+  border-color: #d97706;
+  color: #78350f;
+}
+
+.menu-card:has(📄) {
+  background: linear-gradient(145deg, #e0e7ff 0%, #f0f4ff 100%);
+  border-color: #6366f1;
+  color: #4338ca;
+}
+
+.menu-card:has(📄):hover {
+  background: linear-gradient(145deg, #c7d2fe 0%, #e0e7ff 100%);
+  border-color: #4f46e5;
+  color: #3730a3;
+}
+
+.menu-card:has(🏠) {
+  background: linear-gradient(145deg, #f3e8ff 0%, #faf5ff 100%);
+  border-color: #a855f7;
+  color: #7c3aed;
+}
+
+.menu-card:has(🏠):hover {
+  background: linear-gradient(145deg, #e9d5ff 0%, #f3e8ff 100%);
+  border-color: #9333ea;
+  color: #6d28d9;
+}
+
+/* Doctor Card Styles */
+.doctor-card {
+  min-height: 120px !important;
+  padding: var(--space-lg) !important;
+}
+
+.doctor-card-content {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  width: 100%;
+}
+
+.doctor-photo {
+  flex-shrink: 0;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid var(--primary-blue-200);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.doctor-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-normal);
+}
+
+.doctor-card:hover .doctor-photo img {
+  transform: scale(1.05);
+}
+
+.doctor-info {
+  flex: 1;
+  text-align: left;
+}
+
+.doctor-name {
+  color: var(--primary-blue-700);
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.doctor-education,
+.doctor-experience,
+.doctor-fees {
+  color: var(--neutral-gray-600);
+  font-size: var(--font-size-sm);
+  display: block;
+  margin-bottom: 2px;
+  font-weight: 500;
+}
+
+.doctor-fees {
+  color: var(--primary-green-600);
+  font-weight: 600;
+}
+
+/* My Appointments - Enhanced Card Styles */
+.appt-card {
+  background: linear-gradient(145deg, #ffffff, #f8fafc);
+  border-radius: 20px;
+  box-shadow: 
+    0 10px 25px rgba(0, 0, 0, 0.1),
+    0 4px 10px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+  margin: var(--space-lg) 0;
+}
+
+.appt-header {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: white;
+  padding: var(--space-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.appt-icon {
+  font-size: 1.5rem;
+  opacity: 0.9;
+}
+
+.appt-title {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+}
+
+.appt-content {
+  padding: var(--space-lg);
+}
+
+.appt-info-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+}
+
+.appt-info-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-sm) 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.appt-info-item:last-child {
+  border-bottom: none;
+}
+
+.doctor-info-item {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-sm);
+}
+
+.appt-label {
+  font-weight: 600;
+  color: var(--neutral-gray-700);
+  font-size: var(--font-size-sm);
+}
+
+.appt-value {
+  color: var(--neutral-gray-800);
+  font-weight: 500;
+  text-align: right;
+  flex: 1;
+}
+
+.doctor-info-item .appt-value {
+  text-align: left;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.doctor-photo-container {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.doctor-photo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--primary-blue-200);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.status-confirmed {
+  color: var(--primary-green-600);
+  font-weight: 600;
+}
+
+.status-pending {
+  color: var(--primary-orange-600);
+  font-weight: 600;
+}
+
+.status-cancelled {
+  color: var(--primary-red-600);
+  font-weight: 600;
+}
+
+/* General Query - Doctor Info Fields */
+.doctor-info-field {
+  border: 1px solid var(--neutral-gray-200);
+  border-radius: 12px;
+  padding: var(--space-md);
+  margin: var(--space-sm) 0;
+  background: linear-gradient(145deg, #ffffff, #f8fafc);
+  transition: all 0.3s ease;
+}
+
+.doctor-info-field:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+}
+
+.doctor-info-content {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+}
+
+.doctor-details {
+  flex: 1;
+  line-height: 1.6;
+}
+
+.doctor-details b {
+  color: var(--primary-blue-700);
+  font-size: var(--font-size-base);
+  display: block;
+  margin-bottom: var(--space-xs);
+}
+
+.doctor-details br {
+  line-height: 1.8;
+}
+
 .menu-title {
   font-weight: 700;
 }
@@ -276,17 +690,19 @@ body {
 .chat-shell {
   margin-top: var(--space-lg);
   padding: var(--space-xl);
-  background: linear-gradient(145deg, var(--neutral-white) 0%, var(--neutral-gray-50) 100%);
+  background: var(--gradient-card);
   border-radius: var(--radius-3xl);
   box-shadow: var(--shadow-3d);
-  height: 70vh;
+  height: calc(100vh - 200px);
   min-height: 500px;
   display: flex;
   flex-direction: column;
-  animation: fadeInUp 0.6s ease-in-out;
-  border: 1px solid var(--neutral-gray-200);
+  animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   position: relative;
   overflow: hidden;
+  flex: 1;
+  backdrop-filter: blur(15px);
 }
 
 .chat-shell::before {
@@ -296,8 +712,9 @@ body {
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, var(--primary-blue-500), var(--secondary-green-500), var(--accent-purple-500));
+  background: var(--gradient-button);
   border-radius: var(--radius-3xl) var(--radius-3xl) 0 0;
+  animation: glow 3s ease-in-out infinite;
 }
 
 /* Chat Messages */
@@ -335,15 +752,16 @@ body {
   line-height: 1.6;
   font-size: var(--font-size-lg);
   box-shadow: var(--shadow-3d);
-  animation: messageSlideIn 0.4s ease forwards;
+  animation: messageSlideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   word-wrap: break-word;
   font-weight: 500;
-  transition: all var(--transition-normal);
+  transition: all var(--transition-bounce);
+  backdrop-filter: blur(10px);
 }
 
 .chat-messages .msg:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: var(--shadow-glow);
 }
 
 .chat-messages .bot {
@@ -416,31 +834,75 @@ body {
   transform: translateY(-1px);
 }
 
-/* Animations */
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+/* Modern Animations */
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
-@keyframes floatIn {
-  from { opacity: 0; transform: translateY(10px) scale(0.95); }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-20px) rotate(1deg); }
+  66% { transform: translateY(10px) rotate(-1deg); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px) scale(0.95); }
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
+@keyframes floatIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.9); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes messageSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(102, 126, 234, 0.3); }
+  50% { box-shadow: 0 0 30px rgba(102, 126, 234, 0.6); }
+}
+
 /* Responsive Design - Mobile First */
-@media (max-width: 640px) {
+
+/* Large Desktop (1200px+) */
+@media (min-width: 1200px) {
+  .wrap { max-width: 1200px; }
+  .chat-shell { max-width: 1000px; margin: var(--space-lg) auto; }
+  .card-3d { max-width: 1000px; margin: 0 auto; }
+}
+
+/* Desktop (992px - 1199px) */
+@media (max-width: 1199px) and (min-width: 992px) {
+  .chat-shell { height: calc(100vh - 200px); }
+  .card-3d { min-height: 60vh; }
+}
+
+/* Tablet Landscape (768px - 991px) */
+@media (max-width: 991px) and (min-width: 768px) {
+  .wrap { padding: var(--space-sm); }
   .chat-shell { 
-    height: 65vh; 
+    height: calc(100vh - 180px); 
     padding: var(--space-lg); 
     margin: var(--space-md);
     border-radius: var(--radius-2xl);
   }
   .chat-messages .msg { 
     font-size: var(--font-size-base);
-    max-width: 95%;
+    max-width: 90%;
     padding: var(--space-md) var(--space-lg);
   }
   .card-3d {
-    min-width: 95vw;
     min-height: 60vh;
     padding: var(--space-lg);
   }
@@ -463,51 +925,113 @@ body {
   }
 }
 
-@media (max-width: 480px) {
+/* Tablet Portrait (600px - 767px) */
+@media (max-width: 767px) and (min-width: 600px) {
+  .wrap { padding: var(--space-xs); }
   .chat-shell { 
-    height: 60vh; 
-    padding: var(--space-md);
+    height: calc(100vh - 160px); 
+    padding: var(--space-md); 
+    margin: var(--space-sm);
     border-radius: var(--radius-xl);
   }
-  .chat-input input { 
+  .chat-messages .msg { 
     font-size: var(--font-size-sm);
+    max-width: 95%;
     padding: var(--space-sm) var(--space-md);
+  }
+  .card-3d {
+    min-height: 55vh;
+    padding: var(--space-md);
+  }
+  .btn-3d {
+    min-height: 55px;
+    padding: var(--space-sm);
+  }
+  .hospital-title-card {
+    font-size: var(--font-size-xl);
+    padding: var(--space-sm);
+  }
+  .chat-input input {
+    padding: var(--space-sm) var(--space-md);
+    font-size: var(--font-size-sm);
   }
   .chat-input button {
     padding: var(--space-sm) var(--space-md);
     font-size: var(--font-size-sm);
     min-height: 44px;
   }
+}
+
+/* Mobile Landscape (480px - 599px) */
+@media (max-width: 599px) and (min-width: 480px) {
+  .wrap { padding: var(--space-xs); }
+  .chat-shell { 
+    height: calc(100vh - 140px); 
+    padding: var(--space-sm); 
+    margin: var(--space-xs);
+    border-radius: var(--radius-lg);
+  }
+  .chat-messages .msg { 
+    font-size: var(--font-size-sm);
+    max-width: 95%;
+    padding: var(--space-sm) var(--space-md);
+  }
+  .card-3d {
+    min-height: 50vh;
+    padding: var(--space-sm);
+  }
   .btn-3d {
     min-height: 50px;
     padding: var(--space-sm);
   }
-  .btn-title {
+  .hospital-title-card {
     font-size: var(--font-size-lg);
+    padding: var(--space-sm);
   }
-  .btn-sub {
-    font-size: var(--font-size-xs);
-  }
-  .chat-messages .msg {
+  .chat-input input {
     padding: var(--space-sm) var(--space-md);
     font-size: var(--font-size-sm);
   }
-}
-
-@media (min-width: 641px) and (max-width: 768px) {
-  .chat-shell {
-    height: 65vh;
-  }
-  .card-3d {
-    min-width: 80vw;
+  .chat-input button {
+    padding: var(--space-sm) var(--space-md);
+    font-size: var(--font-size-sm);
+    min-height: 44px;
   }
 }
 
-@media (min-width: 769px) {
-  .chat-shell {
-    height: 70vh;
+/* Mobile Portrait (320px - 479px) */
+@media (max-width: 479px) {
+  .wrap { padding: var(--space-xs); }
+  .chat-shell { 
+    height: calc(100vh - 120px); 
+    padding: var(--space-sm); 
+    margin: var(--space-xs);
+    border-radius: var(--radius-lg);
+  }
+  .chat-messages .msg { 
+    font-size: var(--font-size-xs);
+    max-width: 95%;
+    padding: var(--space-xs) var(--space-sm);
   }
   .card-3d {
-    min-width: 500px;
+    min-height: 45vh;
+    padding: var(--space-sm);
+  }
+  .btn-3d {
+    min-height: 45px;
+    padding: var(--space-xs);
+  }
+  .hospital-title-card {
+    font-size: var(--font-size-base);
+    padding: var(--space-xs);
+  }
+  .chat-input input {
+    padding: var(--space-xs) var(--space-sm);
+    font-size: var(--font-size-xs);
+  }
+  .chat-input button {
+    padding: var(--space-xs) var(--space-sm);
+    font-size: var(--font-size-xs);
+    min-height: 40px;
   }
 }

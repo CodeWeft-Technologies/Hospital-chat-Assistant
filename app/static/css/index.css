@@ -1,13 +1,17 @@
 body {
-    background: linear-gradient(to right, lavender, white, pink);
+    background: linear-gradient(135deg, #87CEEB 0%, #B0E0E6 25%, #E0F6FF 50%, #F0F8FF 75%, #87CEEB 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
     font-family: Arial, sans-serif;
     text-align: center;
     padding: 20px;
+    min-height: 100vh;
+    margin: 0;
 }
 
 /* 3D Hospital Title Card */
 .hospital-title-card {
-    background: skyblue;
+    background: linear-gradient(135deg, #4682B4 0%, #87CEEB 100%);
     color: white;
     font-size: 2rem;
     font-weight: bold;
@@ -45,7 +49,7 @@ body {
 }
 
 .lang-btn {
-    background: skyblue;
+    background: linear-gradient(135deg, #4682B4 0%, #87CEEB 100%);
     border: none;
     color: white;
     padding: 12px;
@@ -59,4 +63,12 @@ body {
 
 .lang-btn:hover {
     transform: scale(1.05);
+    background: linear-gradient(135deg, #5A9BD4 0%, #9DD3F0 100%);
+}
+
+/* Gradient Animation */
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }

@@ -15,8 +15,458 @@
     localStorage.removeItem("bookingFlow");
   }
 
+  // Smart input parser for direct appointment requests
+  function parseDirectBookingRequest(input) {
+    const lowerInput = input.toLowerCase();
+    
+    // First check for booking-related keywords - if found, prioritize booking
+    const bookingKeywords = [
+      /book/i,
+      /appointment/i,
+      /dr\.?\s*\w+/i,
+      /doctor/i,
+      /tomorrow/i,
+      /today/i,
+      /monday|tuesday|wednesday|thursday|friday|saturday|sunday/i,
+      /my name is/i,
+      /phone.*\d/i
+    ];
+    
+    // If booking keywords are present, don't treat as general question
+    const hasBookingKeywords = bookingKeywords.some(pattern => pattern.test(input));
+    
+    // Check if this is a general question (not booking related)
+    const generalQuestionPatterns = [
+      /^(what|how|when|where|why|can you|could you|tell me|explain|describe)/,
+      /(symptoms|treatment|medicine|disease|illness|health|medical advice)/,
+      /(hospital|address|location|contact|timing|hours)/,
+      /(fees|cost|price|charge|payment)/,
+      /(about|information|details|help)/
+    ];
+    
+    // Only treat as general question if no booking keywords and matches general patterns
+    if (!hasBookingKeywords && generalQuestionPatterns.some(pattern => pattern.test(lowerInput))) {
+      return {
+        type: 'general_question',
+        message: 'This appears to be a general question. Please go to the "General Query" section for medical information and hospital details.'
+      };
+    }
+    
+    // Check for direct appointment booking patterns
+    const bookingPatterns = [
+      // Pattern 1: "book appointment with dr khan for tomorrow at 12:30 pm"
+      /book\s+(?:an?\s+)?appointment\s+with\s+(?:dr\.?\s*)?([a-zA-Z\s]+?)\s+(?:for\s+)?(tomorrow|today|day\s+after|next\s+week|monday|tuesday|wednesday|thursday|friday|saturday|sunday)?\s*(?:at\s+)?(\d{1,2}(?::\d{2})?\s*(?:am|pm)?)/i,
+      
+      // Pattern 2: "dr khan appointment tomorrow 12:30"
+      /(?:dr\.?\s*)?([a-zA-Z\s]+?)\s+appointment\s+(tomorrow|today|day\s+after|next\s+week|monday|tuesday|wednesday|thursday|friday|saturday|sunday)?\s*(\d{1,2}(?::\d{2})?\s*(?:am|pm)?)/i,
+      
+      // Pattern 3: "appointment with khan for tomorrow"
+      /appointment\s+with\s+(?:dr\.?\s*)?([a-zA-Z\s]+?)\s+(?:for\s+)?(tomorrow|today|day\s+after|next\s+week|monday|tuesday|wednesday|thursday|friday|saturday|sunday)/i,
+      
+      // Pattern 4: "book with dr khan"
+      /book\s+(?:with\s+)?(?:dr\.?\s*)?([a-zA-Z\s]+?)(?:\s+for\s+(tomorrow|today|day\s+after|next\s+week|monday|tuesday|wednesday|thursday|friday|saturday|sunday))?/i,
+      
+      // Pattern 5: "I am John Smith, book appointment with dr khan for tomorrow at 2pm"
+      /I\s+am\s+([a-zA-Z\s]+?),\s+book\s+(?:an?\s+)?appointment\s+with\s+(?:dr\.?\s*)?([a-zA-Z\s]+?)\s+(?:for\s+)?(tomorrow|today|day\s+after|next\s+week|monday|tuesday|wednesday|thursday|friday|saturday|sunday)?\s*(?:at\s+)?(\d{1,2}(?::\d{2})?\s*(?:am|pm)?)/i,
+      
+      // Pattern 6: "My name is John Smith, phone 9876543210, book with dr khan"
+      /My\s+name\s+is\s+([a-zA-Z\s]+?),\s+phone\s+(\d{10}),\s+book\s+(?:with\s+)?(?:dr\.?\s*)?([a-zA-Z\s]+?)(?:\s+for\s+(tomorrow|today|day\s+after|next\s+week|monday|tuesday|wednesday|thursday|friday|saturday|sunday))?/i,
+      
+      // Pattern 7: "my name is Adam downshine phone number is 7867456756 book my appointment with doctor khan for tomorrow"
+      /my\s+name\s+is\s+([a-zA-Z\s]+?)\s+phone\s+number\s+is\s+(\d{10})\s+book\s+(?:my\s+)?appointment\s+with\s+(?:doctor\s+|dr\.?\s*)?([a-zA-Z\s]+?)(?:\s+for\s+)?(tomorrow|today|day\s+after|next\s+week|monday|tuesday|wednesday|thursday|friday|saturday|sunday)?/i,
+      
+      // Pattern 8: "my name is John Smith, phone is 9876543210, book appointment with dr khan"
+      /my\s+name\s+is\s+([a-zA-Z\s]+?),\s+phone\s+is\s+(\d{10}),\s+book\s+(?:an?\s+)?appointment\s+with\s+(?:dr\.?\s*)?([a-zA-Z\s]+?)(?:\s+for\s+)?(tomorrow|today|day\s+after|next\s+week|monday|tuesday|wednesday|thursday|friday|saturday|sunday)?/i
+    ];
+    
+    for (let i = 0; i < bookingPatterns.length; i++) {
+      const pattern = bookingPatterns[i];
+      const match = input.match(pattern);
+      if (match) {
+        // Handle different patterns with different match groups
+        if (i === 4) { // Pattern 5: "I am John Smith, book appointment with dr khan..."
+          return {
+            type: 'direct_booking',
+            name: match[1]?.trim(),
+            doctorName: match[2]?.trim(),
+            date: match[3]?.trim() || 'tomorrow',
+            time: match[4]?.trim()
+          };
+        } else if (i === 5) { // Pattern 6: "My name is John Smith, phone 9876543210, book with dr khan"
+          return {
+            type: 'direct_booking',
+            name: match[1]?.trim(),
+            phone: match[2]?.trim(),
+            doctorName: match[3]?.trim(),
+            date: match[4]?.trim() || 'tomorrow',
+            time: null
+          };
+        } else if (i === 6) { // Pattern 7: "my name is Adam downshine phone number is 7867456756 book my appointment with doctor khan for tomorrow"
+          return {
+            type: 'direct_booking',
+            name: match[1]?.trim(),
+            phone: match[2]?.trim(),
+            doctorName: match[3]?.trim(),
+            date: match[4]?.trim() || 'tomorrow',
+            time: null
+          };
+        } else if (i === 7) { // Pattern 8: "my name is John Smith, phone is 9876543210, book appointment with dr khan"
+          return {
+            type: 'direct_booking',
+            name: match[1]?.trim(),
+            phone: match[2]?.trim(),
+            doctorName: match[3]?.trim(),
+            date: match[4]?.trim() || 'tomorrow',
+            time: null
+          };
+        } else {
+          // Standard patterns
+          return {
+            type: 'direct_booking',
+            doctorName: match[1]?.trim(),
+            date: match[2]?.trim() || 'tomorrow',
+            time: match[3]?.trim()
+          };
+        }
+      }
+    }
+    
+    return { type: 'normal_flow' };
+  }
+
+  // Enhanced input handler
+  function handleSmartBookingInput(input) {
+    const parsed = parseDirectBookingRequest(input);
+    
+    switch (parsed.type) {
+      case 'general_question':
+        window.appendSystemLine(`🤖 ${parsed.message}`);
+        window.appendSystemLine('💡 Click on "General Query" in the main menu for medical information.');
+        return true;
+        
+      case 'direct_booking':
+        handleDirectBooking(parsed);
+        return true;
+        
+      case 'normal_flow':
+      default:
+        return false; // Continue with normal flow
+    }
+  }
+
+  // Handle direct booking requests
+  async function handleDirectBooking(parsed) {
+    window.appendSystemLine(`🎯 ${window.tOr("processing_direct_booking", "Processing your direct booking request...")}`);
+    
+    try {
+      // Set name and phone if provided in the request
+      if (parsed.name && validateName(parsed.name)) {
+        bookingData.name = parsed.name;
+        window.appendSystemLine(`✅ ${window.tOr("name_set", "Name set")}: ${parsed.name}`);
+      }
+      
+      if (parsed.phone && validatePhone(parsed.phone)) {
+        bookingData.phone = parsed.phone;
+        window.appendSystemLine(`✅ ${window.tOr("phone_set", "Phone set")}: ${parsed.phone}`);
+      }
+      
+      // Check if we still need name and phone
+      if (!bookingData.name || !bookingData.phone) {
+        window.appendSystemLine(`👤 ${window.tOr("direct_booking_need_details", "For direct booking, I need your details first:")}`);
+        
+        if (!bookingData.name) {
+          currentStep = 1;
+          askName();
+          return;
+        }
+        
+        if (!bookingData.phone) {
+          currentStep = 2;
+          askPhone();
+          return;
+        }
+      }
+      
+      // First, get all doctors to find the matching doctor
+      const doctorsResponse = await fetch("/meta/doctors");
+      const allDoctors = await doctorsResponse.json();
+      
+      // Find doctor by name (case insensitive, partial match)
+      const doctorName = parsed.doctorName.toLowerCase();
+      const matchingDoctor = allDoctors.find(doc => {
+        const docName = (doc.name.en || '').toLowerCase();
+        const docNameHi = (doc.name.hi || '').toLowerCase();
+        const docNameMr = (doc.name.mr || '').toLowerCase();
+        
+        return docName.includes(doctorName) || 
+               docNameHi.includes(doctorName) || 
+               docNameMr.includes(doctorName) ||
+               doctorName.includes(docName.split(' ')[0]) ||
+               doctorName.includes(docNameHi.split(' ')[0]) ||
+               doctorName.includes(docNameMr.split(' ')[0]);
+      });
+      
+      if (!matchingDoctor) {
+        window.appendSystemLine(`❌ ${window.tOr("doctor_not_found", "Doctor not found. Available doctors:")}`);
+        showAvailableDoctors(allDoctors);
+        return;
+      }
+      
+      // Set the doctor in booking data
+      bookingData.doctor_id = matchingDoctor.id;
+      bookingData.doctor_name = matchingDoctor.name[resolveLangKey()] || matchingDoctor.name.en;
+      bookingData.department_id = matchingDoctor.department_id;
+      
+      window.appendSystemLine(`✅ ${window.tOr("doctor_found", "Doctor found")}: ${bookingData.doctor_name}`);
+      
+      // Handle date
+      const requestedDate = parseDate(parsed.date);
+      if (!requestedDate) {
+        window.appendSystemLine(`📅 ${window.tOr("select_date", "Please select an available date:")}`);
+        askDate();
+        return;
+      }
+      
+      bookingData.date = requestedDate;
+      
+      // Handle time if provided
+      if (parsed.time) {
+        const requestedTime = parseTime(parsed.time);
+        if (requestedTime) {
+          await handleTimeSlotRequest(requestedDate, requestedTime, matchingDoctor.id);
+        } else {
+          window.appendSystemLine(`⏰ ${window.tOr("invalid_time", "Invalid time format. Please select from available slots:")}`);
+          showTimeSlotsForDate(requestedDate, matchingDoctor.id);
+        }
+      } else {
+        window.appendSystemLine(`⏰ ${window.tOr("select_time", "Please select an available time slot:")}`);
+        showTimeSlotsForDate(requestedDate, matchingDoctor.id);
+      }
+      
+    } catch (error) {
+      console.error("Direct booking error:", error);
+      window.appendSystemLine(`❌ ${window.tOr("booking_error", "Error processing booking request. Please try again.")}`);
+    }
+  }
+
+  // Parse date from natural language
+  function parseDate(dateStr) {
+    if (!dateStr) return null;
+    
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const dayAfter = new Date(today);
+    dayAfter.setDate(dayAfter.getDate() + 2);
+    
+    const dateMap = {
+      'today': today,
+      'tomorrow': tomorrow,
+      'day after': dayAfter,
+      'day after tomorrow': dayAfter
+    };
+    
+    const dayNames = {
+      'monday': 1, 'tuesday': 2, 'wednesday': 3, 'thursday': 4,
+      'friday': 5, 'saturday': 6, 'sunday': 0
+    };
+    
+    const lowerDate = dateStr.toLowerCase();
+    
+    if (dateMap[lowerDate]) {
+      return dateMap[lowerDate].toISOString().split('T')[0];
+    }
+    
+    // Handle day names (find next occurrence)
+    if (dayNames[lowerDate] !== undefined) {
+      const targetDay = dayNames[lowerDate];
+      const currentDay = today.getDay();
+      let daysToAdd = targetDay - currentDay;
+      if (daysToAdd <= 0) daysToAdd += 7; // Next week
+      
+      const targetDate = new Date(today);
+      targetDate.setDate(today.getDate() + daysToAdd);
+      return targetDate.toISOString().split('T')[0];
+    }
+    
+    return null;
+  }
+
+  // Parse time from natural language
+  function parseTime(timeStr) {
+    if (!timeStr) return null;
+    
+    // Remove spaces and convert to lowercase
+    const cleanTime = timeStr.replace(/\s/g, '').toLowerCase();
+    
+    // Handle formats like "12:30pm", "12pm", "12:30", "12"
+    const timePattern = /^(\d{1,2})(?::(\d{2}))?\s*(am|pm)?$/;
+    const match = cleanTime.match(timePattern);
+    
+    if (!match) return null;
+    
+    let hours = parseInt(match[1]);
+    const minutes = match[2] ? parseInt(match[2]) : 0;
+    const period = match[3];
+    
+    // Convert to 24-hour format
+    if (period === 'pm' && hours !== 12) {
+      hours += 12;
+    } else if (period === 'am' && hours === 12) {
+      hours = 0;
+    }
+    
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+  }
+
+  // Show available doctors when direct match fails
+  function showAvailableDoctors(doctors) {
+    const chatInputCard = document.querySelector(".chat-input-card");
+    if (chatInputCard) chatInputCard.classList.add("hidden");
+    
+    let docCards = document.createElement("div");
+    docCards.className = "menu-cards";
+    
+    doctors.forEach(doc => {
+      let card = document.createElement("div");
+      card.className = "menu-card doctor-card";
+      
+      let photoUrl = "/static/images/default-doctor.png";
+      if (doc.photo) {
+        photoUrl = `/static/uploads/doctors/${doc.photo}`;
+      }
+      
+      card.innerHTML = `
+        <div class="doctor-card-content">
+          <div class="doctor-photo">
+            <img src="${photoUrl}" alt="${doc.name[resolveLangKey()] || doc.name.en}" 
+                 onerror="this.src='/static/images/default-doctor.png'">
+          </div>
+          <div class="doctor-info">
+            <strong class="doctor-name">${doc.name[resolveLangKey()] || doc.name.en}</strong><br>
+            <span class="doctor-education">${doc.education || ""}</span><br>
+            <span class="doctor-experience">${doc.experience || ""}</span><br>
+            <span class="doctor-fees">Fees: ₹${doc.fees || ""}</span>
+          </div>
+        </div>
+      `;
+      
+      card.addEventListener("click", () => {
+        bookingData.doctor_id = doc.id;
+        bookingData.doctor_name = doc.name[resolveLangKey()] || doc.name.en;
+        bookingData.department_id = doc.department_id;
+        window.appendUserLine(doc.name[resolveLangKey()] || doc.name.en);
+        saveState();
+        askDate();
+        if (chatInputCard) chatInputCard.classList.remove("hidden");
+      });
+      
+      docCards.appendChild(card);
+    });
+    
+    document.getElementById("chatMessages").appendChild(docCards);
+    document.getElementById("chatMessages").scrollTop = document.getElementById("chatMessages").scrollHeight;
+  }
+
+  // Handle specific time slot request
+  async function handleTimeSlotRequest(date, requestedTime, doctorId) {
+    try {
+      const response = await fetch(`/meta/slots?doctor_id=${doctorId}&date=${date}`);
+      const data = await response.json();
+      const availableSlots = data.slots || [];
+      
+      // Find exact time match
+      const exactMatch = availableSlots.find(slot => slot.value === requestedTime);
+      
+      if (exactMatch) {
+        // Time slot is available - proceed with booking
+        bookingData.time = exactMatch.value;
+        bookingData.time_display = exactMatch.display;
+        
+        window.appendSystemLine(`✅ ${window.tOr("time_available", "Great! Time slot is available")}: ${exactMatch.display}`);
+        window.appendSystemLine(`📅 ${window.tOr("date_confirmed", "Date confirmed")}: ${formatDate(date)}`);
+        
+        // Skip to confirmation since we have all required info
+        currentStep = 7;
+        saveState();
+        confirmAppointmentPrompt();
+      } else {
+        // Time slot not available - show alternatives
+        window.appendSystemLine(`❌ ${window.tOr("time_not_available", "Requested time slot is not available.")}`);
+        window.appendSystemLine(`💡 ${window.tOr("alternative_times", "Here are the available time slots for")} ${formatDate(date)}:`);
+        
+        showTimeSlotsForDate(date, doctorId);
+      }
+    } catch (error) {
+      console.error("Time slot check error:", error);
+      window.appendSystemLine(`❌ ${window.tOr("time_check_error", "Error checking time slots. Please try again.")}`);
+    }
+  }
+
+  // Show time slots for a specific date
+  async function showTimeSlotsForDate(date, doctorId) {
+    const chatInputCard = document.querySelector(".chat-input-card");
+    if (chatInputCard) chatInputCard.classList.add("hidden");
+    
+    try {
+      const response = await fetch(`/meta/slots?doctor_id=${doctorId}&date=${date}`);
+      const data = await response.json();
+      const availableSlots = data.slots || [];
+      
+      if (availableSlots.length === 0) {
+        window.appendSystemLine(`❌ ${window.tOr("no_slots_available", "No available time slots for this date.")}`);
+        window.appendSystemLine(`📅 ${window.tOr("try_another_date", "Please try another date:")}`);
+        askDate();
+        return;
+      }
+      
+      let timeCards = document.createElement("div");
+      timeCards.className = "menu-cards";
+      
+      availableSlots.forEach(slot => {
+        let card = document.createElement("div");
+        card.className = "menu-card";
+        card.innerHTML = `⏰ ${slot.display}`;
+        
+        card.addEventListener("click", () => {
+          bookingData.time = slot.value;
+          bookingData.time_display = slot.display;
+          window.appendUserLine(slot.display);
+          saveState();
+          confirmAppointmentPrompt();
+          if (chatInputCard) chatInputCard.classList.remove("hidden");
+        });
+        
+        timeCards.appendChild(card);
+      });
+      
+      document.getElementById("chatMessages").appendChild(timeCards);
+      document.getElementById("chatMessages").scrollTop = document.getElementById("chatMessages").scrollHeight;
+      
+      currentStep = 6;
+      saveState();
+      
+    } catch (error) {
+      console.error("Error fetching time slots:", error);
+      window.appendSystemLine(`❌ ${window.tOr("error_loading_slots", "Error loading time slots. Please try again.")}`);
+    }
+  }
+
+  // Format date for display
+  function formatDate(dateStr) {
+    const date = new Date(dateStr);
+    const options = { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    };
+    return date.toLocaleDateString(window.currentLang === 'hindi' ? 'hi-IN' : 
+                                   window.currentLang === 'marathi' ? 'mr-IN' : 'en-US', options);
+  }
+
   function askName() {
-    window.appendSystemLine(window.tOr("booking_ask_name", "Please enter your full name:"));
+    window.appendSystemLine(`👤 ${window.tOr("booking_ask_name", "Please enter your full name:")}`);
     currentStep = 1; saveState();
     // Ensure regular chat input is visible
     document.getElementById("chatInput").classList.remove("hidden");
@@ -28,7 +478,7 @@
   }
 
   function askPhone() {
-    window.appendSystemLine(window.tOr("booking_ask_phone", "Please enter your 10-digit phone number:"));
+    window.appendSystemLine(`📱 ${window.tOr("booking_ask_phone", "Please enter your 10-digit phone number:")}`);
     currentStep = 2; saveState();
     // Ensure regular chat input is visible
     document.getElementById("chatInput").classList.remove("hidden");
@@ -44,7 +494,7 @@
     const chatInputCard = document.querySelector(".chat-input-card");
     if (chatInputCard) chatInputCard.classList.add("hidden"); // Hide input card for menu selection
 
-    window.appendSystemLine(window.tOr("booking_select_department", "Please select a department:"));
+    window.appendSystemLine(`🏥 ${window.tOr("booking_select_department", "Please select a department:")}`);
     currentStep = 3; saveState();
 
     fetch("/meta/departments")
@@ -55,7 +505,7 @@
         departments.forEach(dept => {
           let card = document.createElement("div");
           card.className = "menu-card";
-          card.textContent = dept.name[resolveLangKey()] || dept.name.en;
+          card.innerHTML = `🏥 ${dept.name[resolveLangKey()] || dept.name.en}`;
           card.addEventListener("click", () => {
             bookingData.department_id = dept.id;
             bookingData.department_name = dept.name[resolveLangKey()] || dept.name.en;
@@ -87,7 +537,7 @@
     const chatInputCard = document.querySelector(".chat-input-card");
     if (chatInputCard) chatInputCard.classList.add("hidden"); // Hide input card for menu selection
 
-    window.appendSystemLine(window.tOr("booking_select_doctor", "Please select a doctor:"));
+    window.appendSystemLine(`👨‍⚕️ ${window.tOr("booking_select_doctor", "Please select a doctor:")}`);
     currentStep = 4; saveState();
 
     fetch(`/meta/doctors?department_id=${bookingData.department_id}`)
@@ -97,13 +547,27 @@
         docCards.className = "menu-cards"; // Reuse menu-cards style for doctor selection
         doctors.forEach(doc => {
           let card = document.createElement("div");
-          card.className = "menu-card";
+          card.className = "menu-card doctor-card";
+          
+          // Create doctor photo URL
+          let photoUrl = "/static/images/default-doctor.png"; // Default photo
+          if (doc.photo) {
+            photoUrl = `/static/uploads/doctors/${doc.photo}`;
+          }
+          
           card.innerHTML = `
-            <strong>${doc.name[resolveLangKey()] || doc.name.en
-            }</strong><br>
-            ${doc.education || ""}<br>
-            ${doc.experience || ""}<br>
-            Fees: ${doc.fees || ""}
+            <div class="doctor-card-content">
+              <div class="doctor-photo">
+                <img src="${photoUrl}" alt="${doc.name[resolveLangKey()] || doc.name.en}" 
+                     onerror="this.src='/static/images/default-doctor.png'">
+              </div>
+              <div class="doctor-info">
+                <strong class="doctor-name">${doc.name[resolveLangKey()] || doc.name.en}</strong><br>
+                <span class="doctor-education">${doc.education || ""}</span><br>
+                <span class="doctor-experience">${doc.experience || ""}</span><br>
+                <span class="doctor-fees">Fees: ₹${doc.fees || ""}</span>
+              </div>
+            </div>
           `;
           card.addEventListener("click", () => {
             bookingData.doctor_id = doc.id;
@@ -133,7 +597,7 @@
       return; 
     }
 
-    window.appendSystemLine(window.tOr("booking_select_date", "Please select an available date:"));
+    window.appendSystemLine(`📅 ${window.tOr("booking_select_date", "Please select an available date:")}`);
 
     const datePickerInput = document.getElementById("appointmentDatePicker");
     document.getElementById("chatInput").classList.remove("hidden");
@@ -248,7 +712,7 @@
     const chatInputCard = document.querySelector(".chat-input-card");
     if (chatInputCard) chatInputCard.classList.add("hidden"); // Hide input card for menu selection
   
-    window.appendSystemLine(window.tOr("booking_select_time_slot", "Please select an available time slot:"));
+    window.appendSystemLine(`⏰ ${window.tOr("booking_select_time_slot", "Please select an available time slot:")}`);
   
     fetch(`/meta/slots?doctor_id=${bookingData.doctor_id}&date=${bookingData.date}`)
       .then(res => {
@@ -278,7 +742,7 @@
           // slot = { value: "14:00", display: "02:00 PM" }
           let card = document.createElement("div");
           card.className = "menu-card";
-          card.textContent = slot.display;   // Show nice 12hr format
+          card.innerHTML = `⏰ ${slot.display}`;   // Show nice 12hr format with icon
   
           card.addEventListener("click", () => {
             bookingData.time = slot.value;   // Store backend format
@@ -306,7 +770,7 @@
   
 
   function confirmAppointmentPrompt() {
-    window.appendSystemLine(window.tOr("booking_confirm_appointment", "Please confirm your appointment:"));
+    window.appendSystemLine(`✅ ${window.tOr("booking_confirm_appointment", "Please confirm your appointment:")}`);
     let previewCard = document.createElement("div");
     previewCard.className = "preview-card-3d";
     previewCard.innerHTML = `
@@ -323,13 +787,16 @@
 
     let confirmBtns = document.createElement("div");
     confirmBtns.className = "menu-cards"; // Reuse menu-cards style for confirmation
-    [window.tOr("choice_yes", "Yes"), window.tOr("choice_no", "No")].forEach(choice => {
+    [
+      {text: window.tOr("choice_yes", "Yes"), icon: "✅"},
+      {text: window.tOr("choice_no", "No"), icon: "❌"}
+    ].forEach(choice => {
       let btn = document.createElement("div");
       btn.className = "menu-card";
-      btn.textContent = choice;
+      btn.innerHTML = `${choice.icon} ${choice.text}`;
       btn.addEventListener("click", () => {
-        window.appendUserLine(choice);
-        if (choice === window.tOr("choice_yes", "Yes")) {
+        window.appendUserLine(choice.text);
+        if (choice.text === window.tOr("choice_yes", "Yes")) {
             saveAppointment();
         } else {
             window.appendSystemLine(window.tOr("booking_cancelled", "Booking cancelled."));
@@ -448,6 +915,12 @@
   }
 
   function handleBookingInput(val) {
+    // First, try smart input parsing for direct booking or general questions
+    if (handleSmartBookingInput(val)) {
+      return; // Smart handler processed the input
+    }
+    
+    // Continue with normal step-by-step flow
     if (currentStep === 1) {
       if (!validateName(val)) { window.appendSystemLine(window.tOr("booking_invalid_name", "Invalid name. Please enter again.")); return; }
       bookingData.name = val; saveState(); askPhone();

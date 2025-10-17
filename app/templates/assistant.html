@@ -4,10 +4,13 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>XYZ Hospital - Assistant</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/ai-icon.css') }}">
 <style>
   body[data-page="assistant"] {
-    background: linear-gradient(135deg, #f5f8ff, #e0f0ff);
+    background: linear-gradient(135deg, #87CEEB 0%, #B0E0E6 25%, #E0F6FF 50%, #F0F8FF 75%, #87CEEB 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
     font-family: system-ui, "-apple-system", "Segoe UI", "Roboto", "Ubuntu", "Helvetica Neue", Arial;
     margin: 0;
     min-height: 100vh;
@@ -105,6 +108,13 @@
   @media (max-width: 480px) {
     .assistant-options { flex-direction: column; gap: 12px; }
   }
+
+  /* Gradient Animation */
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
 </style>
 </head>
 <body data-page="assistant">
@@ -112,8 +122,15 @@
 <div class="assistant-container">
   <!-- Header -->
   <div class="assistant-header">
-    <h1 id="hospitalName">XYZ Hospital</h1>
-    <h2>Our Assistant – Please choose an option</h2>
+    <div class="title-with-ai">
+      <div class="ai-doctor-icon">
+        <i class="fas fa-user-md"></i>
+        <div class="ai-pulse"></div>
+        <div class="ai-circuit"></div>
+      </div>
+      <h1 id="hospitalName">XYZ Hospital</h1>
+    </div>
+    <h2>Our AI Assistant – Please choose an option</h2>
     <span class="lang-pill" id="currentLangPill"></span>
   </div>
   <div class="assistant-header">

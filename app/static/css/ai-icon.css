@@ -1,0 +1,244 @@
+/* ===== AI ICON COMPONENT STYLES ===== */
+
+/* AI Doctor Icon Styles */
+.ai-doctor-icon {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #4682B4, #87CEEB, #B0E0E6);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 
+    0 6px 20px rgba(70, 130, 180, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  animation: floatIcon 3s ease-in-out infinite;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.ai-doctor-icon::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transform: rotate(45deg);
+  animation: shineIcon 3s ease-in-out infinite;
+}
+
+.ai-doctor-icon i {
+  font-size: 24px;
+  color: white;
+  z-index: 2;
+  position: relative;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.ai-pulse {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+  border: 2px solid rgba(135, 206, 235, 0.3);
+  border-radius: 50%;
+  animation: pulseIcon 2s ease-in-out infinite;
+}
+
+.ai-pulse::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100px;
+  height: 100px;
+  border: 1px solid rgba(135, 206, 235, 0.2);
+  border-radius: 50%;
+  animation: pulseIcon 2s ease-in-out infinite 0.5s;
+}
+
+.ai-circuit {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 16px;
+  background: 
+    linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%),
+    linear-gradient(-45deg, transparent 30%, rgba(255, 255, 255, 0.05) 50%, transparent 70%);
+  animation: circuitFlow 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.ai-circuit::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 6px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  animation: blink 1.5s ease-in-out infinite;
+}
+
+.ai-circuit::after {
+  content: '';
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  width: 4px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  animation: blink 1.5s ease-in-out infinite 0.7s;
+}
+
+/* Icon Animations */
+@keyframes floatIcon {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes shineIcon {
+  0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+  100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+@keyframes pulseIcon {
+  0% { 
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 1;
+  }
+  100% { 
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 0;
+  }
+}
+
+@keyframes circuitFlow {
+  0%, 100% { 
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% { 
+    opacity: 0.7;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+/* Title with AI Icon Container */
+.title-with-ai {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.title-with-ai h1,
+.title-with-ai h2,
+.title-with-ai h3 {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Responsive Design for AI Icon */
+@media (max-width: 768px) {
+  .ai-doctor-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+  }
+  
+  .ai-doctor-icon i {
+    font-size: 20px;
+  }
+  
+  .ai-pulse {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .ai-pulse::before {
+    width: 90px;
+    height: 90px;
+  }
+  
+  .title-with-ai {
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .ai-doctor-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+  }
+  
+  .ai-doctor-icon i {
+    font-size: 16px;
+  }
+  
+  .ai-pulse {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .ai-pulse::before {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .title-with-ai {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .title-with-ai h1,
+  .title-with-ai h2,
+  .title-with-ai h3 {
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .ai-doctor-icon {
+    background: linear-gradient(135deg, #000080, #4169E1, #87CEEB);
+    border: 2px solid #000;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .ai-doctor-icon,
+  .ai-pulse,
+  .ai-circuit {
+    animation: none;
+  }
+  
+  .ai-doctor-icon::before,
+  .ai-pulse::before,
+  .ai-circuit::before,
+  .ai-circuit::after {
+    animation: none;
+  }
+}

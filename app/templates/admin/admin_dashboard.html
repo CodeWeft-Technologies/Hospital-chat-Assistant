@@ -2,175 +2,799 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Admin Dashboard</title>
+  <title>Admin Dashboard - XYZ Hospital</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            'sky-blue-light': '#87CEEB',
-            'lavender-light': '#E6E6FA',
-            'mint-light': '#AAF0D1',
-            'sidebar-bg': '#dbeafe',
-            'yellow-bell': '#FFD700',
-            'yellow-bell-dark': '#CCAC00',
-          },
-          fontFamily: {
-            sans: ['Inter', 'sans-serif']
-          }
-        }
-      }
-    }
-  </script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/ai-icon.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/admin-modern.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
   <style>
-    body {
-      background: linear-gradient(to right, #87CEEB, #ffffff, #E6E6FA);
-      min-height: 100vh;
-      font-family: 'Inter', sans-serif;
+    /* Notification Backdrop */
+    .notification-backdrop {
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      animation: fadeIn 0.3s ease-out;
+      z-index: 9999 !important;
     }
-    .sidebar-link { display: block; font-weight: 700; padding: 0.5rem 1rem; border-radius: 0.5rem; transition: all 0.2s ease-in-out; }
-    .sidebar-link:hover { background-color: #bfdbfe; transform: translateX(5px); }
-    .sidebar-link.active { background-color: #93c5fd; color: #1e40af; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-    @keyframes bellRing {
-      0% { transform: rotate(0deg); }
-      15% { transform: rotate(15deg); }
-      30% { transform: rotate(-15deg); }
-      45% { transform: rotate(10deg); }
-      60% { transform: rotate(-10deg); }
-      75% { transform: rotate(5deg); }
-      100% { transform: rotate(0deg); }
-    }
-    .animate-bell { animation: bellRing 1s ease-in-out; }
-    .notification-dot { position: absolute; top: 0px; right: 0px; width: 10px; height: 10px; background-color: red; border-radius: 50%; display: none; }
 
-    /* CSS for 3D Flip Card */
-    .card-3d {
-      perspective: 1000px; /* Establishes the 3D space */
+    .notification-backdrop.hidden {
+      animation: fadeOut 0.3s ease-out;
     }
-    .card-3d > div {
-        /* This is the inner container that flips */
-        transform-style: preserve-3d;
-        transition: transform 0.7s;
+
+    /* 3D Modern Notification System */
+    .notification-panel-3d {
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.98));
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 24px;
+      box-shadow: 
+        0 25px 50px rgba(0, 0, 0, 0.25),
+        0 10px 20px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      position: relative;
+      overflow: hidden;
+      animation: slideInFromTopRight 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      max-height: 80vh;
+      z-index: 10000 !important;
     }
-    .card-3d.flipped > div {
-        transform: rotateY(180deg);
+
+    /* Ensure notification panel appears on top */
+    #dashboardNotificationPanel {
+      z-index: 10000 !important;
+      position: fixed !important;
+      top: 4rem !important;
+      right: 1.5rem !important;
+      width: 24rem !important;
+      max-width: 90vw !important;
     }
-    .card-face {
+
+    /* Ensure backdrop covers everything */
+    #notificationBackdrop {
+      z-index: 9999 !important;
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      bottom: 0 !important;
+    }
+
+    .notification-panel-3d::before {
+      content: '';
       position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, #3b82f6, #8b5cf6, #06b6d4, #10b981, #f59e0b);
+      border-radius: 24px 24px 0 0;
+    }
+
+    .notification-header-3d {
+      padding: 1.5rem 1.5rem 1rem;
+      border-bottom: 2px solid rgba(59, 130, 246, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(145deg, #f8fafc, #f1f5f9);
+    }
+
+    .notification-title-section {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .notification-icon-3d {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1rem;
+      box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+      animation: pulse 2s infinite;
+    }
+
+    .notification-title-3d {
+      font-size: 1.125rem;
+      font-weight: 800;
+      color: #1f2937;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin: 0;
+    }
+
+    .notification-close-3d {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(145deg, #f3f4f6, #e5e7eb);
+      border: none;
+      border-radius: 8px;
+      color: #6b7280;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .notification-close-3d:hover {
+      background: linear-gradient(145deg, #fee2e2, #fecaca);
+      color: #dc2626;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(220, 38, 38, 0.2);
+    }
+
+    .notification-content-3d {
+      max-height: 400px;
+      overflow-y: auto;
+      padding: 0;
+    }
+
+    .notification-list-3d {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .notification-item-3d {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid rgba(229, 231, 235, 0.5);
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      background: linear-gradient(145deg, #ffffff, #f8fafc);
+    }
+
+    .notification-item-3d:last-child {
+      border-bottom: none;
+    }
+
+    .notification-item-3d:hover {
+      background: linear-gradient(145deg, #f1f5f9, #e2e8f0);
+      transform: translateX(4px);
+      box-shadow: inset 4px 0 0 #3b82f6;
+    }
+
+    .notification-item-3d.unread {
+      background: linear-gradient(145deg, #eff6ff, #dbeafe);
+      border-left: 4px solid #3b82f6;
+    }
+
+    .notification-item-3d.unread::before {
+      content: '';
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      width: 8px;
+      height: 8px;
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      border-radius: 50%;
+      box-shadow: 0 0 8px rgba(59, 130, 246, 0.6);
+    }
+
+    .notification-content-wrapper {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+
+    .notification-actions-wrapper {
+      display: flex;
+      gap: 0.5rem;
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+
+    .notification-action-btn {
+      width: 32px;
+      height: 32px;
+      border: none;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-size: 0.875rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .notification-action-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .notification-action-btn.confirm-btn {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+    }
+
+    .notification-action-btn.confirm-btn:hover {
+      background: linear-gradient(135deg, #059669, #047857);
+      box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
+    }
+
+    .notification-action-btn.mark-read-btn {
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      color: white;
+    }
+
+    .notification-action-btn.mark-read-btn:hover {
+      background: linear-gradient(135deg, #1d4ed8, #1e40af);
+      box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+    }
+
+    .notification-icon-wrapper {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.875rem;
+      flex-shrink: 0;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .notification-icon-wrapper.new {
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      color: white;
+    }
+
+    .notification-icon-wrapper.updated {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: white;
+    }
+
+    .notification-icon-wrapper.cancelled {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: white;
+    }
+
+    .notification-details {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .notification-type-3d {
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: #374151;
+      margin-bottom: 0.25rem;
+      text-transform: uppercase;
+      letter-spacing: 0.025em;
+    }
+
+    .notification-patient-3d {
+      font-size: 0.875rem;
+      color: #6b7280;
+      margin-bottom: 0.25rem;
+      font-weight: 500;
+    }
+
+    .notification-meta-3d {
+      font-size: 0.75rem;
+      color: #9ca3af;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .notification-status-badge-3d {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.5rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.025em;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .notification-status-badge-3d.confirmed {
+      background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+      color: #065f46;
+      border: 1px solid #10b981;
+    }
+
+    .notification-status-badge-3d.pending {
+      background: linear-gradient(135deg, #fef3c7, #fde68a);
+      color: #92400e;
+      border: 1px solid #f59e0b;
+    }
+
+    .notification-status-badge-3d.cancelled {
+      background: linear-gradient(135deg, #fee2e2, #fecaca);
+      color: #991b1b;
+      border: 1px solid #ef4444;
+    }
+
+    .notification-status-badge-3d.completed {
+      background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+      color: #1e40af;
+      border: 1px solid #3b82f6;
+    }
+
+    .notification-actions-3d {
+      padding: 1rem 1.5rem;
+      border-top: 2px solid rgba(59, 130, 246, 0.1);
+      background: linear-gradient(145deg, #f8fafc, #f1f5f9);
+    }
+
+    .btn-mark-all-3d {
+      width: 100%;
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      font-weight: 700;
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      border: none;
+      box-shadow: 
+        0 4px 8px rgba(16, 185, 129, 0.3),
+        0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+    }
+
+    .btn-mark-all-3d::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
       width: 100%;
       height: 100%;
-      backface-visibility: hidden;
-      -webkit-backface-visibility: hidden; /* For Safari */
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s ease;
     }
-    .card-face-back {
-        transform: rotateY(180deg);
+
+    .btn-mark-all-3d:hover::before {
+      left: 100%;
+    }
+
+    .btn-mark-all-3d:hover {
+      transform: translateY(-2px);
+      box-shadow: 
+        0 6px 12px rgba(16, 185, 129, 0.4),
+        0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-mark-all-3d:active {
+      transform: translateY(-1px);
+      box-shadow: 
+        0 3px 6px rgba(16, 185, 129, 0.3),
+        0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Enhanced Notification Bell */
+    .notification-bell {
+      position: relative;
+      cursor: pointer;
+      padding: 0.75rem;
+      border-radius: 12px;
+      background: linear-gradient(145deg, #ffffff, #f8fafc);
+      box-shadow: 
+        0 4px 8px rgba(0, 0, 0, 0.1),
+        0 2px 4px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .notification-bell:hover {
+      transform: translateY(-2px);
+      box-shadow: 
+        0 8px 16px rgba(0, 0, 0, 0.15),
+        0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .notification-bell i {
+      font-size: 1.25rem;
+      color: #6b7280;
+      transition: all 0.3s ease;
+    }
+
+    .notification-bell:hover i {
+      color: #3b82f6;
+      transform: scale(1.1);
+    }
+
+    .notification-dot {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      width: 12px;
+      height: 12px;
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      border-radius: 50%;
+      border: 2px solid white;
+      box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
+      animation: pulse-dot 2s infinite;
+    }
+
+    /* Animations */
+    @keyframes slideInFromRight {
+      from {
+        opacity: 0;
+        transform: translateX(100px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes slideInFromTopRight {
+      from {
+        opacity: 0;
+        transform: translate(50px, -50px) scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: translate(0, 0) scale(1);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeOut {
+      from {
+        opacity: 1;
+      }
+      to {
+        opacity: 0;
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.2);
+        opacity: 0.8;
+      }
+    }
+
+    @keyframes animate-bell {
+      0%, 100% {
+        transform: rotate(0deg);
+      }
+      25% {
+        transform: rotate(10deg);
+      }
+      75% {
+        transform: rotate(-10deg);
+      }
+    }
+
+    .animate-bell {
+      animation: animate-bell 0.5s ease-in-out;
+    }
+
+    /* Empty State */
+    .notification-empty-3d {
+      padding: 2rem 1.5rem;
+      text-align: center;
+      color: #6b7280;
+    }
+
+    .notification-empty-icon-3d {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(145deg, #f3f4f6, #e5e7eb);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      color: #9ca3af;
+      font-size: 1.25rem;
+    }
+
+    .notification-empty-text-3d {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #6b7280;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      #dashboardNotificationPanel {
+        top: 4rem;
+        right: 1rem;
+        left: 1rem;
+        width: calc(100vw - 2rem);
+      }
+
+      .notification-panel-3d {
+        max-height: 70vh;
+      }
+
+      .notification-header-3d {
+        padding: 1rem;
+      }
+
+      .notification-item-3d {
+        padding: 0.875rem 1rem;
+      }
+
+      .notification-actions-3d {
+        padding: 0.875rem 1rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      #dashboardNotificationPanel {
+        top: 3rem;
+      }
+
+      .notification-panel-3d {
+        max-height: 60vh;
+      }
+    }
+
+    /* Scrollbar Styling */
+    .notification-content-3d::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .notification-content-3d::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.05);
+      border-radius: 3px;
+    }
+
+    .notification-content-3d::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      border-radius: 3px;
+    }
+
+    .notification-content-3d::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(135deg, #1d4ed8, #1e40af);
     }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 </head>
-<body class="flex min-h-screen">
-  <aside class="w-64 bg-sidebar-bg p-6 space-y-4 shadow-lg rounded-r-xl">
-    <div class="text-2xl font-bold text-blue-800">Admin Panel</div>
-    <nav>
-      <a href="{{ url_for('admin_bp.admin_dashboard') }}" class="sidebar-link active">Dashboard</a>
-      <a href="{{ url_for('admin_bp.departments') }}" class="sidebar-link">Departments</a>
-      <a href="{{ url_for('admin_bp.doctors') }}" class="sidebar-link">Doctors</a>
-      <a href="{{ url_for('admin_bp.appointments') }}" class="sidebar-link">Appointments</a>
-      <a href="{{ url_for('admin_bp.profile') }}" class="sidebar-link">Profile</a>
-      <a href="{{ url_for('admin_bp.change_password') }}" class="sidebar-link">Change Password</a>
-      <a href="{{ url_for('admin_bp.logout') }}" class="sidebar-link">Logout</a>
+<body>
+  <!-- Modern 3D Sidebar -->
+  <aside class="modern-sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <div class="ai-doctor-icon">
+          <i class="fas fa-user-md"></i>
+          <div class="ai-pulse"></div>
+          <div class="ai-circuit"></div>
+        </div>
+        <h1>Admin Panel</h1>
+      </div>
+    </div>
+    
+    <nav class="sidebar-nav">
+      <div class="nav-item">
+        <a href="{{ url_for('admin_bp.admin_dashboard') }}" class="nav-link active">
+          <i class="fas fa-tachometer-alt nav-icon"></i>
+          <span>Dashboard</span>
+        </a>
+      </div>
+      <div class="nav-item">
+        <a href="{{ url_for('admin_bp.departments') }}" class="nav-link">
+          <i class="fas fa-building nav-icon"></i>
+          <span>Departments</span>
+        </a>
+      </div>
+      <div class="nav-item">
+        <a href="{{ url_for('admin_bp.doctors') }}" class="nav-link">
+          <i class="fas fa-user-md nav-icon"></i>
+          <span>Doctors</span>
+        </a>
+      </div>
+      <div class="nav-item">
+        <a href="{{ url_for('admin_bp.appointments') }}" class="nav-link">
+          <i class="fas fa-calendar-alt nav-icon"></i>
+          <span>Appointments</span>
+        </a>
+      </div>
+      <div class="nav-item">
+        <a href="{{ url_for('admin_bp.profile') }}" class="nav-link">
+          <i class="fas fa-hospital nav-icon"></i>
+          <span>Hospital Profile</span>
+        </a>
+      </div>
+      <div class="nav-item">
+        <a href="{{ url_for('admin_bp.change_password') }}" class="nav-link">
+          <i class="fas fa-key nav-icon"></i>
+          <span>Change Password</span>
+        </a>
+      </div>
+      <div class="nav-item">
+        <a href="{{ url_for('admin_bp.logout') }}" class="nav-link">
+          <i class="fas fa-sign-out-alt nav-icon"></i>
+          <span>Logout</span>
+        </a>
+      </div>
     </nav>
   </aside>
 
-  <main class="flex-1 p-8 flex flex-col items-center">
-    <header class="flex items-center mb-8 w-full">
-      <h1 class="flex-grow text-4xl font-bold text-gray-800 text-center">Admin Dashboard</h1>
-      <div id="notificationBellContainer" class="relative flex items-center justify-center w-16 h-16 bg-blue-200 rounded-full shadow-md cursor-pointer hover:bg-blue-300 transition-colors duration-200">
-        <svg id="dashboardNotificationIcon" class="w-10 h-10 text-yellow-bell" fill="currentColor" viewBox="0 0 20 20">
-          <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"></path>
-        </svg>
-        <span id="notificationDot" class="notification-dot"></span>
-        <div id="dashboardNotificationPanel" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl z-10 p-4 text-left">
-          <h3 class="text-lg font-semibold mb-3">Notifications</h3>
-          <ul id="notificationList" class="space-y-2"></ul>
-          <button id="markAllAsReadButton" class="w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600 mb-2">Mark All as Read</button>
-          <button id="closeNotificationPanel" class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600">Close</button>
+  <!-- Main Content Area -->
+  <main class="main-content">
+    <!-- Header -->
+    <header class="main-header">
+      <div class="header-title">
+        <div class="ai-doctor-icon">
+          <i class="fas fa-tachometer-alt"></i>
+          <div class="ai-pulse"></div>
+          <div class="ai-circuit"></div>
         </div>
+        <h1>Hospital Analytics Dashboard</h1>
       </div>
-      <div id="appointmentDetailsCard" class="fixed inset-0 bg-gray-600 bg-opacity-75 hidden flex items-center justify-center p-4 z-50">
-        <div class="relative w-full max-w-lg h-96 card-3d">
-          <div id="card3d" class="absolute inset-0 transition-transform duration-700 ease-in-out"> 
-            
-            <div class="absolute inset-0 bg-white rounded-lg shadow-xl p-6 card-face">
-              <h3 class="text-xl font-bold mb-4 text-blue-800">Appointment Details</h3>
-              
-              <div class="space-y-2 text-sm">
-                <p><strong>Patient Name:</strong> <span id="appointmentDetailName">N/A</span></p>
-                <p><strong>Phone:</strong> <span id="appointmentDetailPhone">N/A</span></p>
-                <p><strong>Department:</strong> <span id="appointmentDetailDept">N/A</span></p>
-                <p><strong>Doctor:</strong> <span id="appointmentDetailDoctor">N/A</span></p>
-                <p><strong>Date:</strong> <span id="appointmentDetailDate">N/A</span></p>
-                <p><strong>Time:</strong> <span id="appointmentDetailTime">N/A</span></p>
-                <p><strong>Status:</strong> <span id="appointmentDetailStatus" class="font-semibold">N/A</span></p>
-                <p class="pt-2 border-t mt-2"><strong>Notification Status:</strong> <span id="appointmentDetailNotificationStatus" class="font-bold">N/A</span></p>
-                <p><strong>Created At:</strong> <span id="appointmentDetailCreated">N/A</span></p>
-              </div>
-              
-              <div class="absolute bottom-4 left-6 right-6 flex justify-between space-x-2">
-                <button id="closeDetailsCardButton" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition">Close</button>
-                <button id="flipCardButton" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">View Actions</button>
-              </div>
-            </div>
-      
-            <div class="absolute inset-0 bg-gray-100 rounded-lg shadow-xl p-6 card-face card-face-back">
-              <h3 class="text-xl font-bold mb-4 text-gray-800">Actions</h3>
-              
-              <p class="text-sm">This is where you would place buttons to Approve, Cancel, or Reassign the appointment, if those routes were implemented.</p>
-              
-              <div class="absolute bottom-4 left-6 right-6 flex justify-between space-x-2">
-                 <button id="closeDetailsCardBackButton" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition">Close</button>
-                <button id="flipCardBackButton" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition">Back to Details</button>
-              </div>
-            </div>
-            
-          </div>
+      <div class="header-actions">
+        <div class="notification-bell" id="notificationBellContainer">
+          <i class="fas fa-bell" id="dashboardNotificationIcon"></i>
+          <span class="notification-dot" id="notificationDot"></span>
         </div>
+        <button class="analytics-refresh" id="refreshDashboard">
+          <i class="fas fa-sync-alt"></i>
+          <span>Refresh</span>
+        </button>
       </div>
     </header>
 
-    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8 w-full">
-      <div class="bg-white p-6 rounded-xl shadow-md text-center">
-        <h2 class="text-2xl font-semibold text-gray-700">Total Departments</h2>
-        <p id="totalDepartments" class="text-5xl font-bold text-blue-800 mt-2">0</p>
+    <!-- Real-time Metrics -->
+    <section class="realtime-metrics">
+      <div class="metric-card">
+        <div class="metric-value" id="totalDepartments">0</div>
+        <div class="metric-label">Total Departments</div>
+        <div class="metric-trend up">
+          <i class="fas fa-arrow-up"></i>
+          <span>+2 this month</span>
+        </div>
       </div>
-      <div class="bg-white p-6 rounded-xl shadow-md text-center">
-        <h2 class="text-2xl font-semibold text-gray-700">Total Doctors</h2>
-        <p id="totalDoctors" class="text-5xl font-bold text-blue-800 mt-2">0</p>
+      <div class="metric-card">
+        <div class="metric-value" id="totalDoctors">0</div>
+        <div class="metric-label">Active Doctors</div>
+        <div class="metric-trend up">
+          <i class="fas fa-arrow-up"></i>
+          <span>+5 this month</span>
+        </div>
       </div>
-      <div class="bg-white p-6 rounded-xl shadow-md text-center">
-        <h2 class="text-2xl font-semibold text-gray-700">Upcoming Appointments</h2>
-        <p id="upcomingAppointments" class="text-5xl font-bold text-blue-800 mt-2">0</p>
+      <div class="metric-card">
+        <div class="metric-value" id="upcomingAppointments">0</div>
+        <div class="metric-label">Upcoming (24h)</div>
+        <div class="metric-trend up">
+          <i class="fas fa-arrow-up"></i>
+          <span>+12 today</span>
+        </div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" id="totalAppointments">0</div>
+        <div class="metric-label">Total Appointments</div>
+        <div class="metric-trend up">
+          <i class="fas fa-arrow-up"></i>
+          <span>+25 this week</span>
+        </div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" id="completedAppointments">0</div>
+        <div class="metric-label">Completed Today</div>
+        <div class="metric-trend up">
+          <i class="fas fa-arrow-up"></i>
+          <span>+8 today</span>
+        </div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" id="pendingAppointments">0</div>
+        <div class="metric-label">Pending Review</div>
+        <div class="metric-trend down">
+          <i class="fas fa-arrow-down"></i>
+          <span>-3 today</span>
+        </div>
       </div>
     </section>
 
-    <section class="bg-white p-6 rounded-xl shadow-md w-full mt-8">
-      <h2 class="text-2xl font-semibold text-gray-700 mb-4">Recent Appointments</h2>
+    <!-- Power BI Style Analytics Dashboard -->
+    <section class="analytics-section">
+      <div class="analytics-header">
+        <h2 class="analytics-title">
+          <i class="fas fa-chart-line"></i>
+          Real-time Analytics
+        </h2>
+        <button class="analytics-refresh" id="refreshAnalytics">
+          <i class="fas fa-sync-alt"></i>
+          <span>Update Data</span>
+        </button>
+      </div>
+      
+      <div class="analytics-grid">
+        <!-- Appointment Status Distribution -->
+        <div class="chart-container">
+          <h3 class="chart-title">Appointment Status</h3>
+          <div style="position: relative; height: 300px;">
+            <canvas id="statusChart"></canvas>
+          </div>
+        </div>
+        
+        <!-- Daily Trends -->
+        <div class="chart-container">
+          <h3 class="chart-title">Daily Trends (14 Days)</h3>
+          <div style="position: relative; height: 300px;">
+            <canvas id="trendChart"></canvas>
+          </div>
+        </div>
+        
+        <!-- Department Distribution -->
+        <div class="chart-container">
+          <h3 class="chart-title">Department Distribution</h3>
+          <div style="position: relative; height: 300px;">
+            <canvas id="departmentChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Recent Appointments Table -->
+    <section class="table-container">
+      <div class="analytics-header">
+        <h2 class="analytics-title">
+          <i class="fas fa-calendar-check"></i>
+          Recent Appointments
+        </h2>
+        <div class="header-actions">
+          <button class="analytics-refresh" id="refreshAppointments">
+            <i class="fas fa-sync-alt"></i>
+            <span>Refresh</span>
+          </button>
+        </div>
+      </div>
+      
       <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
+        <table class="table">
+          <thead>
             <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Appointment ID</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Patient Name</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Doctor Name</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Time</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+              <th>ID</th>
+              <th>Patient</th>
+              <th>Doctor</th>
+              <th>Department</th>
+              <th>Date & Time</th>
+              <th>Status</th>
+              <th>Actions</th>
             </tr>
           </thead>
-          <tbody id="recentAppointmentsTableBody" class="bg-white divide-y divide-gray-200">
+          <tbody id="recentAppointmentsTableBody">
             <tr>
-              <td colspan="6" class="px-6 py-4 text-center text-gray-500">Loading recent appointments...</td>
+              <td colspan="7" class="text-center">
+                <div class="loading-spinner"></div>
+                <span class="ml-2">Loading appointments...</span>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -178,13 +802,116 @@
     </section>
   </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- 3D Modern Notification Panel with Backdrop -->
+  <div id="notificationBackdrop" class="notification-backdrop hidden" style="z-index: 9999;"></div>
+  <div id="dashboardNotificationPanel" class="hidden" style="z-index: 10000;">
+    <div class="notification-panel-3d">
+      <div class="notification-header-3d">
+        <div class="notification-title-section">
+          <div class="notification-icon-3d">
+            <i class="fas fa-bell"></i>
+          </div>
+          <h3 class="notification-title-3d">Appointment Notifications</h3>
+        </div>
+        <button id="closeNotificationPanel" class="notification-close-3d">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <div class="notification-content-3d">
+        <ul id="notificationList" class="notification-list-3d"></ul>
+        
+        <div class="notification-actions-3d">
+          <button id="markAllAsReadButton" class="btn-mark-all-3d">
+            <i class="fas fa-check-double mr-2"></i>
+            Mark All as Read
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Appointment Details Modal -->
+  <div id="appointmentDetailsCard" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4" style="z-index: 10001;">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-96 overflow-y-auto">
+      <div class="p-6">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-xl font-bold text-gray-800">Appointment Details</h3>
+          <button id="closeDetailsCardButton" class="text-gray-500 hover:text-gray-700">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        
+        <div class="space-y-3 text-sm">
+          <div class="flex justify-between">
+            <span class="font-semibold text-gray-600">Patient Name:</span>
+            <span id="appointmentDetailName" class="text-gray-800">N/A</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="font-semibold text-gray-600">Phone:</span>
+            <span id="appointmentDetailPhone" class="text-gray-800">N/A</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="font-semibold text-gray-600">Department:</span>
+            <span id="appointmentDetailDept" class="text-gray-800">N/A</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="font-semibold text-gray-600">Doctor:</span>
+            <span id="appointmentDetailDoctor" class="text-gray-800">N/A</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="font-semibold text-gray-600">Date:</span>
+            <span id="appointmentDetailDate" class="text-gray-800">N/A</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="font-semibold text-gray-600">Time:</span>
+            <span id="appointmentDetailTime" class="text-gray-800">N/A</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="font-semibold text-gray-600">Status:</span>
+            <span id="appointmentDetailStatus" class="font-semibold">N/A</span>
+          </div>
+          <div class="border-t pt-3 mt-3">
+            <div class="flex justify-between">
+              <span class="font-semibold text-gray-600">Notification:</span>
+              <span id="appointmentDetailNotificationStatus" class="font-bold">N/A</span>
+            </div>
+            <div class="flex justify-between mt-2">
+              <span class="font-semibold text-gray-600">Created:</span>
+              <span id="appointmentDetailCreated" class="text-gray-800">N/A</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
 <script>
+  // Global variables
   let doctorMap = {};
   let departmentMap = {};
   let statusChart, trendChart, departmentChart;
   let currentNotifications = [];
+  let refreshInterval;
+
+  // Chart.js configuration
+  Chart.defaults.font.family = 'Inter, sans-serif';
+  Chart.defaults.color = '#374151';
+  Chart.defaults.plugins.legend.labels.usePointStyle = true;
+  Chart.defaults.plugins.legend.labels.padding = 20;
+
+  // Color palette for charts
+  const chartColors = {
+    primary: '#3b82f6',
+    secondary: '#0ea5e9',
+    success: '#10b981',
+    warning: '#f59e0b',
+    error: '#ef4444',
+    info: '#8b5cf6',
+    gradient: ['#3b82f6', '#0ea5e9', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6']
+  };
+
+  // Load department and doctor mappings
   async function loadDepartments() {
     try {
       const res = await fetch("/admin/api/departments");
@@ -211,58 +938,253 @@
     }
   }
 
+  // Enhanced dashboard functions
+  async function fetchDashboardCounts() {
+    try {
+      const response = await fetch('/admin/dashboard_counts'); 
+      const counts = await response.json();
+      
+      // Update metric cards with animation
+      animateNumber('totalDepartments', counts.departments);
+      animateNumber('totalDoctors', counts.doctors);
+      animateNumber('upcomingAppointments', counts.upcoming);
+      animateNumber('totalAppointments', counts.total || 0);
+      animateNumber('completedAppointments', counts.completed || 0);
+      animateNumber('pendingAppointments', counts.pending || 0);
+      
+      return counts;
+    } catch (error) {
+      console.error('Error fetching dashboard counts:', error);
+      return null;
+    }
+  }
+
+  // Animate number changes
+  function animateNumber(elementId, targetValue) {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+    
+    const currentValue = parseInt(element.textContent) || 0;
+    const increment = (targetValue - currentValue) / 20;
+    let current = currentValue;
+    
+    const timer = setInterval(() => {
+      current += increment;
+      if ((increment > 0 && current >= targetValue) || (increment < 0 && current <= targetValue)) {
+        current = targetValue;
+        clearInterval(timer);
+      }
+      element.textContent = Math.round(current);
+    }, 50);
+  }
+
+  // Enhanced analytics rendering
+  async function renderAnalytics() {
+    try {
+      const res = await fetch("/admin/api/analytics");
+      const data = await res.json();
+
+      if (!data || !data.status || !data.trend || !data.departments) {
+        console.warn("Analytics data is incomplete or invalid:", data);
+        return;
+      }
+
+      // Destroy existing charts
+      if (statusChart) statusChart.destroy();
+      if (trendChart) trendChart.destroy();
+      if (departmentChart) departmentChart.destroy();
+
+      // Status Chart
+      const statusLabels = Object.keys(data.status);
+      const statusValues = Object.values(data.status);
+      const statusCtx = document.getElementById("statusChart").getContext('2d');
+      statusChart = new Chart(statusCtx, {
+        type: "doughnut",
+        data: {
+          labels: statusLabels,
+          datasets: [{
+            data: statusValues,
+            backgroundColor: chartColors.gradient.slice(0, statusLabels.length),
+            borderWidth: 0,
+            hoverOffset: 10
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                padding: 20,
+                usePointStyle: true
+              }
+            }
+          }
+        }
+      });
+
+      // Trend Chart
+      const sortedDates = Object.keys(data.trend).sort();
+      const trendValues = sortedDates.map(d => data.trend[d]);
+      const trendCtx = document.getElementById("trendChart").getContext('2d');
+      trendChart = new Chart(trendCtx, {
+        type: "line",
+        data: {
+          labels: sortedDates,
+          datasets: [{
+            label: "Appointments",
+            data: trendValues,
+            borderColor: chartColors.primary,
+            backgroundColor: chartColors.primary + '20',
+            borderWidth: 3,
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: chartColors.primary,
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            pointRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              grid: {
+                color: 'rgba(0,0,0,0.1)'
+              }
+            },
+            x: {
+              grid: {
+                display: false
+              }
+            }
+          }
+        }
+      });
+
+      // Department Chart
+      const deptLabels = Object.keys(data.departments);
+      const deptValues = Object.values(data.departments);
+      const deptCtx = document.getElementById("departmentChart").getContext('2d');
+      departmentChart = new Chart(deptCtx, {
+        type: "bar",
+        data: {
+          labels: deptLabels,
+          datasets: [{
+            data: deptValues,
+            backgroundColor: chartColors.gradient.slice(0, deptLabels.length),
+            borderRadius: 8,
+            borderSkipped: false
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              grid: {
+                color: 'rgba(0,0,0,0.1)'
+              }
+            },
+            x: {
+              grid: {
+                display: false
+              }
+            }
+          }
+        }
+      });
+    } catch (err) {
+      console.error("Error rendering analytics:", err);
+    }
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
     const notificationBellContainer = document.getElementById('notificationBellContainer');
     const dashboardNotificationIcon = document.getElementById('dashboardNotificationIcon'); 
     const notificationDot = document.getElementById('notificationDot');
     const dashboardNotificationPanel = document.getElementById('dashboardNotificationPanel');
+    const notificationBackdrop = document.getElementById('notificationBackdrop');
     const notificationList = document.getElementById('notificationList');
     const closePanelButton = document.getElementById('closeNotificationPanel');
     const markAllAsReadButton = document.getElementById('markAllAsReadButton');
-
-    // FIX 1: Robust logic for Mark All as Read - Clear currentNotifications array immediately
-    markAllAsReadButton.addEventListener('click', async (e) => {
-  e.stopPropagation();
-  try {
-    const res = await fetch('/admin/notifications/mark_viewed', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ appointmentIds: [] }) // empty = mark all
-    });
-
-    if (res.ok) {
-      notificationList.innerHTML = '<li class="text-gray-500">No new notifications.</li>';
-      notificationDot.style.display = 'none';
-      dashboardNotificationIcon.classList.remove('animate-bell');
-      currentNotifications = [];
-    }
-  } catch (err) {
-    console.error("Error marking all as read:", err);
-  }
-});
-
     const appointmentDetailsCard = document.getElementById('appointmentDetailsCard');
     const closeDetailsCardButton = document.getElementById('closeDetailsCardButton'); 
-    const closeDetailsCardBackButton = document.getElementById('closeDetailsCardBackButton');
-    const flipCardButton = document.getElementById('flipCardButton');
-    const flipCardBackButton = document.getElementById('flipCardBackButton');
-    const card3dContainer = document.querySelector('.card-3d'); 
     const recentAppointmentsTableBody = document.getElementById('recentAppointmentsTableBody');
 
-    let currentNotifications = []; 
     const notificationSound = new Audio('/static/notification/notification.wav'); 
 
-    async function fetchDashboardCounts() {
+    // Mark all notifications as read
+    markAllAsReadButton.addEventListener('click', async (e) => {
+      e.stopPropagation();
       try {
-        const response = await fetch('/admin/dashboard_counts'); 
-        const counts = await response.json();
-        document.getElementById('totalDepartments').textContent = counts.departments;
-        document.getElementById('totalDoctors').textContent = counts.doctors;
-        document.getElementById('upcomingAppointments').textContent = counts.upcoming;
-      } catch (error) {
-        console.error('Error fetching dashboard counts:', error);
+        // Show loading state
+        const originalText = markAllAsReadButton.innerHTML;
+        markAllAsReadButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Marking All as Read...';
+        markAllAsReadButton.disabled = true;
+
+        const res = await fetch('/admin/notifications/mark_viewed', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ appointmentIds: [] }) // empty = mark all
+        });
+
+        if (res.ok) {
+          // Show success state
+          markAllAsReadButton.innerHTML = '<i class="fas fa-check mr-2"></i>All Marked as Read!';
+          markAllAsReadButton.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+          
+          // Update notification list
+          notificationList.innerHTML = `
+            <li class="notification-empty-3d">
+              <div class="notification-empty-icon-3d">
+                <i class="fas fa-check-circle"></i>
+              </div>
+              <div class="notification-empty-text-3d">All notifications marked as read</div>
+            </li>
+          `;
+          
+          // Hide notification dot and remove animation
+          notificationDot.style.display = 'none';
+          dashboardNotificationIcon.classList.remove('animate-bell');
+          currentNotifications = [];
+          
+          // Reset button after 2 seconds
+          setTimeout(() => {
+            markAllAsReadButton.innerHTML = originalText;
+            markAllAsReadButton.style.background = '';
+            markAllAsReadButton.disabled = false;
+          }, 2000);
+        } else {
+          throw new Error('Failed to mark all notifications as read');
+        }
+      } catch (err) {
+        console.error("Error marking all as read:", err);
+        markAllAsReadButton.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i>Error!';
+        markAllAsReadButton.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+        
+        // Reset button after 2 seconds
+        setTimeout(() => {
+          markAllAsReadButton.innerHTML = originalText;
+          markAllAsReadButton.style.background = '';
+          markAllAsReadButton.disabled = false;
+        }, 2000);
       }
-    }
+    });
 
     async function fetchAndProcessNotifications() {
       try {
@@ -293,7 +1215,14 @@
         } else {
           notificationDot.style.display = 'none';
           dashboardNotificationIcon.classList.remove('animate-bell');
-          notificationList.innerHTML = '<li class="text-gray-500">No new notifications.</li>';
+          notificationList.innerHTML = `
+            <li class="notification-empty-3d">
+              <div class="notification-empty-icon-3d">
+                <i class="fas fa-bell-slash"></i>
+              </div>
+              <div class="notification-empty-text-3d">No new notifications</div>
+            </li>
+          `;
         }
       } catch (error) {
         console.error('Error fetching notifications:', error);
@@ -303,29 +1232,113 @@
     function renderNotifications(notifications) {
       notificationList.innerHTML = ''; 
       if (notifications.length === 0) {
-        notificationList.innerHTML = '<li class="text-gray-500">No new notifications.</li>';
+        notificationList.innerHTML = `
+          <li class="notification-empty-3d">
+            <div class="notification-empty-icon-3d">
+              <i class="fas fa-bell-slash"></i>
+            </div>
+            <div class="notification-empty-text-3d">No new notifications</div>
+          </li>
+        `;
         return;
       }
 
       notifications.forEach(appt => {
         const listItem = document.createElement('li');
-        listItem.className = 'p-2 border-b border-gray-200 last:border-b-0 cursor-pointer hover:bg-blue-50';
+        listItem.className = 'notification-item-3d';
         listItem.dataset.appointmentId = appt.id;
+        
+        // Add unread class if not viewed by admin
+        if (!appt.viewed_by_admin) {
+          listItem.classList.add('unread');
+        }
 
         let notificationTypeText = '';
-        if (appt.is_new) notificationTypeText = '🆕 New Appointment';
-        else if (appt.is_updated) notificationTypeText = '📝 Updated Appointment';
-        else if (appt.Status === 'Cancelled' || appt.Status === 'cancelled') notificationTypeText = '❌ Cancelled Appointment'; 
-        else notificationTypeText = 'Appointment';
+        let iconClass = '';
+        let iconWrapperClass = '';
+        
+        if (appt.is_new) {
+          notificationTypeText = 'New Appointment';
+          iconClass = 'fas fa-plus-circle';
+          iconWrapperClass = 'new';
+        } else if (appt.is_updated) {
+          notificationTypeText = 'Updated Appointment';
+          iconClass = 'fas fa-edit';
+          iconWrapperClass = 'updated';
+        } else if (appt.Status === 'Cancelled' || appt.Status === 'cancelled') {
+          notificationTypeText = 'Cancelled Appointment';
+          iconClass = 'fas fa-times-circle';
+          iconWrapperClass = 'cancelled';
+        } else {
+          notificationTypeText = 'Appointment';
+          iconClass = 'fas fa-calendar';
+          iconWrapperClass = 'new';
+        }
 
-        const statusClass = appt.is_new ? 'text-blue-600 font-bold' : (appt.is_updated ? 'text-orange-600 font-bold' : 'text-gray-800');
+        const timeAgo = appt.createdAt ? getTimeAgo(new Date(appt.createdAt)) : 'Just now';
+        const statusClass = getStatusBadgeClass(appt.Status);
 
         listItem.innerHTML = `
-          <p class="${statusClass}">${notificationTypeText}</p>
-          <p class="text-sm text-gray-600">Appointment ID: ${appt.id} | Status: ${appt.Status}</p>
+          <div class="notification-content-wrapper">
+            <div class="notification-icon-wrapper ${iconWrapperClass}">
+              <i class="${iconClass}"></i>
+            </div>
+            <div class="notification-details">
+              <div class="notification-type-3d">${notificationTypeText}</div>
+              <div class="notification-patient-3d">Patient: ${appt.patientName || 'N/A'}</div>
+              <div class="notification-meta-3d">
+                <span>ID: ${appt.id}</span>
+                <span>•</span>
+                <span>${appt.date} ${appt.time}</span>
+                <span>•</span>
+                <span>${timeAgo}</span>
+                <span class="notification-status-badge-3d ${statusClass}">
+                  ${appt.Status || 'Pending'}
+                </span>
+              </div>
+            </div>
+            <div class="notification-actions-wrapper">
+              ${appt.Status === 'pending' || appt.Status === 'booked' ? `
+                <button class="notification-action-btn confirm-btn" data-appointment-id="${appt.id}" title="Confirm Appointment">
+                  <i class="fas fa-check"></i>
+                </button>
+              ` : ''}
+              ${!appt.viewed_by_admin ? `
+                <button class="notification-action-btn mark-read-btn" data-appointment-id="${appt.id}" title="Mark as Read">
+                  <i class="fas fa-eye"></i>
+                </button>
+              ` : ''}
+            </div>
+          </div>
         `;
         notificationList.appendChild(listItem);
       });
+    }
+
+    function getTimeAgo(date) {
+      const now = new Date();
+      const diffInSeconds = Math.floor((now - date) / 1000);
+      
+      if (diffInSeconds < 60) return 'Just now';
+      if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
+      if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`;
+      return `${Math.floor(diffInSeconds / 86400)}d ago`;
+    }
+
+    function getStatusBadgeClass(status) {
+      switch (status?.toLowerCase()) {
+        case 'confirmed':
+        case 'booked':
+          return 'confirmed';
+        case 'pending':
+          return 'pending';
+        case 'cancelled':
+          return 'cancelled';
+        case 'completed':
+          return 'completed';
+        default:
+          return 'pending';
+      }
     }
 
     /**
@@ -359,13 +1372,20 @@
     }
 
     function toggleNotificationPanel() {
-      dashboardNotificationPanel.classList.toggle('hidden');
-      if (!dashboardNotificationPanel.classList.contains('hidden')) {
-        fetchAndProcessNotifications(); 
+      const isHidden = dashboardNotificationPanel.classList.contains('hidden');
+      if (isHidden) {
+        // Show panel
+        notificationBackdrop.classList.remove('hidden');
+        dashboardNotificationPanel.classList.remove('hidden');
+        fetchAndProcessNotifications();
+      } else {
+        // Hide panel
+        closeNotificationPanel();
       }
     }
 
     function closeNotificationPanel() {
+      notificationBackdrop.classList.add('hidden');
       dashboardNotificationPanel.classList.add('hidden');
     }
 
@@ -452,41 +1472,69 @@
         const response = await fetch('/admin/api/appointments');
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const appointments = await response.json();
-        appointments.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        
+        // Sort by creation date (most recent first)
+        appointments.sort((a, b) => new Date(b.createdAt || b.created_at) - new Date(a.createdAt || a.created_at));
         recentAppointmentsTableBody.innerHTML = '';
+        
         if (appointments.length === 0) {
           recentAppointmentsTableBody.innerHTML =
-            '<tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">No recent appointments.</td></tr>';
+            '<tr><td colspan="7" class="text-center p-4 text-gray-500">No recent appointments.</td></tr>';
         } else {
-          const displayAppointments = appointments.slice(0, 5);
+          const displayAppointments = appointments.slice(0, 10); // Show more appointments
           displayAppointments.forEach(appt => {
             const row = document.createElement('tr');
+            row.className = 'hover:bg-blue-50 cursor-pointer transition-colors';
+            
+            // Status badge styling
             let statusClass = '';
-            if (appt.Status === 'Completed') statusClass = 'bg-green-100 text-green-800';
-            else if (appt.Status === 'Pending') statusClass = 'bg-yellow-100 text-yellow-800';
-            else if (appt.Status === 'Confirmed' || appt.Status === 'booked') statusClass = 'bg-blue-100 text-blue-800';
-            else if (appt.Status === 'Cancelled' || appt.Status === 'cancelled') statusClass = 'bg-red-100 text-red-800';
+            let statusText = appt.Status || 'Pending';
+            
+            switch (statusText.toLowerCase()) {
+              case 'completed':
+                statusClass = 'status-badge confirmed';
+                break;
+              case 'pending':
+                statusClass = 'status-badge pending';
+                break;
+              case 'confirmed':
+              case 'booked':
+                statusClass = 'status-badge confirmed';
+                break;
+              case 'cancelled':
+                statusClass = 'status-badge cancelled';
+                break;
+              default:
+                statusClass = 'status-badge pending';
+            }
+
+            // Format date and time
+            const dateTime = appt.date && appt.time ? `${appt.date} ${appt.time}` : 'N/A';
 
             row.innerHTML = `
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${appt.id}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${appt.patientName || "-"}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${appt.doctorName || "-"}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${appt.date || "-"}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${appt.time || "-"}</td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">
-                  ${appt.Status || "Pending"}
+              <td class="font-medium text-gray-900">${appt.id}</td>
+              <td class="text-gray-700">${appt.patientName || "-"}</td>
+              <td class="text-gray-700">${appt.doctorName || "-"}</td>
+              <td class="text-gray-700">${appt.department || "-"}</td>
+              <td class="text-gray-700">${dateTime}</td>
+              <td>
+                <span class="${statusClass}">
+                  ${statusText}
                 </span>
+              </td>
+              <td>
+                <button class="text-blue-600 hover:text-blue-800 font-medium" onclick="showAppointmentDetails(${appt.id}, null)">
+                  View Details
+                </button>
               </td>
             `;
             recentAppointmentsTableBody.appendChild(row);
-            row.addEventListener('click', () => showAppointmentDetails(appt.id, null)); 
           });
         }
       } catch (error) {
         console.error('Error fetching recent appointments:', error);
         recentAppointmentsTableBody.innerHTML =
-          '<tr><td colspan="6" class="px-6 py-4 text-center text-red-500">Failed to load appointments.</td></tr>';
+          '<tr><td colspan="7" class="text-center p-4 text-red-500">Failed to load appointments.</td></tr>';
       }
     }
 
@@ -557,14 +1605,89 @@
         }
     }
 
-    fetchAndProcessNotifications();
-    fetchDashboardCounts();
-    fetchRecentAppointments();
+    // Initialize dashboard
+    async function initializeDashboard() {
+      try {
+        // Load initial data
+        await loadDepartments();
+        await loadDoctors();
+        await fetchDashboardCounts();
+        await fetchRecentAppointments();
+        await renderAnalytics();
+        await fetchAndProcessNotifications();
+        
+        // Set up real-time updates
+        refreshInterval = setInterval(async () => {
+          await fetchDashboardCounts();
+          await fetchRecentAppointments();
+          await renderAnalytics();
+          await fetchAndProcessNotifications();
+        }, 30000); // Update every 30 seconds
+        
+        console.log('Dashboard initialized successfully');
+      } catch (error) {
+        console.error('Error initializing dashboard:', error);
+      }
+    }
 
-    setInterval(fetchAndProcessNotifications, 10000);
-    setInterval(fetchDashboardCounts, 10000);
-    setInterval(fetchRecentAppointments, 10000);
+    // Refresh button handlers
+    document.getElementById('refreshDashboard').addEventListener('click', async () => {
+      const button = document.getElementById('refreshDashboard');
+      const icon = button.querySelector('i');
+      icon.classList.add('fa-spin');
+      
+      await fetchDashboardCounts();
+      await fetchRecentAppointments();
+      await renderAnalytics();
+      
+      setTimeout(() => {
+        icon.classList.remove('fa-spin');
+      }, 1000);
+    });
 
+    document.getElementById('refreshAnalytics').addEventListener('click', async () => {
+      const button = document.getElementById('refreshAnalytics');
+      const icon = button.querySelector('i');
+      icon.classList.add('fa-spin');
+      
+      await renderAnalytics();
+      
+      setTimeout(() => {
+        icon.classList.remove('fa-spin');
+      }, 1000);
+    });
+
+    document.getElementById('refreshAppointments').addEventListener('click', async () => {
+      const button = document.getElementById('refreshAppointments');
+      const icon = button.querySelector('i');
+      icon.classList.add('fa-spin');
+      
+      await fetchRecentAppointments();
+      
+      setTimeout(() => {
+        icon.classList.remove('fa-spin');
+      }, 1000);
+    });
+
+    // Initialize the dashboard
+    initializeDashboard();
+
+    // Notification functionality
+    function toggleNotificationPanel() {
+      const panel = document.getElementById('dashboardNotificationPanel');
+      if (panel.classList.contains('hidden')) {
+        panel.classList.remove('hidden');
+        fetchAndProcessNotifications();
+      } else {
+        panel.classList.add('hidden');
+      }
+    }
+
+    function closeNotificationPanel() {
+      document.getElementById('dashboardNotificationPanel').classList.add('hidden');
+    }
+
+    // Event listeners
     notificationBellContainer.addEventListener('click', (e) => {
       e.stopPropagation();
       toggleNotificationPanel();
@@ -575,16 +1698,42 @@
       closeNotificationPanel();
     });
 
+    // Close notification panel when clicking backdrop
+    notificationBackdrop.addEventListener('click', (e) => {
+      e.stopPropagation();
+      closeNotificationPanel();
+    });
+
     document.addEventListener('click', (e) => {
       if (!notificationBellContainer.contains(e.target) &&
           !dashboardNotificationPanel.contains(e.target) &&
+          !notificationBackdrop.contains(e.target) &&
           appointmentDetailsCard.classList.contains('hidden')) { 
         closeNotificationPanel();
       }
     });
 
-    // Event listener to pass the list item element for single notification removal
+    // Event listener for notification list items
     notificationList.addEventListener('click', (e) => {
+      // Check if clicked on action buttons
+      const confirmBtn = e.target.closest('.confirm-btn');
+      const markReadBtn = e.target.closest('.mark-read-btn');
+      
+      if (confirmBtn) {
+        e.stopPropagation();
+        const appointmentId = confirmBtn.dataset.appointmentId;
+        confirmAppointment(appointmentId, confirmBtn);
+        return;
+      }
+      
+      if (markReadBtn) {
+        e.stopPropagation();
+        const appointmentId = markReadBtn.dataset.appointmentId;
+        markNotificationAsRead(appointmentId, markReadBtn);
+        return;
+      }
+      
+      // If clicked on notification item (not buttons)
       const listItem = e.target.closest('li[data-appointment-id]');
       if (listItem) {
         const appointmentId = listItem.dataset.appointmentId;
@@ -593,16 +1742,149 @@
       }
     });
 
+    // Confirm appointment function
+    async function confirmAppointment(appointmentId, buttonElement) {
+      try {
+        buttonElement.disabled = true;
+        buttonElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        
+        const response = await fetch('/admin/api/update_appointment_status', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            appointmentId: parseInt(appointmentId),
+            newStatus: 'confirmed'
+          })
+        });
+
+        if (response.ok) {
+          // Update button to show success
+          buttonElement.innerHTML = '<i class="fas fa-check"></i>';
+          buttonElement.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+          buttonElement.disabled = true;
+          
+          // Update the status badge in the notification
+          const listItem = buttonElement.closest('li[data-appointment-id]');
+          const statusBadge = listItem.querySelector('.notification-status-badge-3d');
+          if (statusBadge) {
+            statusBadge.textContent = 'Confirmed';
+            statusBadge.className = 'notification-status-badge-3d confirmed';
+          }
+          
+          // Refresh notifications after a short delay
+          setTimeout(() => {
+            fetchAndProcessNotifications();
+          }, 1000);
+        } else {
+          throw new Error('Failed to confirm appointment');
+        }
+      } catch (error) {
+        console.error('Error confirming appointment:', error);
+        buttonElement.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
+        buttonElement.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+        
+        // Reset button after 2 seconds
+        setTimeout(() => {
+          buttonElement.innerHTML = '<i class="fas fa-check"></i>';
+          buttonElement.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+          buttonElement.disabled = false;
+        }, 2000);
+      }
+    }
+
+    // Mark notification as read function
+    async function markNotificationAsRead(appointmentId, buttonElement) {
+      try {
+        buttonElement.disabled = true;
+        buttonElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        
+        const response = await fetch(`/admin/api/appointment/mark_viewed/${appointmentId}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (response.ok) {
+          // Update button to show success
+          buttonElement.innerHTML = '<i class="fas fa-eye-slash"></i>';
+          buttonElement.style.background = 'linear-gradient(135deg, #6b7280, #4b5563)';
+          buttonElement.disabled = true;
+          
+          // Remove unread styling from notification item
+          const listItem = buttonElement.closest('li[data-appointment-id]');
+          listItem.classList.remove('unread');
+          
+          // Remove the unread indicator
+          const unreadIndicator = listItem.querySelector('.notification-item-3d.unread::before');
+          if (unreadIndicator) {
+            unreadIndicator.remove();
+          }
+          
+          // Refresh notifications after a short delay
+          setTimeout(() => {
+            fetchAndProcessNotifications();
+          }, 1000);
+        } else {
+          throw new Error('Failed to mark notification as read');
+        }
+      } catch (error) {
+        console.error('Error marking notification as read:', error);
+        buttonElement.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
+        buttonElement.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+        
+        // Reset button after 2 seconds
+        setTimeout(() => {
+          buttonElement.innerHTML = '<i class="fas fa-eye"></i>';
+          buttonElement.style.background = 'linear-gradient(135deg, #3b82f6, #1d4ed8)';
+          buttonElement.disabled = false;
+        }, 2000);
+      }
+    }
+
+    // Mark all as read functionality
+    function markAllAsRead() {
+      const unreadItems = notificationList.querySelectorAll('li[data-appointment-id]');
+      if (unreadItems.length === 0) {
+        return;
+      }
+
+      const appointmentIds = Array.from(unreadItems).map(item => parseInt(item.dataset.appointmentId));
+      
+      fetch('/admin/api/mark-all-notifications-read', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ appointmentIds: appointmentIds })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // Remove all unread items from the list
+          unreadItems.forEach(item => item.remove());
+          
+          // Update notification count
+          updateNotificationCount(0);
+          
+          // Show success message
+          showNotificationMessage('All notifications marked as read', 'success');
+        } else {
+          showNotificationMessage('Failed to mark notifications as read', 'error');
+        }
+      })
+      .catch(error => {
+        console.error('Error marking all notifications as read:', error);
+        showNotificationMessage('Error marking notifications as read', 'error');
+      });
+    }
+
+    // Add event listener for mark all as read button
+    const markAllReadBtn = document.getElementById('markAllReadBtn');
+    if (markAllReadBtn) {
+      markAllReadBtn.addEventListener('click', markAllAsRead);
+    }
+
+    // Appointment details modal
     closeDetailsCardButton.addEventListener('click', closeAppointmentDetailsCard);
-    closeDetailsCardBackButton.addEventListener('click', closeAppointmentDetailsCard);
-
-    flipCardButton.addEventListener('click', () => {
-      card3dContainer.classList.add('flipped');
-    });
-
-    flipCardBackButton.addEventListener('click', () => {
-      card3dContainer.classList.remove('flipped');
-    });
 
     appointmentDetailsCard.addEventListener('click', (e) => {
       if (e.target === appointmentDetailsCard) {

@@ -3,13 +3,16 @@ import os
 from dotenv import load_dotenv # type: ignore
 from pathlib import Path
 
-load_dotenv()
+# Try to load .env file, but don't fail if it doesn't exist
+try:
+    load_dotenv()
+except Exception as e:
+    print(f"Warning: Could not load .env file: {e}")
+    print("Make sure to set environment variables manually or create a .env file")
 
 class Settings:
     # Flask Configuration
-    SECRET_KEY = os.getenv("FLASK_SECRET_KEY")
-    if not SECRET_KEY:
-        raise ValueError("FLASK_SECRET_KEY environment variable is required")
+    SECRET_KEY = os.getenv("FLASK_SECRET_KEY", "dev-secret-key-change-in-production")
     
     # Environment
     FLASK_ENV = os.getenv("FLASK_ENV", "production")
@@ -38,9 +41,10 @@ class Settings:
     DB_USER = os.getenv("DB_USER")
     DB_PASSWORD = os.getenv("DB_PASSWORD")
     
-    # Validate required database configuration
-    if not all([DATABASE_URL, DB_HOST, DB_NAME, DB_USER, DB_PASSWORD]):
-        raise ValueError("Database configuration is incomplete. Please set DATABASE_URL or all DB_* variables")
+    # Use SQLite as default for development if no database config is provided
+    if not DATABASE_URL and not all([DB_HOST, DB_NAME, DB_USER, DB_PASSWORD]):
+        DATABASE_URL = "sqlite:///hospital_chat.db"
+        print("Using SQLite database for development")
     
     # Security Settings
     SESSION_COOKIE_SECURE = FLASK_ENV == "production"

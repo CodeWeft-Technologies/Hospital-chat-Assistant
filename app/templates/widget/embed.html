@@ -23,7 +23,7 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            background: linear-gradient(135deg, #87CEEB 0%, #B0E0E6 25%, #E0F6FF 50%, #F0F8FF 75%, #87CEEB 100%);
             border-radius: 16px;
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
             overflow: hidden;
@@ -52,12 +52,36 @@
             height: 50px;
             border-radius: 12px;
             margin: 0 auto 12px;
-            background: rgba(255, 255, 255, 0.2);
+            background: linear-gradient(135deg, #4682B4, #87CEEB, #B0E0E6);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 24px;
             font-weight: bold;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(70, 130, 180, 0.3);
+            animation: floatIcon 3s ease-in-out infinite;
+        }
+
+        .hospital-logo::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            animation: shineIcon 3s ease-in-out infinite;
+        }
+
+        .hospital-logo i {
+            font-size: 20px;
+            color: white;
+            z-index: 2;
+            position: relative;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         .hospital-logo img {
@@ -376,6 +400,17 @@
         .chat-messages::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
         }
+
+        /* AI Icon Animations */
+        @keyframes floatIcon {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-4px); }
+        }
+
+        @keyframes shineIcon {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
     </style>
 </head>
 <body>
@@ -386,7 +421,7 @@
                 {% if hospital.logo_url %}
                     <img src="{{ hospital.logo_url }}" alt="{{ hospital.name }}">
                 {% else %}
-                    🏥
+                    <i class="fas fa-user-md"></i>
                 {% endif %}
             </div>
             <div class="hospital-name">{{ hospital.name }}</div>

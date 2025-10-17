@@ -193,44 +193,74 @@ def dashboard_counts():
     hospital_id = session.get("hospital_id")
 
     try:
-        # 🔥 Change 1: Get counts and data from DB
+        # Get counts and data from DB
         total_departments = session_db.query(Department).count()
         total_doctors = session_db.query(Doctor).count()
         
         appointments = session_db.query(Appointment).all()
         normalized = [normalize_appointment_for_ui(session_db, appt) for appt in appointments]
 
-        # Calculate upcoming appointments (logic implements your 24-hour request)
+        # Calculate various appointment metrics
         now = datetime.now()
+        today = now.date()
+        
+        # Upcoming appointments (next 24 hours)
         upcoming = 0
+        completed_today = 0
+        pending_review = 0
+        total_appointments = len(normalized)
+        
         for appt_dict in normalized:
             status = appt_dict.get("Status", "Pending").lower()
+            
+            # Count total appointments by status
+            if status == "completed":
+                completed_today += 1
+            elif status in ["pending"]:
+                pending_review += 1
+            
+            # Calculate upcoming appointments (next 24 hours)
             if status in ["booked", "pending", "confirmed"]:
                 try:
-                    # ✅ FIX: Use 24-hour time format %H:%M instead of 12-hour %I:%M %p
-                    appt_dt = datetime.strptime(f"{appt_dict['date']} {appt_dict['time']}", "%Y-%m-%d %H:%M") 
+                    appt_date = appt_dict.get('date')
+                    appt_time = appt_dict.get('time')
                     
-                    # This is the user's requested 24-hour window check
-                    if now <= appt_dt <= now + timedelta(hours=24):
-                        upcoming += 1
-                except Exception:
-                    # This block will now only be hit if the date/time data is truly malformed
+                    if appt_date and appt_time:
+                        # Handle different time formats
+                        if ':' in appt_time and len(appt_time.split(':')) == 2:
+                            appt_dt = datetime.strptime(f"{appt_date} {appt_time}", "%Y-%m-%d %H:%M")
+                        else:
+                            # Fallback for other formats
+                            continue
+                        
+                        # Check if appointment is in next 24 hours
+                        if now <= appt_dt <= now + timedelta(hours=24):
+                            upcoming += 1
+                except Exception as e:
+                    # Skip malformed date/time data
                     continue
         
         # Helper for sorting by date/time
         def safe_dt(appt_dict):
             try:
-                # ✅ FIX: Update helper function to use the correct format as well
-                return datetime.strptime(f"{appt_dict['date']} {appt_dict['time']}", "%Y-%m-%d %H:%M")
+                appt_date = appt_dict.get('date')
+                appt_time = appt_dict.get('time')
+                if appt_date and appt_time:
+                    return datetime.strptime(f"{appt_date} {appt_time}", "%Y-%m-%d %H:%M")
+                else:
+                    return now
             except Exception:
-                return now # Use 'now' as a safe fallback date for sorting recent items
+                return now
         
-        recent = sorted(normalized, key=safe_dt, reverse=True)[:5]
+        recent = sorted(normalized, key=safe_dt, reverse=True)[:10]
         
         return jsonify({
             "departments": total_departments,
             "doctors": total_doctors,
             "upcoming": upcoming,
+            "total": total_appointments,
+            "completed": completed_today,
+            "pending": pending_review,
             "recent": recent
         })
     except Exception as e:
@@ -259,6 +289,42 @@ def notifications():
     except Exception as e:
         traceback.print_exc()
         return jsonify({"error": "Error fetching notifications"}), 500
+    finally:
+        next(session_gen, None)
+
+@admin_bp.route('/api/mark-all-notifications-read', methods=['POST'])
+@login_required
+def mark_all_notifications_read():
+    """Mark all notifications as read"""
+    session_gen = get_db()
+    session_db = next(session_gen)
+    
+    try:
+        data = request.get_json()
+        appointment_ids = data.get('appointmentIds', [])
+        
+        if not appointment_ids:
+            return jsonify({'success': False, 'message': 'No appointment IDs provided'}), 400
+        
+        # Mark all specified appointments as viewed
+        updated_count = session_db.query(Appointment).filter(
+            Appointment.id.in_(appointment_ids)
+        ).update({
+            Appointment.viewed_by_admin: True,
+            Appointment.updated_at: datetime.now()
+        }, synchronize_session=False)
+        
+        session_db.commit()
+        
+        return jsonify({
+            'success': True, 
+            'message': f'{updated_count} notifications marked as read',
+            'updated_count': updated_count
+        })
+    except Exception as e:
+        session_db.rollback()
+        print(f"Error marking notifications as read: {e}")
+        return jsonify({'success': False, 'message': 'Error marking notifications as read'}), 500
     finally:
         next(session_gen, None)
 
@@ -510,6 +576,18 @@ def doctors():
         departments=departments_list
     )
 
+@admin_bp.route("/doctors/create-form")
+@login_required
+def create_doctor_form():
+    session_gen = get_db()
+    session_db = next(session_gen)
+    
+    try:
+        departments = session_db.query(Department).all()
+        return render_template("admin/create_doctor.html", departments=departments)
+    finally:
+        next(session_gen, None)
+
 @admin_bp.route("/doctors/create", methods=["GET", "POST"])
 @login_required
 def create_doctor():
@@ -518,9 +596,19 @@ def create_doctor():
     
     data = request.form
     name_en = data.get("name_en", "").strip()
+    available_days = request.form.getlist("available_days")
 
+    # Validation
     if not name_en or not data.get("department_id"):
         flash("Doctor Name (English) and Department are required.", "danger")
+        return redirect(url_for("admin_bp.doctors"))
+    
+    if not available_days:
+        flash("Please select at least one available day.", "danger")
+        return redirect(url_for("admin_bp.doctors"))
+    
+    if not data.get("start_time") or not data.get("end_time"):
+        flash("Start time and End time are required.", "danger")
         return redirect(url_for("admin_bp.doctors"))
 
     try:
@@ -533,6 +621,24 @@ def create_doctor():
             flash(f"Doctor with generated ID '{doc_id}' already exists. Please modify the name.", "warning")
             return redirect(url_for("admin_bp.doctors"))
 
+        # Handle photo upload
+        photo_filename = None
+        if 'photo' in request.files:
+            photo_file = request.files['photo']
+            if photo_file and photo_file.filename:
+                # Create uploads directory if it doesn't exist
+                import os
+                upload_dir = os.path.join('app', 'static', 'uploads', 'doctors')
+                os.makedirs(upload_dir, exist_ok=True)
+                
+                # Generate unique filename
+                file_ext = photo_file.filename.rsplit('.', 1)[1].lower() if '.' in photo_file.filename else 'jpg'
+                photo_filename = f"{doc_id}.{file_ext}"
+                photo_path = os.path.join(upload_dir, photo_filename)
+                
+                # Save the file
+                photo_file.save(photo_path)
+
         new_doctor = Doctor(
             id=doc_id,
             department_id=data.get("department_id"),
@@ -543,9 +649,10 @@ def create_doctor():
             experience=data.get("experience", ""),
             fees=data.get("fees"),
             # available_days expects a list of strings (PostgreSQL ARRAY)
-            available_days=request.form.getlist("available_days"), 
+            available_days=available_days, 
             start_time=normalize_time_string(data.get("start_time")),
             end_time=normalize_time_string(data.get("end_time")),
+            photo=photo_filename,
         )
         
         session_db.add(new_doctor)
@@ -603,6 +710,17 @@ def edit_doctor(doc_id):
             return redirect(url_for("admin_bp.doctors"))
 
         if request.method == "POST":
+            available_days = request.form.getlist("available_days")
+            
+            # Validation
+            if not available_days:
+                flash("Please select at least one available day.", "danger")
+                return render_template("admin/edit_doctor.html", doctor=doctor, departments=departments)
+            
+            if not request.form.get("start_time") or not request.form.get("end_time"):
+                flash("Start time and End time are required.", "danger")
+                return render_template("admin/edit_doctor.html", doctor=doctor, departments=departments)
+            
             doctor.name_en = request.form.get("name_en", "").strip()
             doctor.name_hi = request.form.get("name_hi", "").strip()
             doctor.name_mr = request.form.get("name_mr", "").strip()
@@ -610,9 +728,27 @@ def edit_doctor(doc_id):
             doctor.education = request.form.get("education")
             doctor.experience = request.form.get("experience")
             doctor.fees = request.form.get("fees")
-            doctor.available_days = request.form.getlist("available_days")
+            doctor.available_days = available_days
             doctor.start_time = normalize_time_string(request.form.get("start_time"))
             doctor.end_time = normalize_time_string(request.form.get("end_time"))
+            
+            # Handle photo upload
+            if 'photo' in request.files:
+                photo_file = request.files['photo']
+                if photo_file and photo_file.filename:
+                    # Create uploads directory if it doesn't exist
+                    import os
+                    upload_dir = os.path.join('app', 'static', 'uploads', 'doctors')
+                    os.makedirs(upload_dir, exist_ok=True)
+                    
+                    # Generate unique filename
+                    file_ext = photo_file.filename.rsplit('.', 1)[1].lower() if '.' in photo_file.filename else 'jpg'
+                    photo_filename = f"{doc_id}.{file_ext}"
+                    photo_path = os.path.join(upload_dir, photo_filename)
+                    
+                    # Save the file
+                    photo_file.save(photo_path)
+                    doctor.photo = photo_filename
 
             session_db.commit()
             flash("Doctor updated successfully.", "success")
@@ -776,9 +912,18 @@ def profile():
             profile_data = {
                 "name": {"en": hospital.name_en, "hi": hospital.name_hi, "mr": hospital.name_mr},
                 "address": {"en": hospital.address_en, "hi": hospital.address_hi, "mr": hospital.address_mr},
-                "phone": hospital.phone,
-                "email": hospital.email,
+                "Phone": hospital.phone,
+                "Email": hospital.email,
                 "working_hours": hospital.working_hours
+            }
+        else:
+            # Provide default empty structure when no hospital data exists
+            profile_data = {
+                "name": {"en": "", "hi": "", "mr": ""},
+                "address": {"en": "", "hi": "", "mr": ""},
+                "Phone": "",
+                "Email": "",
+                "working_hours": ""
             }
         if request.method == "POST":
             if not hospital:
@@ -790,8 +935,8 @@ def profile():
             hospital.address_en = request.form.get("address_en")
             hospital.address_hi = request.form.get("address_hi")
             hospital.address_mr = request.form.get("address_mr")
-            hospital.phone = request.form.get("phone")
-            hospital.email = request.form.get("email")
+            hospital.phone = request.form.get("Phone")
+            hospital.email = request.form.get("Email")
             hospital.working_hours = request.form.get("working_hours")
             session_db.commit()
             flash("Profile updated successfully!", "success")
@@ -803,8 +948,8 @@ def profile():
         profile_data = {
             "name": {"en": "", "hi": "", "mr": ""},
             "address": {"en": "", "hi": "", "mr": ""},
-            "phone": "",
-            "email": "",
+            "Phone": "",
+            "Email": "",
             "working_hours": ""
         }
     finally:
@@ -892,33 +1037,57 @@ def time_slots_for_doctor():
         next(session_gen, None)
 
 @admin_bp.route("/change-password", methods=["GET", "POST"])
+@login_required
 def change_password():
-    db = SessionLocal()
-    user = None  # Will be set only if form is submitted and user exists
+    session_gen = get_db()
+    session_db = next(session_gen)
+    
+    try:
+        if request.method == "POST":
+            username = request.form.get("username")
+            current_password = request.form.get("current_password")
+            new_password = request.form.get("new_password")
+            confirm_password = request.form.get("confirm_password")
 
-    if request.method == "POST":
-        username = request.form.get("username")  # Add username field to identify user
-        current_password = request.form.get("current_password")
-        new_password = request.form.get("new_password")
-        confirm_password = request.form.get("confirm_password")
+            # Validation
+            if not all([username, current_password, new_password, confirm_password]):
+                flash("All fields are required.", "error")
+                return render_template("admin/change_password.html")
 
-        # Try to find the user based on username
-        user = db.query(User).filter_by(name=username).first()
-        if user:
+            if new_password != confirm_password:
+                flash("New passwords do not match.", "error")
+                return render_template("admin/change_password.html")
+
+            if len(new_password) < 8:
+                flash("Password must be at least 8 characters long.", "error")
+                return render_template("admin/change_password.html")
+
+            # Find user by username
+            user = session_db.query(User).filter_by(name=username).first()
+            if not user:
+                flash("User not found. Please provide a valid username.", "error")
+                return render_template("admin/change_password.html")
+
+            # Verify current password
             if not check_password_hash(user.password, current_password):
-                flash("Current password is incorrect.", "danger")
-            elif new_password != confirm_password:
-                flash("New passwords do not match.", "danger")
-            else:
-                user.password = generate_password_hash(new_password)
-                db.commit()
-                flash("Password updated successfully!", "success")
-                return redirect(url_for("admin_bp.admin_dashboard"))
-        else:
-            flash("User not found. Please provide a valid username.", "danger")
+                flash("Current password is incorrect.", "error")
+                return render_template("admin/change_password.html")
 
-    db.close()
-    return render_template("admin/change_password.html")
+            # Update password
+            user.password = generate_password_hash(new_password)
+            session_db.commit()
+            flash("Password updated successfully!", "success")
+            return redirect(url_for("admin_bp.admin_dashboard"))
+
+        return render_template("admin/change_password.html")
+        
+    except Exception as e:
+        session_db.rollback()
+        print(f"Error changing password: {e}")
+        flash("An error occurred while changing password. Please try again.", "error")
+        return render_template("admin/change_password.html")
+    finally:
+        next(session_gen, None)
   
 @admin_bp.route("/api/hospital_info", methods=["GET"])
 def get_hospital_info():
@@ -932,8 +1101,8 @@ def get_hospital_info():
             profile_data = {
                 "name": {"en": hospital.name_en, "hi": hospital.name_hi, "mr": hospital.name_mr},
                 "address": {"en": hospital.address_en, "hi": hospital.address_hi, "mr": hospital.address_mr},
-                "phone": hospital.phone,
-                "email": hospital.email,
+                "Phone": hospital.phone,
+                "Email": hospital.email,
                 "working_hours": hospital.working_hours
             }
         else:
@@ -956,22 +1125,25 @@ def get_analytics():
         appointments = session_db.query(Appointment).all()
         normalized = [normalize_appointment_for_ui(session_db, appt) for appt in appointments]
         
-        # Status distribution
+        # Status distribution with proper formatting
         status_counts = {}
         for appt in normalized:
-            status = appt.get("Status", "Pending").lower()
-            status_counts[status] = status_counts.get(status, 0) + 1
+            status = appt.get("Status", "Pending")
+            # Capitalize first letter
+            status_key = status.capitalize() if status else "Pending"
+            status_counts[status_key] = status_counts.get(status_key, 0) + 1
         
         # Department distribution
         dept_counts = {}
         for appt in normalized:
             dept = appt.get("department", "Unknown")
-            dept_counts[dept] = dept_counts.get(dept, 0) + 1
+            if dept and dept != "Unknown":
+                dept_counts[dept] = dept_counts.get(dept, 0) + 1
         
-        # Daily trend (last 30 days)
+        # Daily trend (last 14 days for better visualization)
         from datetime import datetime, timedelta
         trend_data = {}
-        for i in range(30):
+        for i in range(14):
             date = (datetime.now() - timedelta(days=i)).strftime("%Y-%m-%d")
             trend_data[date] = 0
         
@@ -983,6 +1155,9 @@ def get_analytics():
             except:
                 continue
         
+        # Sort trend data by date
+        sorted_trend = dict(sorted(trend_data.items()))
+        
         # Monthly statistics
         current_month = datetime.now().strftime("%Y-%m")
         monthly_appointments = len([appt for appt in normalized if appt.get("date", "").startswith(current_month)])
@@ -991,7 +1166,8 @@ def get_analytics():
         doctor_counts = {}
         for appt in normalized:
             doctor = appt.get("doctorName", "Unknown")
-            doctor_counts[doctor] = doctor_counts.get(doctor, 0) + 1
+            if doctor and doctor != "Unknown":
+                doctor_counts[doctor] = doctor_counts.get(doctor, 0) + 1
         
         # Top performing doctors (top 5)
         top_doctors = sorted(doctor_counts.items(), key=lambda x: x[1], reverse=True)[:5]
@@ -1000,20 +1176,59 @@ def get_analytics():
         recent_activity = 0
         for appt in normalized:
             try:
-                created_at = datetime.strptime(appt.get("createdAt", ""), "%Y-%m-%d %H:%M:%S")
-                if (datetime.now() - created_at).days <= 7:
-                    recent_activity += 1
+                created_at_str = appt.get("createdAt", "")
+                if created_at_str:
+                    created_at = datetime.strptime(created_at_str, "%Y-%m-%d %H:%M:%S")
+                    if (datetime.now() - created_at).days <= 7:
+                        recent_activity += 1
+            except:
+                continue
+        
+        # Hourly distribution for today
+        hourly_data = {}
+        for hour in range(24):
+            hourly_data[f"{hour:02d}:00"] = 0
+        
+        for appt in normalized:
+            try:
+                appt_date = appt.get("date", "")
+                appt_time = appt.get("time", "")
+                if appt_date == datetime.now().strftime("%Y-%m-%d") and appt_time:
+                    hour = int(appt_time.split(':')[0])
+                    hourly_data[f"{hour:02d}:00"] += 1
+            except:
+                continue
+        
+        # Weekly comparison
+        this_week = 0
+        last_week = 0
+        week_start = datetime.now() - timedelta(days=datetime.now().weekday())
+        last_week_start = week_start - timedelta(days=7)
+        
+        for appt in normalized:
+            try:
+                created_at_str = appt.get("createdAt", "")
+                if created_at_str:
+                    created_at = datetime.strptime(created_at_str, "%Y-%m-%d %H:%M:%S")
+                    if week_start <= created_at < week_start + timedelta(days=7):
+                        this_week += 1
+                    elif last_week_start <= created_at < week_start:
+                        last_week += 1
             except:
                 continue
         
         analytics_data = {
             "status": status_counts,
             "departments": dept_counts,
-            "trend": trend_data,
+            "trend": sorted_trend,
+            "hourly": hourly_data,
             "monthly_appointments": monthly_appointments,
             "top_doctors": top_doctors,
             "recent_activity": recent_activity,
-            "total_appointments": len(normalized)
+            "total_appointments": len(normalized),
+            "this_week": this_week,
+            "last_week": last_week,
+            "week_growth": ((this_week - last_week) / last_week * 100) if last_week > 0 else 0
         }
         
         return jsonify(analytics_data)
