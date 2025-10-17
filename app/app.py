@@ -16,6 +16,7 @@ from services.google_stt import google_stt
 from services.google_tts import google_tts
 from services.google_translate import google_translate
 from config_db import SessionLocal
+from sqlalchemy import text
 from models import Appointment
 from admin_routes import admin_bp
 from api_routes import api_bp
@@ -532,7 +533,7 @@ def health_check():
     try:
         # Test database connection
         session = SessionLocal()
-        session.execute("SELECT 1")
+        session.execute(text("SELECT 1"))
         session.close()
         return jsonify({"status": "healthy", "timestamp": datetime.now().isoformat()}), 200
     except Exception as e:
