@@ -638,13 +638,20 @@
       }
     }
 
+    /* Fix doctor card overlap on narrow screens */
     @media (max-width: 480px) {
+      .doctor-list {
+        grid-template-columns: 1fr !important;
+        gap: var(--space-sm) !important;
+        justify-items: center !important;
+      }
+      
       .doctor-card {
-        width: 140px !important;
-        height: 140px !important;
-        max-width: 140px !important;
-        min-height: 140px !important;
-        padding: var(--space-xs);
+        width: 180px !important;
+        height: 180px !important;
+        max-width: 180px !important;
+        min-height: 180px !important;
+        padding: var(--space-md);
         aspect-ratio: 1 !important;
         margin: 0 auto;
       }
@@ -655,18 +662,71 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        gap: 2px;
+        gap: var(--space-sm);
       }
       
       .doctor-photo {
-        width: 35px;
-        height: 35px;
-        margin-bottom: 2px;
+        width: 55px;
+        height: 55px;
+        margin-bottom: var(--space-sm);
       }
       
       .doctor-card .doctor-name {
-        font-size: 11px;
-        margin-bottom: 1px;
+        font-size: var(--font-size-base);
+        margin-bottom: var(--space-xs);
+        text-align: center;
+        line-height: 1.2;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 100%;
+      }
+      
+      .doctor-specialization {
+        font-size: var(--font-size-sm);
+        margin-bottom: var(--space-xs);
+        text-align: center;
+        line-height: 1.2;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 100%;
+      }
+      
+      .doctor-experience {
+        font-size: var(--font-size-xs);
+        padding: var(--space-xs) var(--space-sm);
+        text-align: center;
+      }
+    }
+
+    /* Extra small screens - force single column */
+    @media (max-width: 360px) {
+      .doctor-list {
+        grid-template-columns: 1fr !important;
+        gap: var(--space-md) !important;
+        justify-items: center !important;
+      }
+      
+      .doctor-card {
+        width: 160px !important;
+        height: 160px !important;
+        max-width: 160px !important;
+        min-height: 160px !important;
+        padding: var(--space-sm);
+        aspect-ratio: 1 !important;
+        margin: 0 auto;
+      }
+      
+      .doctor-photo {
+        width: 45px;
+        height: 45px;
+        margin-bottom: var(--space-xs);
+      }
+      
+      .doctor-card .doctor-name {
+        font-size: var(--font-size-sm);
+        margin-bottom: var(--space-xs);
         text-align: center;
         line-height: 1.1;
         overflow: hidden;
@@ -676,8 +736,8 @@
       }
       
       .doctor-specialization {
-        font-size: 9px;
-        margin-bottom: 1px;
+        font-size: 10px;
+        margin-bottom: var(--space-xs);
         text-align: center;
         line-height: 1.1;
         overflow: hidden;
@@ -687,8 +747,8 @@
       }
       
       .doctor-experience {
-        font-size: 8px;
-        padding: 1px 2px;
+        font-size: 9px;
+        padding: 1px var(--space-xs);
         text-align: center;
       }
     }
