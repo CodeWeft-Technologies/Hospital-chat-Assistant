@@ -18,18 +18,26 @@ DB_NAME = os.getenv("DB_NAME")
 DATABASE_URL = os.getenv("DATABASE_URL")
 if not DATABASE_URL:
     if not all([DB_USER, DB_PASS, DB_HOST, DB_NAME]):
-        raise ValueError("Database configuration is incomplete. Please set DATABASE_URL or all DB_* variables")
-    DATABASE_URL = f"postgresql+psycopg2://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+        # Fallback to SQLite for development
+        DATABASE_URL = "sqlite:///hospital_chat.db"
+        print("Using SQLite database for development")
+    else:
+        DATABASE_URL = f"postgresql+psycopg2://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
 # Production-ready engine configuration
 engine_kwargs = {
-    "poolclass": QueuePool,
-    "pool_size": 10,
-    "max_overflow": 20,
-    "pool_pre_ping": True,
-    "pool_recycle": 3600,  # Recycle connections after 1 hour
     "echo": os.getenv("FLASK_ENV") == "development"
 }
+
+# Add PostgreSQL-specific configurations only for PostgreSQL databases
+if DATABASE_URL.startswith("postgresql"):
+    engine_kwargs.update({
+        "poolclass": QueuePool,
+        "pool_size": 10,
+        "max_overflow": 20,
+        "pool_pre_ping": True,
+        "pool_recycle": 3600,  # Recycle connections after 1 hour
+    })
 
 engine = create_engine(DATABASE_URL, **engine_kwargs)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
