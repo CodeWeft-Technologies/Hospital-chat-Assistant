@@ -582,6 +582,92 @@
       display: inline-block;
     }
 
+    /* New vertical row format for doctor list */
+    .doctor-list-vertical {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .doctor-row-item {
+      background: linear-gradient(135deg, var(--neutral-white), var(--primary-blue-50));
+      border: 2px solid var(--primary-blue-200);
+      border-radius: var(--radius-lg);
+      padding: var(--space-md);
+      cursor: pointer;
+      transition: all var(--transition-normal);
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+    }
+
+    .doctor-row-item:hover {
+      background: linear-gradient(135deg, var(--primary-blue-50), var(--primary-blue-100));
+      border-color: var(--primary-blue-400);
+      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .doctor-row-content {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      width: 100%;
+    }
+
+    .doctor-photo-small {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 2px solid var(--primary-blue-300);
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+      flex-shrink: 0;
+    }
+
+    .doctor-photo-small img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .doctor-details {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+      flex: 1;
+    }
+
+    .doctor-field {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .field-label {
+      font-weight: 600;
+      color: var(--primary-blue-700);
+      min-width: 80px;
+      font-size: var(--font-size-sm);
+    }
+
+    .field-value {
+      color: var(--neutral-gray-800);
+      font-weight: 500;
+      font-size: var(--font-size-sm);
+    }
+
+    .field-value.doctor-name {
+      font-weight: 700;
+      color: var(--primary-blue-800);
+      font-size: var(--font-size-base);
+    }
+
+    .field-value.doctor-fees {
+      color: var(--secondary-green-600);
+      font-weight: 600;
+    }
+
     /* Responsive doctor card adjustments */
     @media (max-width: 768px) {
       .doctor-card {

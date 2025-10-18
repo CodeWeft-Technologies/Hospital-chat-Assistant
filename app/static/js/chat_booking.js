@@ -328,11 +328,11 @@
     if (chatInputCard) chatInputCard.classList.add("hidden");
     
     let docCards = document.createElement("div");
-    docCards.className = "menu-cards";
+    docCards.className = "doctor-list-vertical";
     
     doctors.forEach(doc => {
       let card = document.createElement("div");
-      card.className = "menu-card doctor-card";
+      card.className = "doctor-row-item";
       
       let photoUrl = "/static/images/default-doctor.png";
       if (doc.photo) {
@@ -340,16 +340,28 @@
       }
       
       card.innerHTML = `
-        <div class="doctor-card-content">
-          <div class="doctor-photo">
+        <div class="doctor-row-content">
+          <div class="doctor-photo-small">
             <img src="${photoUrl}" alt="${doc.name[resolveLangKey()] || doc.name.en}" 
                  onerror="this.src='/static/images/default-doctor.png'">
           </div>
-          <div class="doctor-info">
-            <strong class="doctor-name">${doc.name[resolveLangKey()] || doc.name.en}</strong><br>
-            <span class="doctor-education">${doc.education || ""}</span><br>
-            <span class="doctor-experience">${doc.experience || ""}</span><br>
-            <span class="doctor-fees">Fees: ₹${doc.fees || ""}</span>
+          <div class="doctor-details">
+            <div class="doctor-field">
+              <span class="field-label">DR. Name:</span>
+              <span class="field-value doctor-name">${doc.name[resolveLangKey()] || doc.name.en}</span>
+            </div>
+            <div class="doctor-field">
+              <span class="field-label">Experience:</span>
+              <span class="field-value doctor-experience">${doc.experience || "Not specified"}</span>
+            </div>
+            <div class="doctor-field">
+              <span class="field-label">Education:</span>
+              <span class="field-value doctor-education">${doc.education || "Not specified"}</span>
+            </div>
+            <div class="doctor-field">
+              <span class="field-label">Fees:</span>
+              <span class="field-value doctor-fees">₹${doc.fees || "Not specified"}</span>
+            </div>
           </div>
         </div>
       `;
@@ -561,10 +573,10 @@
       })
       .then(doctors => {
         let docCards = document.createElement("div");
-        docCards.className = "menu-cards"; // Reuse menu-cards style for doctor selection
+        docCards.className = "doctor-list-vertical"; // Use vertical list style for doctor selection
         doctors.forEach(doc => {
           let card = document.createElement("div");
-          card.className = "menu-card doctor-card";
+          card.className = "doctor-row-item";
           
           // Create doctor photo URL
           let photoUrl = "/static/images/default-doctor.png"; // Default photo
@@ -573,16 +585,28 @@
           }
           
           card.innerHTML = `
-            <div class="doctor-card-content">
-              <div class="doctor-photo">
+            <div class="doctor-row-content">
+              <div class="doctor-photo-small">
                 <img src="${photoUrl}" alt="${doc.name[resolveLangKey()] || doc.name.en}" 
                      onerror="this.src='/static/images/default-doctor.png'">
               </div>
-              <div class="doctor-info">
-                <strong class="doctor-name">${doc.name[resolveLangKey()] || doc.name.en}</strong><br>
-                <span class="doctor-education">${doc.education || ""}</span><br>
-                <span class="doctor-experience">${doc.experience || ""}</span><br>
-                <span class="doctor-fees">Fees: ₹${doc.fees || ""}</span>
+              <div class="doctor-details">
+                <div class="doctor-field">
+                  <span class="field-label">DR. Name:</span>
+                  <span class="field-value doctor-name">${doc.name[resolveLangKey()] || doc.name.en}</span>
+                </div>
+                <div class="doctor-field">
+                  <span class="field-label">Experience:</span>
+                  <span class="field-value doctor-experience">${doc.experience || "Not specified"}</span>
+                </div>
+                <div class="doctor-field">
+                  <span class="field-label">Education:</span>
+                  <span class="field-value doctor-education">${doc.education || "Not specified"}</span>
+                </div>
+                <div class="doctor-field">
+                  <span class="field-label">Fees:</span>
+                  <span class="field-value doctor-fees">₹${doc.fees || "Not specified"}</span>
+                </div>
               </div>
             </div>
           `;
