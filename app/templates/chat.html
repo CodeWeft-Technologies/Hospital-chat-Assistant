@@ -503,6 +503,81 @@
       color: var(--neutral-gray-600);
       line-height: 1.4;
     }
+
+    /* Enhanced doctor card specific styling */
+    .doctor-card {
+      min-height: 180px;
+      padding: var(--space-lg);
+      background: linear-gradient(135deg, var(--neutral-white), var(--primary-blue-50));
+      border: 2px solid var(--primary-blue-200);
+      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.15);
+    }
+
+    .doctor-card:hover {
+      background: linear-gradient(135deg, var(--primary-blue-50), var(--primary-blue-100));
+      border-color: var(--primary-blue-400);
+      box-shadow: 0 8px 30px rgba(59, 130, 246, 0.25);
+    }
+
+    .doctor-card-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      gap: var(--space-sm);
+    }
+
+    .doctor-photo {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 3px solid var(--primary-blue-300);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+      margin-bottom: var(--space-sm);
+      transition: transform var(--transition-normal);
+    }
+
+    .doctor-photo:hover {
+      transform: scale(1.05);
+    }
+
+    .doctor-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform var(--transition-normal);
+    }
+
+    .doctor-info {
+      text-align: center;
+      width: 100%;
+    }
+
+    .doctor-card .doctor-name {
+      font-size: var(--font-size-lg);
+      font-weight: 700;
+      color: var(--primary-blue-800);
+      margin-bottom: var(--space-xs);
+      line-height: 1.2;
+    }
+
+    .doctor-specialization {
+      font-size: var(--font-size-sm);
+      color: var(--neutral-gray-600);
+      font-weight: 500;
+      margin-bottom: var(--space-xs);
+    }
+
+    .doctor-experience {
+      font-size: var(--font-size-xs);
+      color: var(--primary-blue-600);
+      font-weight: 600;
+      background: var(--primary-blue-100);
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: var(--radius-md);
+      display: inline-block;
+    }
     
     /* Enhanced Responsive adjustments with better breakpoints */
     

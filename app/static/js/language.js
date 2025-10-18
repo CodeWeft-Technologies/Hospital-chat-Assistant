@@ -26,12 +26,36 @@ function updateLanguageUI() {
     if (langTitle) langTitle.textContent = "Language / भाषा"; // Fixed
 }
 
-// Handle language selection
+// Handle language selection with visual feedback
 document.querySelectorAll('.lang-btn').forEach(btn => {
     btn.addEventListener('click', () => {
         const selectedLang = btn.getAttribute('data-lang');
+        
+        // Add visual feedback
+        btn.classList.add('selected');
+        
+        // Add loading state
+        btn.style.transform = 'scale(0.95)';
+        btn.innerHTML = '<span style="display: inline-block; animation: pulse 0.6s ease-in-out;">Loading...</span>';
+        
+        // Save selection
         localStorage.setItem('selectedLanguage', selectedLang);
-        window.location.href = "/chat"; // Direct to chat interface
+        
+        // Small delay for visual feedback, then redirect
+        setTimeout(() => {
+            window.location.href = "/chat";
+        }, 500);
+    });
+    
+    // Add hover sound effect (optional)
+    btn.addEventListener('mouseenter', () => {
+        btn.style.transform = 'translateY(-4px) scale(1.02)';
+    });
+    
+    btn.addEventListener('mouseleave', () => {
+        if (!btn.classList.contains('selected')) {
+            btn.style.transform = 'translateY(0) scale(1)';
+        }
     });
 });
 
