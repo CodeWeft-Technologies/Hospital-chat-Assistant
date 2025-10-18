@@ -84,20 +84,28 @@
       .title {
         color: var(--primary-blue-800) !important;
         text-shadow: none;
+        font-size: 1.5rem !important; /* Match desktop font size */
+        font-weight: 700 !important;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important; /* Match desktop font */
       }
       
       .subtitle {
         color: var(--primary-blue-600) !important;
         text-shadow: none;
+        font-size: 0.875rem !important; /* Match desktop font size */
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important; /* Match desktop font */
       }
       
       .language-label {
         color: var(--neutral-gray-600) !important;
+        font-size: 0.75rem !important; /* Match desktop font size */
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important; /* Match desktop font */
       }
       
       /* Ensure all text is visible on mobile */
       .menu-card, .dept-card, .doctor-card {
         color: var(--neutral-gray-800) !important;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important; /* Match desktop font */
       }
       
       .menu-card .menu-title,
@@ -105,33 +113,49 @@
       .doctor-card .doctor-name {
         color: var(--primary-blue-800) !important;
         font-weight: 700;
+        font-size: 1rem !important; /* Match desktop font size */
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important; /* Match desktop font */
       }
       
       .menu-card .menu-sub,
       .dept-card .dept-sub,
       .doctor-card .doctor-info {
         color: var(--neutral-gray-600) !important;
+        font-size: 0.75rem !important; /* Match desktop font size */
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important; /* Match desktop font */
       }
       
       .chat-messages .msg {
         color: var(--neutral-gray-800) !important;
+        font-size: 0.875rem !important; /* Match desktop font size */
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important; /* Match desktop font */
       }
       
       .chat-messages .bot {
         color: var(--neutral-gray-800) !important;
+        font-size: 0.875rem !important; /* Match desktop font size */
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important; /* Match desktop font */
       }
       
       .chat-messages .user {
         color: var(--neutral-white) !important;
+        font-size: 0.875rem !important; /* Match desktop font size */
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important; /* Match desktop font */
       }
       
       .chat-messages .info-msg {
         color: var(--primary-blue-800) !important;
+        font-size: 0.875rem !important; /* Match desktop font size */
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important; /* Match desktop font */
       }
       
       .action-buttons button {
         color: var(--neutral-white) !important;
         font-weight: 600;
+        font-size: 0.875rem !important; /* Match desktop font size */
+        padding: var(--space-sm) var(--space-md) !important; /* Reduce button size */
+        min-height: 36px !important; /* Smaller button height */
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important; /* Match desktop font */
       }
     }
     
@@ -338,6 +362,12 @@
       .chat-input input {
         color: var(--neutral-gray-800) !important;
         font-size: 16px; /* Prevent zoom on iOS */
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important; /* Match desktop font */
+      }
+      
+      .chat-input button {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important; /* Match desktop font */
+        font-size: 0.875rem !important; /* Match desktop font size */
       }
     }
     .chat-input input:focus {
