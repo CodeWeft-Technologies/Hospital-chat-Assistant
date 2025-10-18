@@ -638,22 +638,27 @@
       }
     }
 
-    /* Fix doctor card overlap on narrow screens */
-    @media (max-width: 480px) {
+    /* Fix doctor card overlap - force vertical layout with proper spacing */
+    @media (max-width: 600px) {
       .doctor-list {
-        grid-template-columns: 1fr !important;
-        gap: var(--space-sm) !important;
-        justify-items: center !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: var(--space-md) !important;
+        align-items: center !important;
+        width: 100% !important;
+        max-width: 300px !important;
+        margin: 0 auto !important;
       }
       
       .doctor-card {
-        width: 180px !important;
-        height: 180px !important;
-        max-width: 180px !important;
-        min-height: 180px !important;
+        width: 200px !important;
+        height: 200px !important;
+        max-width: 200px !important;
+        min-height: 200px !important;
         padding: var(--space-md);
         aspect-ratio: 1 !important;
-        margin: 0 auto;
+        margin: 0 !important;
+        flex-shrink: 0 !important;
       }
       
       .doctor-card-content {
@@ -666,8 +671,8 @@
       }
       
       .doctor-photo {
-        width: 55px;
-        height: 55px;
+        width: 60px;
+        height: 60px;
         margin-bottom: var(--space-sm);
       }
       
@@ -700,27 +705,32 @@
       }
     }
 
-    /* Extra small screens - force single column */
+    /* Extra small screens - force single column with flex */
     @media (max-width: 360px) {
       .doctor-list {
-        grid-template-columns: 1fr !important;
+        display: flex !important;
+        flex-direction: column !important;
         gap: var(--space-md) !important;
-        justify-items: center !important;
+        align-items: center !important;
+        width: 100% !important;
+        max-width: 280px !important;
+        margin: 0 auto !important;
       }
       
       .doctor-card {
-        width: 160px !important;
-        height: 160px !important;
-        max-width: 160px !important;
-        min-height: 160px !important;
+        width: 180px !important;
+        height: 180px !important;
+        max-width: 180px !important;
+        min-height: 180px !important;
         padding: var(--space-sm);
         aspect-ratio: 1 !important;
-        margin: 0 auto;
+        margin: 0 !important;
+        flex-shrink: 0 !important;
       }
       
       .doctor-photo {
-        width: 45px;
-        height: 45px;
+        width: 50px;
+        height: 50px;
         margin-bottom: var(--space-xs);
       }
       
