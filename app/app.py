@@ -223,7 +223,13 @@ def widget_embed_js(hospital_id):
 
 @app.route("/meta/departments")
 def meta_depts():
-    return jsonify(ds.list_departments())
+    try:
+        departments = ds.list_departments()
+        logger.info(f"Found {len(departments)} departments")
+        return jsonify(departments)
+    except Exception as e:
+        logger.error(f"Error fetching departments: {e}")
+        return jsonify({"error": str(e)}), 500
 
 @app.route("/meta/doctors")
 def meta_doctors():
@@ -549,6 +555,23 @@ def health_check():
     except Exception as e:
         logger.error(f"Health check failed: {e}")
         return jsonify({"status": "unhealthy", "error": str(e)}), 500
+
+# Debug endpoint to check data
+@app.route("/debug/data")
+def debug_data():
+    try:
+        session = SessionLocal()
+        dept_count = session.execute(text("SELECT COUNT(*) FROM departments")).scalar()
+        doctor_count = session.execute(text("SELECT COUNT(*) FROM doctors")).scalar()
+        session.close()
+        return jsonify({
+            "departments": dept_count,
+            "doctors": doctor_count,
+            "timestamp": datetime.now().isoformat()
+        }), 200
+    except Exception as e:
+        logger.error(f"Debug data check failed: {e}")
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 5000))

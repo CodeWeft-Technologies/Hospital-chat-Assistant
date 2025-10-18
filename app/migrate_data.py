@@ -47,17 +47,17 @@ def migrate():
     try:
         # --- USERS ---
         try:
-            users = load_json("data/users.json")
+            users = load_json("app/data/users.json")
             for u in users:
                 session.merge(User(**u))
             session.commit()
             print("Users migrated successfully")
         except FileNotFoundError:
-            print("Warning: data/users.json not found, skipping user migration")
+            print("Warning: app/data/users.json not found, skipping user migration")
 
         # --- DEPARTMENTS ---
         try:
-            depts = load_json("data/departments.json")
+            depts = load_json("app/data/departments.json")
             for d in depts:
                 dept_obj = Department(
                     id=d["id"],
@@ -69,11 +69,11 @@ def migrate():
             session.commit()
             print("Departments migrated successfully")
         except FileNotFoundError:
-            print("Warning: data/departments.json not found, skipping department migration")
+            print("Warning: app/data/departments.json not found, skipping department migration")
 
         # --- DOCTORS ---
         try:
-            doctors = load_json("data/doctors.json")
+            doctors = load_json("app/data/doctors.json")
             for d in doctors:
                 doc_obj = Doctor(
                     id=d["id"],
@@ -92,10 +92,10 @@ def migrate():
             session.commit()
             print("Doctors migrated successfully")
         except FileNotFoundError:
-            print("Warning: data/doctors.json not found, skipping doctor migration")
+            print("Warning: app/data/doctors.json not found, skipping doctor migration")
 
         # --- APPOINTMENTS ---
-        with open("data/appointments.csv", newline="", encoding="utf-8") as csvfile:
+        with open("app/data/appointments.csv", newline="", encoding="utf-8") as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
                 appt_obj = Appointment(
@@ -120,7 +120,7 @@ def migrate():
 
         # --- HOSPITAL INFO ---
         try:
-            hosp = load_json("data/hospital_info.json")["hospital"]
+            hosp = load_json("app/data/hospital_info.json")["hospital"]
             hosp_obj = HospitalInfo(
                 name_en=hosp["name"]["english"],
                 name_hi=hosp["name"]["hindi"],
