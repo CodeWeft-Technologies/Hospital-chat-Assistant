@@ -1,0 +1,72 @@
+{
+  "Modern Chat Interface": {
+    "accessible": true,
+    "status_code": 200,
+    "content_length": 7189
+  },
+  "Enhanced Chat Interface": {
+    "accessible": true,
+    "status_code": 200,
+    "content_length": 32290
+  },
+  "Responsive Demo": {
+    "accessible": true,
+    "status_code": 200,
+    "content_length": 21862
+  },
+  "modern_chat_features": {
+    "modern_chat_css": true,
+    "modern_chat_container": true,
+    "modern_chat_header": true,
+    "modern_chat_messages": true,
+    "modern_chat_input": true,
+    "message_bubbles": false,
+    "quick_actions": true,
+    "typing_indicator": false,
+    "chat_avatar": true,
+    "status_indicator": true,
+    "send_button": true,
+    "attachment_button": true,
+    "modern_chat_js": true,
+    "backdrop_filter": true,
+    "gradient_backgrounds": false,
+    "css_animations": true,
+    "responsive_breakpoints": false,
+    "touch_friendly": false,
+    "viewport_meta": true,
+    "font_awesome": true
+  },
+  "responsive_design": {
+    "responsive_demo": false,
+    "device_preview": true,
+    "interactive_demos": true,
+    "performance_metrics": true,
+    "test_controls": true,
+    "responsive_testing": true,
+    "dynamic_animations": true,
+    "responsive_interactions": true,
+    "css_grid": true,
+    "flexbox": true,
+    "media_queries": true,
+    "mobile_optimization": false,
+    "tablet_optimization": false,
+    "desktop_optimization": false
+  },
+  "ui_components": {
+    "chat_shell": true,
+    "menu_cards": true,
+    "ai_icon": true,
+    "gradient_backgrounds": true,
+    "modern_animations": true,
+    "hover_effects": true,
+    "touch_interactions": true,
+    "keyboard_navigation": false,
+    "accessibility": false,
+    "loading_states": true,
+    "error_handling": false,
+    "connection_status": false,
+    "file_upload": false,
+    "quick_replies": false,
+    "message_timestamps": false
+  }
+}

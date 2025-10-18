@@ -1552,12 +1552,12 @@
         <span id="menuBookingTitle" class="menu-title">Booking Appointment</span>
         <span id="menuBookingSub" class="menu-sub">Schedule a new visit</span>
       </div>
-      <div id="menuMyAppointmentCard" class="menu-card" onclick="startMyAppointmentChatFlow()">
+      <div id="menuMyAppointmentCard" class="menu-card" onclick="startMyAppointmentFlow()">
         <i class="fas fa-calendar-check" style="font-size: 2rem; color: var(--secondary-green-600); margin-bottom: var(--space-sm);"></i>
         <span id="menuMyAppointmentTitle" class="menu-title">My Appointment</span>
         <span id="menuMyAppointmentSub" class="menu-sub">Check or edit your booking</span>
       </div>
-      <div id="menuGeneralCard" class="menu-card" onclick="startGeneralQueryChatFlow()">
+      <div id="menuGeneralCard" class="menu-card" onclick="startGeneralQueryFlow()">
         <i class="fas fa-question-circle" style="font-size: 2rem; color: var(--accent-purple-600); margin-bottom: var(--space-sm);"></i>
         <span id="menuGeneralTitle" class="menu-title">General Query</span>
         <span id="menuGeneralSub" class="menu-sub">Ask a general question</span>
@@ -1615,7 +1615,7 @@
     }
 
     // Function to start my appointment chat flow
-    function startMyAppointmentChatFlow() {
+    function startMyAppointmentFlow() {
       console.log('Starting my appointment chat flow...');
       
       // Hide menu section and show chat shell
@@ -1642,7 +1642,7 @@
     }
 
     // Function to start general query chat flow
-    function startGeneralQueryChatFlow() {
+    function startGeneralQueryFlow() {
       console.log('Starting general query chat flow...');
       
       // Hide menu section and show chat shell
