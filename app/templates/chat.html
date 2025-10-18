@@ -19,6 +19,71 @@
       min-height: 100vh;        
       display: flex;
       flex-direction: column;
+      /* Mobile deployment fixes */
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+      box-sizing: border-box;
+    }
+    
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+    
+    /* Mobile text color fixes - ensure proper contrast */
+    @media (max-width: 768px) {
+      .title {
+        color: var(--primary-blue-800) !important;
+        text-shadow: none;
+      }
+      
+      .subtitle {
+        color: var(--primary-blue-600) !important;
+        text-shadow: none;
+      }
+      
+      .language-label {
+        color: var(--neutral-gray-600) !important;
+      }
+      
+      /* Ensure all text is visible on mobile */
+      .menu-card, .dept-card, .doctor-card {
+        color: var(--neutral-gray-800) !important;
+      }
+      
+      .menu-card .menu-title,
+      .dept-card .dept-title,
+      .doctor-card .doctor-name {
+        color: var(--primary-blue-800) !important;
+        font-weight: 700;
+      }
+      
+      .menu-card .menu-sub,
+      .dept-card .dept-sub,
+      .doctor-card .doctor-info {
+        color: var(--neutral-gray-600) !important;
+      }
+      
+      .chat-messages .msg {
+        color: var(--neutral-gray-800) !important;
+      }
+      
+      .chat-messages .bot {
+        color: var(--neutral-gray-800) !important;
+      }
+      
+      .chat-messages .user {
+        color: var(--neutral-white) !important;
+      }
+      
+      .chat-messages .info-msg {
+        color: var(--primary-blue-800) !important;
+      }
+      
+      .action-buttons button {
+        color: var(--neutral-white) !important;
+        font-weight: 600;
+      }
     }
     
     .container {
@@ -29,6 +94,10 @@
       flex: 1;
       display: flex;
       flex-direction: column;
+      /* Mobile deployment fixes */
+      box-sizing: border-box;
+      overflow-x: hidden;
+      position: relative;
     }
     
     .header { 
@@ -213,6 +282,14 @@
       color: var(--neutral-gray-800);
       font-weight: 500;
       transition: all var(--transition-normal);
+    }
+    
+    /* Mobile input text color fix */
+    @media (max-width: 768px) {
+      .chat-input input {
+        color: var(--neutral-gray-800) !important;
+        font-size: 16px; /* Prevent zoom on iOS */
+      }
     }
     .chat-input input:focus {
       border-color: var(--primary-blue-400);
@@ -419,16 +496,20 @@
     @media (min-width: 768px) and (max-width: 991px) {
       .container { 
         padding: var(--space-xs);
+        min-height: 100vh;
+        box-sizing: border-box;
       }
       .header { 
         padding: var(--space-xs);
         margin-bottom: var(--space-xs);
+        box-sizing: border-box;
       }
       .chat-shell { 
-        height: 350px;
+        height: 320px;
         max-width: 100%;
         margin: var(--space-xs);
         border-radius: var(--radius-lg);
+        box-sizing: border-box;
       }
       .title { 
         font-size: var(--font-size-lg);
@@ -466,16 +547,20 @@
     @media (min-width: 600px) and (max-width: 767px) {
       .container { 
         padding: var(--space-xs);
+        min-height: 100vh;
+        box-sizing: border-box;
       }
       .header { 
         padding: var(--space-xs);
         margin-bottom: var(--space-xs);
+        box-sizing: border-box;
       }
       .chat-shell { 
-        height: 320px;
+        height: 300px;
         max-width: 100%;
         margin: var(--space-xs);
         border-radius: var(--radius-lg);
+        box-sizing: border-box;
       }
       .title { 
         font-size: var(--font-size-base);
@@ -518,16 +603,20 @@
     @media (min-width: 480px) and (max-width: 599px) {
       .container { 
         padding: var(--space-xs);
+        min-height: 100vh;
+        box-sizing: border-box;
       }
       .header { 
         padding: var(--space-xs);
         margin-bottom: var(--space-xs);
+        box-sizing: border-box;
       }
       .chat-shell { 
-        height: 300px;
+        height: 280px;
         max-width: 100%;
         margin: var(--space-xs);
         border-radius: var(--radius-lg);
+        box-sizing: border-box;
       }
       .title { 
         font-size: var(--font-size-sm);
@@ -573,16 +662,20 @@
     @media (max-width: 479px) {
       .container { 
         padding: var(--space-xs);
+        min-height: 100vh;
+        box-sizing: border-box;
       }
       .header { 
         padding: var(--space-xs);
         margin-bottom: var(--space-xs);
+        box-sizing: border-box;
       }
       .chat-shell { 
-        height: 400px;
+        height: 350px;
         max-width: 100%;
         margin: var(--space-xs);
         border-radius: var(--radius-lg);
+        box-sizing: border-box;
       }
       .title { 
         font-size: var(--font-size-sm);
@@ -803,13 +896,142 @@
     /* Mobile responsive adjustments for better proportions */
     @media (max-width: 599px) {
       .chat-shell {
-        min-height: 300px;
+        min-height: 280px;
+      }
+      
+      /* Fix mobile viewport issues */
+      body {
+        overflow-x: hidden;
+        -webkit-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%;
+      }
+      
+      .container {
+        width: 100%;
+        overflow-x: hidden;
+      }
+      
+      /* Fix touch targets */
+      .menu-card, .dept-card, .doctor-card {
+        min-height: 44px; /* iOS recommended touch target */
+        cursor: pointer;
+      }
+      
+      /* Fix input zoom on iOS */
+      input[type="text"], input[type="email"], input[type="tel"] {
+        font-size: 16px;
+        color: var(--neutral-gray-800) !important;
+      }
+      
+      /* Fix mobile text colors for all mobile devices */
+      .title {
+        color: var(--primary-blue-800) !important;
+      }
+      
+      .subtitle {
+        color: var(--primary-blue-600) !important;
+      }
+      
+      .language-label {
+        color: var(--neutral-gray-600) !important;
+      }
+      
+      .menu-card, .dept-card, .doctor-card {
+        color: var(--neutral-gray-800) !important;
+      }
+      
+      .menu-card .menu-title,
+      .dept-card .dept-title,
+      .doctor-card .doctor-name {
+        color: var(--primary-blue-800) !important;
+      }
+      
+      .menu-card .menu-sub,
+      .dept-card .dept-sub,
+      .doctor-card .doctor-info {
+        color: var(--neutral-gray-600) !important;
+      }
+      
+      .chat-messages .msg {
+        color: var(--neutral-gray-800) !important;
+      }
+      
+      .chat-messages .bot {
+        color: var(--neutral-gray-800) !important;
+      }
+      
+      .chat-messages .user {
+        color: var(--neutral-white) !important;
+      }
+      
+      .chat-messages .info-msg {
+        color: var(--primary-blue-800) !important;
+      }
+      
+      .action-buttons button {
+        color: var(--neutral-white) !important;
       }
     }
     
     @media (max-width: 479px) {
       .chat-shell {
-        min-height: 350px;
+        min-height: 320px;
+      }
+      
+      /* Ensure proper mobile layout */
+      .menu {
+        grid-template-columns: 1fr;
+        gap: var(--space-xs);
+      }
+      
+      /* Fix small screen issues */
+      .title {
+        font-size: var(--font-size-sm);
+        text-align: center;
+        color: var(--primary-blue-800) !important;
+      }
+      
+      .subtitle {
+        font-size: var(--font-size-xs);
+        text-align: center;
+        color: var(--primary-blue-600) !important;
+      }
+      
+      /* Fix mobile text color issues */
+      .language-label {
+        color: var(--neutral-gray-600) !important;
+      }
+      
+      .menu-card, .dept-card, .doctor-card {
+        color: var(--neutral-gray-800) !important;
+      }
+      
+      .menu-card .menu-title,
+      .dept-card .dept-title,
+      .doctor-card .doctor-name {
+        color: var(--primary-blue-800) !important;
+      }
+      
+      .menu-card .menu-sub,
+      .dept-card .dept-sub,
+      .doctor-card .doctor-info {
+        color: var(--neutral-gray-600) !important;
+      }
+      
+      .chat-messages .msg {
+        color: var(--neutral-gray-800) !important;
+      }
+      
+      .chat-messages .bot {
+        color: var(--neutral-gray-800) !important;
+      }
+      
+      .chat-messages .user {
+        color: var(--neutral-white) !important;
+      }
+      
+      .chat-messages .info-msg {
+        color: var(--primary-blue-800) !important;
       }
     }
     
