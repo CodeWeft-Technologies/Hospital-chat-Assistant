@@ -66,7 +66,8 @@ csp = {
     ],
     'font-src': [
         "'self'",
-        'https://fonts.gstatic.com'
+        'https://fonts.gstatic.com',
+        'https://cdnjs.cloudflare.com'
     ],
     'img-src': [
         "'self'",

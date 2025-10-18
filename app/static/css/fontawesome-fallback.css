@@ -1,0 +1,103 @@
+/* FontAwesome Fallback Icons */
+/* This ensures icons display even if CDN fails */
+
+.fas, .far, .fab {
+  font-family: "Font Awesome 6 Free", "Font Awesome 6 Pro", "FontAwesome", sans-serif !important;
+  font-weight: 900;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+}
+
+/* Fallback icons using Unicode symbols */
+.fa-user-md:before { 
+  content: "👨‍⚕️"; 
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+}
+
+.fa-calendar-plus:before { 
+  content: "📅"; 
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+}
+
+.fa-calendar-check:before { 
+  content: "✅"; 
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+}
+
+.fa-question-circle:before { 
+  content: "❓"; 
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+}
+
+.fa-paper-plane:before { 
+  content: "📤"; 
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+}
+
+.fa-arrow-left:before { 
+  content: "←"; 
+  font-family: "Arial", sans-serif;
+}
+
+.fa-globe:before { 
+  content: "🌐"; 
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+}
+
+/* Ensure icons are visible and properly sized */
+.menu-card i, .action-buttons i, .ai-doctor-icon i {
+  display: inline-block;
+  font-size: inherit;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Fix icon sizing in menu cards */
+.menu-card i[class*="fa-"] {
+  font-size: 2rem !important;
+  margin-bottom: var(--space-sm);
+  display: block;
+  text-align: center;
+}
+
+/* Fix icon sizing in buttons */
+.action-buttons i[class*="fa-"] {
+  margin-right: var(--space-xs);
+}
+
+/* Fix send button icon */
+#sendBtn i[class*="fa-"] {
+  margin-right: var(--space-xs);
+}
+
+/* Alternative text-based icons if emojis don't work */
+.fa-user-md:before { 
+  content: "👨‍⚕️" "Doctor"; 
+}
+
+.fa-calendar-plus:before { 
+  content: "📅" "Book"; 
+}
+
+.fa-calendar-check:before { 
+  content: "✅" "Check"; 
+}
+
+.fa-question-circle:before { 
+  content: "❓" "?"; 
+}
+
+.fa-paper-plane:before { 
+  content: "📤" "Send"; 
+}
+
+.fa-arrow-left:before { 
+  content: "←" "Back"; 
+}
+
+.fa-globe:before { 
+  content: "🌐" "Lang"; 
+}

@@ -7,7 +7,56 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}"/>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/ai-icon.css') }}"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/fontawesome-fallback.css') }}"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <!-- Fallback for FontAwesome -->
+  <style>
+    /* Ensure FontAwesome icons display properly */
+    .fas, .far, .fab {
+      font-family: "Font Awesome 6 Free", "Font Awesome 6 Pro", "FontAwesome", sans-serif !important;
+      font-weight: 900;
+      font-style: normal;
+      font-variant: normal;
+      text-rendering: auto;
+      line-height: 1;
+    }
+    
+    /* Fallback icons if FontAwesome doesn't load */
+    .fa-user-md:before { content: "👨‍⚕️"; }
+    .fa-calendar-plus:before { content: "📅"; }
+    .fa-calendar-check:before { content: "✅"; }
+    .fa-question-circle:before { content: "❓"; }
+    .fa-paper-plane:before { content: "📤"; }
+    .fa-arrow-left:before { content: "←"; }
+    .fa-globe:before { content: "🌐"; }
+    
+    /* Ensure icons are visible and properly sized */
+    .menu-card i, .action-buttons i, .ai-doctor-icon i {
+      display: inline-block;
+      font-size: inherit;
+      text-rendering: auto;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    
+    /* Fix icon sizing in menu cards */
+    .menu-card i[class*="fa-"] {
+      font-size: 2rem !important;
+      margin-bottom: var(--space-sm);
+      display: block;
+      text-align: center;
+    }
+    
+    /* Fix icon sizing in buttons */
+    .action-buttons i[class*="fa-"] {
+      margin-right: var(--space-xs);
+    }
+    
+    /* Fix send button icon */
+    #sendBtn i[class*="fa-"] {
+      margin-right: var(--space-xs);
+    }
+  </style>
   <style>
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -1247,6 +1296,15 @@
       if (hospitalNameElement && hospitalId !== 'xyz') {
         hospitalNameElement.textContent = hospitalId.charAt(0).toUpperCase() + hospitalId.slice(1) + ' Hospital';
       }
+      
+      // Check if FontAwesome loaded properly
+      setTimeout(() => {
+        const testIcon = document.querySelector('.fa-user-md');
+        if (testIcon && getComputedStyle(testIcon, '::before').content === '""') {
+          console.log('FontAwesome not loaded, using fallback icons');
+          // FontAwesome didn't load, fallback icons will be used
+        }
+      }, 1000);
     });
   </script>
 
