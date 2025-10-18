@@ -20,16 +20,16 @@ if not DATABASE_URL:
     if not all([DB_USER, DB_PASS, DB_HOST, DB_NAME]):
         # Fallback to SQLite for development only
         DATABASE_URL = "sqlite:///hospital_chat.db"
-        print("⚠️  Using SQLite database for development - no Supabase connection")
+        print("Using SQLite database for development - no Supabase connection")
     else:
         DATABASE_URL = f"postgresql+psycopg2://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-        print("✅ Using Supabase PostgreSQL database")
+        print("Using Supabase PostgreSQL database")
 
 # Log which database we're using
 if DATABASE_URL.startswith("postgresql"):
-    print("🔗 Connected to Supabase PostgreSQL database")
+    print("Connected to Supabase PostgreSQL database")
 else:
-    print("⚠️  Using SQLite database - departments may not load properly")
+    print("Using SQLite database - departments may not load properly")
 
 # Production-ready engine configuration
 engine_kwargs = {

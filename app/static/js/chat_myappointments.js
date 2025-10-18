@@ -344,13 +344,26 @@ window.startMyAppointmentChatFlow = function (lang) {
   // 📅 Dept → Doctor → Date → Time
   function selectDepartment() {
     fetch("/meta/departments")
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
       .then((depts) => {
+        if (!Array.isArray(depts)) {
+          console.error("Departments response is not an array:", depts);
+          throw new Error("Invalid departments data format");
+        }
         showOptions(depts, (dept) => {
           appointmentData.department_id = dept.id;
           appointmentData.department = dept.name[lang] || dept.name["en"];
           selectDoctor();
         });
+      })
+      .catch(error => {
+        console.error("Error fetching departments:", error);
+        window.appendSystemLine("Failed to load departments. Please try again.");
       });
   }
 

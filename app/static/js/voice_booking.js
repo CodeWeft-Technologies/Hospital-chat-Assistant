@@ -27,7 +27,14 @@
       case 2: // Departments
         try {
           const res = await fetch("/meta/departments");
+          if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+          }
           const departments = await res.json();
+          if (!Array.isArray(departments)) {
+            console.error("Departments response is not an array:", departments);
+            throw new Error("Invalid departments data format");
+          }
           if (departments && departments.length > 0) {
             window.voiceFlowState.bookingData.departments = departments;
             const deptNames = departments.map(d => window.tOr(d.name_key || d.name.en, d.name.en));

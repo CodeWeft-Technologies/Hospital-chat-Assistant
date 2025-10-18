@@ -501,8 +501,19 @@
     currentStep = 3; saveState();
 
     fetch("/meta/departments")
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
       .then(departments => {
+        // Check if departments is an array
+        if (!Array.isArray(departments)) {
+          console.error("Departments response is not an array:", departments);
+          throw new Error("Invalid departments data format");
+        }
+        
         let deptCards = document.createElement("div");
         deptCards.className = "menu-cards"; // Reuse menu-cards style for department selection
         departments.forEach(dept => {

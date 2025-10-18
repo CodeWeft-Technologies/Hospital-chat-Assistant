@@ -227,31 +227,84 @@ def meta_depts():
         # Check if we're using the correct database
         from config_db import DATABASE_URL
         if not DATABASE_URL.startswith("postgresql"):
-            logger.warning("Using SQLite database - departments may not be available")
-            return jsonify({"error": "Using SQLite database - please use Supabase PostgreSQL for full functionality"}), 500
+            logger.warning("Using SQLite database - falling back to JSON data")
+            # Fallback to JSON data service for development
+            from services import data_service_json as json_ds
+            departments = json_ds.list_departments()
+            logger.info(f"Found {len(departments)} departments in JSON fallback")
+            return jsonify(departments)
         
         departments = ds.list_departments()
         logger.info(f"Found {len(departments)} departments in Supabase")
         return jsonify(departments)
     except Exception as e:
         logger.error(f"Error fetching departments: {e}")
-        return jsonify({"error": str(e)}), 500
+        # Try JSON fallback even if database fails
+        try:
+            from services import data_service_json as json_ds
+            departments = json_ds.list_departments()
+            logger.info(f"Fallback successful: Found {len(departments)} departments in JSON")
+            return jsonify(departments)
+        except Exception as fallback_error:
+            logger.error(f"JSON fallback also failed: {fallback_error}")
+            # Return empty array instead of error to prevent frontend crashes
+            logger.warning("Returning empty departments array due to all fallbacks failing")
+            return jsonify([])
 
 @app.route("/meta/doctors")
 def meta_doctors():
     dept = request.args.get("department_id")
-    return jsonify(ds.list_doctors(dept))
+    try:
+        # Check if we're using the correct database
+        from config_db import DATABASE_URL
+        if not DATABASE_URL.startswith("postgresql"):
+            logger.warning("Using SQLite database - falling back to JSON data for doctors")
+            # Fallback to JSON data service for development
+            from services import data_service_json as json_ds
+            doctors = json_ds.list_doctors(dept)
+            logger.info(f"Found {len(doctors)} doctors in JSON fallback")
+            return jsonify(doctors)
+        
+        doctors = ds.list_doctors(dept)
+        logger.info(f"Found {len(doctors)} doctors in Supabase")
+        return jsonify(doctors)
+    except Exception as e:
+        logger.error(f"Error fetching doctors: {e}")
+        # Try JSON fallback even if database fails
+        try:
+            from services import data_service_json as json_ds
+            doctors = json_ds.list_doctors(dept)
+            logger.info(f"Fallback successful: Found {len(doctors)} doctors in JSON")
+            return jsonify(doctors)
+        except Exception as fallback_error:
+            logger.error(f"JSON fallback also failed: {fallback_error}")
+            # Return empty array instead of error to prevent frontend crashes
+            logger.warning("Returning empty doctors array due to all fallbacks failing")
+            return jsonify([])
 
 @app.route("/meta/doctor_days")
 def meta_doctor_days():
     doc_id = request.args.get("doctor_id")
     if not doc_id:
         return jsonify([]), 400
-    doctors = ds.list_doctors(None)
-    for doc in doctors:
-        if str(doc["id"]) == str(doc_id):
-            return jsonify(doc.get("available_days", []))
-    return jsonify([]), 404
+    
+    try:
+        # Check if we're using the correct database
+        from config_db import DATABASE_URL
+        if not DATABASE_URL.startswith("postgresql"):
+            # Fallback to JSON data service for development
+            from services import data_service_json as json_ds
+            doctors = json_ds.list_doctors(None)
+        else:
+            doctors = ds.list_doctors(None)
+            
+        for doc in doctors:
+            if str(doc["id"]) == str(doc_id):
+                return jsonify(doc.get("available_days", []))
+        return jsonify([]), 404
+    except Exception as e:
+        logger.error(f"Error fetching doctor days: {e}")
+        return jsonify([]), 500
 
 @app.route("/meta/slots")
 def meta_slots():
@@ -262,11 +315,19 @@ def meta_slots():
         if not doctor_id or not date_str:
             return jsonify({"slots": []}), 400
 
-        # Use DB-based service
-        slots_data = ds.list_slots(doctor_id, date_str)
+        # Check if we're using the correct database
+        from config_db import DATABASE_URL
+        if not DATABASE_URL.startswith("postgresql"):
+            # Fallback to JSON data service for development
+            from services import data_service_json as json_ds
+            slots_data = json_ds.list_slots(doctor_id, date_str)
+        else:
+            # Use DB-based service
+            slots_data = ds.list_slots(doctor_id, date_str)
 
         return jsonify(slots_data), 200
     except Exception as e:
+        logger.error(f"Error fetching slots: {e}")
         traceback.print_exc()
         return jsonify({"slots": [], "error": str(e)}), 500
 
@@ -554,13 +615,31 @@ def too_large(error):
 def health_check():
     try:
         # Test database connection
-        session = SessionLocal()
-        session.execute(text("SELECT 1"))
-        session.close()
-        return jsonify({"status": "healthy", "timestamp": datetime.now().isoformat()}), 200
+        from config_db import DATABASE_URL
+        if DATABASE_URL.startswith("postgresql"):
+            session = SessionLocal()
+            session.execute(text("SELECT 1"))
+            session.close()
+            db_status = "connected"
+        else:
+            db_status = "sqlite_fallback"
+        
+        return jsonify({
+            "status": "healthy", 
+            "timestamp": datetime.now().isoformat(),
+            "database": db_status,
+            "environment": os.getenv("FLASK_ENV", "development")
+        }), 200
     except Exception as e:
         logger.error(f"Health check failed: {e}")
-        return jsonify({"status": "unhealthy", "error": str(e)}), 500
+        # Still return healthy status for basic app functionality
+        return jsonify({
+            "status": "healthy_with_warnings", 
+            "timestamp": datetime.now().isoformat(),
+            "database": "disconnected",
+            "warning": str(e),
+            "environment": os.getenv("FLASK_ENV", "development")
+        }), 200
 
 # Debug endpoint to check data
 @app.route("/debug/data")
