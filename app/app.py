@@ -53,7 +53,37 @@ app.register_blueprint(api_bp)
 
 # Security headers (only in production)
 if settings.FLASK_ENV == "production":
-    Talisman(app, force_https=True)
+    # Configure Content Security Policy to allow external resources
+    csp = {
+        'default-src': "'self'",
+        'style-src': [
+            "'self'",
+            "'unsafe-inline'",
+            'https://cdnjs.cloudflare.com',
+            'https://code.jquery.com'
+        ],
+        'script-src': [
+            "'self'",
+            "'unsafe-inline'",
+            'https://code.jquery.com',
+            'https://cdnjs.cloudflare.com'
+        ],
+        'font-src': [
+            "'self'",
+            'https://cdnjs.cloudflare.com',
+            'data:'
+        ],
+        'img-src': [
+            "'self'",
+            'data:',
+            'https:'
+        ],
+        'connect-src': [
+            "'self'"
+        ]
+    }
+    
+    Talisman(app, force_https=True, content_security_policy=csp)
 hospital_data = ds.get_hospital_info()
 if not hospital_data:
     hospital_data = {
