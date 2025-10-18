@@ -23,3 +23,6 @@ google-cloud-texttospeech
 deep-translator
 qrcode
 PyJWT
+email-validator
+cryptography
+bcrypt
