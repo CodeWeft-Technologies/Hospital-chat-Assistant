@@ -6,7 +6,7 @@ from models import Appointment, Doctor, Department, User, HospitalInfo
 from sqlalchemy.orm.exc import NoResultFound
 
 # Departments
-def list_departments():
+def list_departments(hospital_id=None):
     session = SessionLocal()
     rows = session.query(Department).all()
     result = []
@@ -19,7 +19,7 @@ def list_departments():
     return result
 
 # Doctors
-def list_doctors(department_id=None):
+def list_doctors(department_id=None, hospital_id=None):
     session = SessionLocal()
     q = session.query(Doctor)
     if department_id:
@@ -236,10 +236,15 @@ def find_by_key(key):
     finally:
         session.close()
 
-def get_hospital_info():
+def get_hospital_info(hospital_id=None):
     session = SessionLocal()
     try:
-        hosp = session.query(HospitalInfo).first()
+        # Get hospital info by hospital_id, or first record if no hospital_id specified
+        if hospital_id:
+            hosp = session.query(HospitalInfo).filter_by(hospital_id=hospital_id).first()
+        else:
+            hosp = session.query(HospitalInfo).first()
+            
         if not hosp:
             return {}
         result = {
@@ -247,7 +252,8 @@ def get_hospital_info():
             "address": {"en": hosp.address_en, "hi": hosp.address_hi, "mr": hosp.address_mr},
             "phone": hosp.phone,
             "email": hosp.email,
-            "website": hosp.website
+            "website": hosp.website,
+            "hospital_id": hosp.hospital_id
         }
         return result
     except Exception:

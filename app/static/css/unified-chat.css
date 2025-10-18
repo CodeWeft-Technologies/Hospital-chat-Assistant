@@ -1,0 +1,570 @@
+/* ===== UNIFIED MODERN CHAT INTERFACE ===== */
+
+/* Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Modern Chat Container */
+.unified-chat-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+  position: relative;
+  overflow: hidden;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.unified-chat-container::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(102, 126, 234, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(240, 147, 251, 0.2) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+  animation: float 20s ease-in-out infinite;
+}
+
+/* Modern Header */
+.unified-chat-header {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 10;
+  min-height: 80px;
+}
+
+.unified-header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.unified-hospital-logo {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.unified-hospital-logo i {
+  font-size: 1.5rem;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.unified-title-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.unified-hospital-name {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.unified-chat-title {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.unified-status-dot {
+  width: 8px;
+  height: 8px;
+  background: #10b981;
+  border-radius: 50%;
+  animation: statusPulse 2s ease-in-out infinite;
+}
+
+.unified-header-right {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.unified-action-btn {
+  padding: 0.75rem 1.25rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  color: #475569;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 100px;
+  justify-content: center;
+}
+
+.unified-action-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.unified-action-btn:active {
+  transform: translateY(0);
+  transition: all 0.1s ease;
+}
+
+.unified-action-btn i {
+  font-size: 1rem;
+}
+
+/* Chat Messages Area */
+.unified-chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  scroll-behavior: smooth;
+  position: relative;
+  z-index: 5;
+}
+
+.unified-chat-messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+.unified-chat-messages::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.unified-chat-messages::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border-radius: 3px;
+}
+
+.unified-chat-messages::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #764ba2, #f093fb);
+}
+
+/* Message Bubbles */
+.unified-message {
+  max-width: 80%;
+  padding: 1rem 1.25rem;
+  border-radius: 1.5rem;
+  position: relative;
+  animation: messageSlide 0.4s ease-out;
+  word-wrap: break-word;
+  line-height: 1.5;
+  font-size: 1rem;
+  font-weight: 500;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.unified-message.user {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  align-self: flex-end;
+  margin-left: auto;
+  border-bottom-right-radius: 0.5rem;
+}
+
+.unified-message.bot {
+  background: rgba(255, 255, 255, 0.95);
+  color: #1f2937;
+  align-self: flex-start;
+  margin-right: auto;
+  border-bottom-left-radius: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.unified-message.system {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.95);
+  align-self: center;
+  text-align: center;
+  font-size: 0.9rem;
+  border-radius: 1.25rem;
+  max-width: 85%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Typing Indicator */
+.unified-typing {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 1.5rem;
+  border-bottom-left-radius: 0.5rem;
+  align-self: flex-start;
+  max-width: 100px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  animation: typingPulse 1.5s ease-in-out infinite;
+}
+
+.unified-typing-dots {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.unified-typing-dot {
+  width: 8px;
+  height: 8px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border-radius: 50%;
+  animation: typingBounce 1.4s ease-in-out infinite;
+}
+
+.unified-typing-dot:nth-child(1) { animation-delay: 0s; }
+.unified-typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.unified-typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+/* Chat Input Area */
+.unified-chat-input {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 10;
+}
+
+.unified-input-container {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.unified-message-input {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  border: 2px solid rgba(102, 126, 234, 0.2);
+  border-radius: 1.5rem;
+  background: rgba(255, 255, 255, 0.9);
+  color: #1f2937;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  resize: none;
+  min-height: 50px;
+  max-height: 120px;
+  font-family: inherit;
+  font-weight: 500;
+}
+
+.unified-message-input:focus {
+  border-color: #667eea;
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+  transform: translateY(-1px);
+}
+
+.unified-message-input::placeholder {
+  color: #9ca3af;
+  font-weight: 400;
+}
+
+.unified-send-btn {
+  padding: 1rem;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.unified-send-btn:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.unified-send-btn:active {
+  transform: translateY(0) scale(0.95);
+  transition: all 0.1s ease;
+}
+
+.unified-send-btn i {
+  font-size: 1.1rem;
+}
+
+/* Animations */
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-10px) rotate(1deg); }
+  66% { transform: translateY(5px) rotate(-1deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { 
+    transform: scale(1);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  }
+  50% { 
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+  }
+}
+
+@keyframes statusPulse {
+  0%, 100% { 
+    opacity: 1;
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
+  }
+  50% { 
+    opacity: 0.7;
+    box-shadow: 0 0 15px rgba(16, 185, 129, 0.8);
+  }
+}
+
+@keyframes messageSlide {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes typingPulse {
+  0%, 100% { 
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% { 
+    opacity: 0.8;
+    transform: scale(1.02);
+  }
+}
+
+@keyframes typingBounce {
+  0%, 60%, 100% { 
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  30% { 
+    transform: translateY(-15px);
+    opacity: 1;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .unified-chat-header {
+    padding: 0.75rem 1rem;
+    min-height: 70px;
+  }
+  
+  .unified-header-left {
+    gap: 0.75rem;
+  }
+  
+  .unified-hospital-logo {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .unified-hospital-logo i {
+    font-size: 1.2rem;
+  }
+  
+  .unified-hospital-name {
+    font-size: 1.2rem;
+  }
+  
+  .unified-chat-title {
+    font-size: 0.8rem;
+  }
+  
+  .unified-header-right {
+    gap: 0.5rem;
+  }
+  
+  .unified-action-btn {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+    min-width: 80px;
+  }
+  
+  .unified-chat-messages {
+    padding: 1rem;
+    gap: 0.75rem;
+  }
+  
+  .unified-message {
+    max-width: 85%;
+    padding: 0.875rem 1rem;
+    font-size: 0.95rem;
+  }
+  
+  .unified-chat-input {
+    padding: 1rem;
+    gap: 0.75rem;
+  }
+  
+  .unified-message-input {
+    padding: 0.875rem 1rem;
+    font-size: 0.95rem;
+  }
+  
+  .unified-send-btn {
+    width: 45px;
+    height: 45px;
+    padding: 0.875rem;
+  }
+  
+  .unified-send-btn i {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .unified-chat-header {
+    padding: 0.5rem 0.75rem;
+    min-height: 60px;
+  }
+  
+  .unified-header-left {
+    gap: 0.5rem;
+  }
+  
+  .unified-hospital-logo {
+    width: 35px;
+    height: 35px;
+  }
+  
+  .unified-hospital-logo i {
+    font-size: 1rem;
+  }
+  
+  .unified-hospital-name {
+    font-size: 1.1rem;
+  }
+  
+  .unified-chat-title {
+    font-size: 0.75rem;
+  }
+  
+  .unified-header-right {
+    gap: 0.4rem;
+  }
+  
+  .unified-action-btn {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.75rem;
+    min-width: 70px;
+  }
+  
+  .unified-action-btn i {
+    font-size-color: 0.9rem;
+  }
+  
+  .unified-chat-messages {
+    padding: 0.75rem;
+    gap: 0.5rem;
+  }
+  
+  .unified-message {
+    max-width: 90%;
+    padding: 0.75rem 0.875rem;
+    font-size: 0.9rem;
+  }
+  
+  .unified-chat-input {
+    padding: 0.75rem;
+    gap: 0.5rem;
+  }
+  
+  .unified-message-input {
+    padding: 0.75rem 0.875rem;
+    font-size: 0.9rem;
+  }
+  
+  .unified-send-btn {
+    width: 40px;
+    height: 40px;
+    padding: 0.75rem;
+  }
+  
+  .unified-send-btn i {
+    font-size: 0.9rem;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .unified-chat-container,
+  .unified-hospital-logo,
+  .unified-message,
+  .unified-send-btn,
+  .unified-action-btn,
+  .unified-typing {
+    animation: none;
+    transition: none;
+  }
+}
+
+/* Focus styles */
+.unified-action-btn:focus,
+.unified-send-btn:focus {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
+.unified-message-input:focus {
+  outline: none;
+}

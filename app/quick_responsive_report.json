@@ -1,0 +1,32 @@
+{
+  "Language Selection": {
+    "accessible": true,
+    "status_code": 200,
+    "content_length": 2932
+  },
+  "Assistant Main": {
+    "accessible": true,
+    "status_code": 200,
+    "content_length": 3946
+  },
+  "Chat Interface": {
+    "accessible": true,
+    "status_code": 200,
+    "content_length": 26321
+  },
+  "Responsive Demo": {
+    "accessible": true,
+    "status_code": 200,
+    "content_length": 21862
+  },
+  "responsive_features": {
+    "responsive_css": true,
+    "viewport_meta": true,
+    "flexbox_layout": true,
+    "media_queries": true,
+    "touch_targets": false,
+    "dynamic_js": true,
+    "animations_js": true,
+    "testing_js": true
+  }
+}

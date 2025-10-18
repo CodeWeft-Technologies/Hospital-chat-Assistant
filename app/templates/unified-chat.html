@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>XYZ Hospital - AI Chat Assistant</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/unified-chat.css') }}"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    /* Additional styles for specific flows */
+    .unified-welcome-message {
+      text-align: center;
+      padding: 2rem;
+      color: rgba(255, 255, 255, 0.95);
+    }
+    
+    .unified-welcome-title {
+      font-size: 2rem;
+      font-weight: 700;
+      margin: 0 0 1rem 0;
+      background: linear-gradient(135deg, #ffffff, #e2e8f0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .unified-welcome-subtitle {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      margin: 0;
+      font-weight: 500;
+    }
+    
+    .unified-quick-replies {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+    
+    .unified-quick-reply-btn {
+      padding: 0.75rem 1.5rem;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 1.5rem;
+      color: rgba(255, 255, 255, 0.9);
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-size: 0.9rem;
+      font-weight: 500;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .unified-quick-reply-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    }
+    
+    .hidden {
+      display: none !important;
+    }
+    
+    /* Mobile optimizations */
+    @media (max-width: 480px) {
+      .unified-welcome-message {
+        padding: 1rem;
+      }
+      
+      .unified-welcome-title {
+        font-size: 1.5rem;
+      }
+      
+      .unified-welcome-subtitle {
+        font-size: 1rem;
+      }
+      
+      .unified-quick-replies {
+        gap: 0.5rem;
+        margin-top: 1rem;
+      }
+      
+      .unified-quick-reply-btn {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.85rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="unified-chat-container">
+    <!-- Unified Chat Header -->
+    <div class="unified-chat-header">
+      <div class="unified-header-left">
+        <div class="unified-hospital-logo">
+          <i class="fas fa-user-md"></i>
+        </div>
+        <div class="unified-title-section">
+          <h1 class="unified-hospital-name">XYZ Hospital</h1>
+          <p class="unified-chat-title">
+            <span class="unified-status-dot"></span>
+            <span id="unifiedChatHeading">AI Chat Assistant - Online</span>
+          </p>
+        </div>
+      </div>
+      <div class="unified-header-right">
+        <button class="unified-action-btn" id="unifiedBackBtn">
+          <i class="fas fa-arrow-left"></i> Back
+        </button>
+        <button class="unified-action-btn" id="unifiedLanguageBtn">
+          <i class="fas fa-globe"></i> Language
+        </button>
+      </div>
+    </div>
+
+    <!-- Welcome Message (shown initially) -->
+    <div class="unified-welcome-message" id="unifiedWelcomeMessage">
+      <h2 class="unified-welcome-title">Welcome to XYZ Hospital</h2>
+      <p class="unified-welcome-subtitle" id="unifiedWelcomeSubtitle">How can I help you today?</p>
+    </div>
+
+    <!-- Chat Messages Area -->
+    <div class="unified-chat-messages" id="unifiedChatMessages">
+      <!-- Messages will be dynamically added here -->
+    </div>
+
+    <!-- Chat Input Area -->
+    <div class="unified-chat-input">
+      <div class="unified-input-container">
+        <textarea 
+          class="unified-message-input" 
+          id="unifiedMessageInput" 
+          placeholder="Type your message here..."
+          rows="1"
+        ></textarea>
+      </div>
+      <button class="unified-send-btn" id="unifiedSendBtn" title="Send Message">
+        <i class="fas fa-paper-plane"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script src="{{ url_for('static', filename='js/unified-chat.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/chat_booking.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/chat_myappointments.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/chat_general_query.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+
+  <script>
+    // Initialize unified chat based on URL path
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize the unified chat
+      if (window.UnifiedChat) {
+        window.unifiedChatInstance = new UnifiedChat();
+      }
+      
+      // Auto-start flow based on URL
+      const path = window.location.pathname;
+      const welcomeMessage = document.getElementById('unifiedWelcomeMessage');
+      const chatHeading = document.getElementById('unifiedChatHeading');
+      const welcomeSubtitle = document.getElementById('unifiedWelcomeSubtitle');
+      
+      if (path.includes('/booking')) {
+        chatHeading.textContent = 'Booking Assistant - Online';
+        welcomeSubtitle.textContent = 'Let me help you book your appointment';
+        
+        // Hide welcome message after a delay and start booking flow
+        setTimeout(() => {
+          welcomeMessage.style.display = 'none';
+          if (window.startBookingFlow) {
+            window.startBookingFlow();
+          }
+        }, 2000);
+        
+      } else if (path.includes('/myappointments')) {
+        chatHeading.textContent = 'Appointment Manager - Online';
+        welcomeSubtitle.textContent = 'Let me help you manage your appointments';
+        
+        // Hide welcome message after a delay and start my appointment flow
+        setTimeout(() => {
+          welcomeMessage.style.display = 'none';
+          if (window.startMyAppointmentChatFlow) {
+            window.startMyAppointmentChatFlow(window.currentLang || 'english');
+          }
+        }, 2000);
+        
+      } else if (path.includes('/general')) {
+        chatHeading.textContent = 'General Query Assistant - Online';
+        welcomeSubtitle.textContent = 'Ask me anything about our services';
+        
+        // Hide welcome message after a delay and start general query flow
+        setTimeout(() => {
+          welcomeMessage.style.display = 'none';
+          if (window.startGeneralQueryFlow) {
+            window.startGeneralQueryFlow(window.currentLang || 'english');
+          }
+        }, 2000);
+        
+      } else {
+        // Default chat interface
+        chatHeading.textContent = 'AI Chat Assistant - Online';
+        welcomeSubtitle.textContent = 'How can I help you today?';
+        
+        // Hide welcome message after a delay
+        setTimeout(() => {
+          welcomeMessage.style.display = 'none';
+        }, 3000);
+      }
+    });
+  </script>
+</body>
+</html>

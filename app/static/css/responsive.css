@@ -776,9 +776,9 @@ body::before {
 .mt-6 { margin-top: var(--space-lg); }
 .mt-8 { margin-top: var(--space-xl); }
 
-/* ===== RESPONSIVE BREAKPOINTS ===== */
+/* ===== ENHANCED RESPONSIVE BREAKPOINTS ===== */
 
-/* Mobile First Approach */
+/* Mobile First Approach with Enhanced Touch Support */
 @media (max-width: 640px) {
   .container {
     padding: 0 var(--space-sm);
@@ -818,6 +818,7 @@ body::before {
   .btn {
     width: 100%;
     margin-bottom: var(--space-sm);
+    min-height: 48px; /* Touch-friendly */
   }
   
   .modal {
@@ -832,6 +833,23 @@ body::before {
   .table {
     min-width: 600px;
   }
+  
+  /* Enhanced touch targets */
+  .menu-card, .dept-card, .doctor-card {
+    min-height: 60px;
+    touch-action: manipulation;
+  }
+  
+  /* Better spacing for mobile */
+  .chat-input {
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
 }
 
 @media (min-width: 641px) and (max-width: 768px) {
@@ -843,6 +861,15 @@ body::before {
   .stats-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+  
+  /* Tablet-specific enhancements */
+  .menu-card, .dept-card, .doctor-card {
+    min-height: 80px;
+  }
+  
+  .chat-shell {
+    margin: var(--space-md);
+  }
 }
 
 @media (min-width: 769px) and (max-width: 1024px) {
@@ -853,6 +880,16 @@ body::before {
   .stats-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
+  
+  /* Desktop tablet enhancements */
+  .menu-card, .dept-card, .doctor-card {
+    min-height: 100px;
+  }
+  
+  .chat-shell {
+    max-width: 1000px;
+    margin: var(--space-lg) auto;
+  }
 }
 
 @media (min-width: 1025px) {
@@ -862,6 +899,21 @@ body::before {
   
   .stats-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  
+  /* Large desktop enhancements */
+  .menu-card, .dept-card, .doctor-card {
+    min-height: 120px;
+  }
+  
+  .chat-shell {
+    max-width: 1200px;
+    margin: var(--space-xl) auto;
+  }
+  
+  /* Enhanced hover effects for desktop */
+  .menu-card:hover, .dept-card:hover, .doctor-card:hover {
+    transform: translateY(-10px) scale(1.05) rotateX(5deg);
   }
 }
 

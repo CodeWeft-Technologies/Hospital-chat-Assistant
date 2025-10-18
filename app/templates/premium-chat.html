@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>XYZ Hospital - Premium AI Assistant</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/premium-chat.css') }}"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    /* Premium Welcome Section */
+    .premium-welcome {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: rgba(255, 255, 255, 0.95);
+      position: relative;
+      z-index: 5;
+    }
+    
+    .premium-welcome h2 {
+      font-size: 3rem;
+      font-weight: 800;
+      margin: 0 0 1.5rem 0;
+      background: linear-gradient(135deg, #ffffff, #e2e8f0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      animation: premiumWelcomeGlow 5s ease-in-out infinite;
+    }
+    
+    .premium-welcome p {
+      font-size: 1.3rem;
+      opacity: 0.9;
+      margin: 0;
+      font-weight: 500;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    .premium-quick-actions {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 3rem;
+      flex-wrap: wrap;
+    }
+    
+    .premium-quick-btn {
+      padding: 1.5rem 2.5rem;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 2rem;
+      color: white;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      font-size: 1.1rem;
+      font-weight: 600;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+      position: relative;
+      overflow: hidden;
+      min-width: 200px;
+    }
+    
+    .premium-quick-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.6s ease;
+    }
+    
+    .premium-quick-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.4);
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
+    }
+    
+    .premium-quick-btn:hover::before {
+      left: 100%;
+    }
+    
+    .premium-quick-btn i {
+      margin-right: 1rem;
+      font-size: 1.2rem;
+    }
+    
+    .hidden {
+      display: none !important;
+    }
+    
+    /* Premium Message Timestamps */
+    .premium-timestamp {
+      font-size: 0.8rem;
+      opacity: 0.6;
+      margin-top: 0.75rem;
+      font-weight: 400;
+    }
+    
+    /* Premium Quick Replies */
+    .premium-quick-replies {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+    
+    .premium-reply-btn {
+      padding: 1rem 2rem;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 2rem;
+      color: rgba(255, 255, 255, 0.9);
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-size: 1rem;
+      font-weight: 500;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .premium-reply-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+    
+    /* Premium Loading States */
+    .premium-loading {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+    
+    @keyframes premiumWelcomeGlow {
+      0%, 100% { 
+        text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      }
+      50% { 
+        text-shadow: 0 4px 12px rgba(102, 126, 234, 0.5);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="premium-chat-container">
+    <!-- Premium Chat Header -->
+    <div class="premium-chat-header">
+      <div class="premium-header-content">
+        <div class="premium-logo">
+          <i class="fas fa-user-md"></i>
+        </div>
+        <div class="premium-title">
+          <h1 id="premiumHospitalName">XYZ Hospital</h1>
+          <p>
+            <span class="premium-status"></span>
+            <span id="premiumChatHeading">Premium AI Assistant - Online</span>
+          </p>
+        </div>
+      </div>
+      <div class="premium-actions">
+        <button class="premium-btn" id="premiumBackBtn">
+          <i class="fas fa-arrow-left"></i> Back
+        </button>
+        <button class="premium-btn" id="premiumLanguageBtn">
+          <i class="fas fa-globe"></i> Language
+        </button>
+      </div>
+    </div>
+
+    <!-- Premium Welcome Section -->
+    <div class="premium-welcome" id="premiumWelcomeSection">
+      <h2>Welcome to XYZ Hospital</h2>
+      <p>Experience premium healthcare assistance powered by advanced AI technology</p>
+      
+      <div class="premium-quick-actions">
+        <button class="premium-quick-btn" data-action="booking">
+          <i class="fas fa-calendar-plus"></i> Book Appointment
+        </button>
+        <button class="premium-quick-btn" data-action="my-appointments">
+          <i class="fas fa-calendar-check"></i> My Appointments
+        </button>
+        <button class="premium-quick-btn" data-action="general-query">
+          <i class="fas fa-question-circle"></i> General Query
+        </button>
+      </div>
+    </div>
+
+    <!-- Premium Chat Messages Area -->
+    <div class="premium-chat-messages" id="premiumChatMessages">
+      <!-- Messages will be dynamically added here -->
+    </div>
+
+    <!-- Premium Chat Input Area -->
+    <div class="premium-chat-input">
+      <div class="premium-input-container">
+        <textarea 
+          class="premium-input" 
+          id="premiumMessageInput" 
+          placeholder="Ask me anything about your healthcare needs..."
+          rows="1"
+        ></textarea>
+      </div>
+      <button class="premium-send-btn" id="premiumSendBtn" title="Send Message">
+        <i class="fas fa-paper-plane"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script src="{{ url_for('static', filename='js/premium-chat.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/chat_booking.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/chat_myappointments.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/chat_general_query.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+
+  <script>
+    // Initialize Premium Chat
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize the premium chat
+      if (window.PremiumChat) {
+        window.premiumChatInstance = new PremiumChat();
+      }
+      
+      // Auto-start flow based on URL
+      const path = window.location.pathname;
+      const welcomeSection = document.getElementById('premiumWelcomeSection');
+      
+      if (path.includes('/booking')) {
+        welcomeSection.style.display = 'none';
+        if (window.startBookingFlow) {
+          window.startBookingFlow();
+        }
+      } else if (path.includes('/myappointments')) {
+        welcomeSection.style.display = 'none';
+        if (window.startMyAppointmentChatFlow) {
+          window.startMyAppointmentChatFlow(window.currentLang || 'english');
+        }
+      } else if (path.includes('/general')) {
+        welcomeSection.style.display = 'none';
+        if (window.startGeneralQueryFlow) {
+          window.startGeneralQueryFlow(window.currentLang || 'english');
+        }
+      }
+    });
+  </script>
+</body>
+</html>

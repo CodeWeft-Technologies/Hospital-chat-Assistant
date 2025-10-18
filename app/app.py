@@ -47,23 +47,48 @@ app.config.update(
     UPLOAD_FOLDER=settings.UPLOAD_FOLDER
 )
 
+# Configure Content Security Policy to allow Google Fonts
+csp = {
+    'default-src': "'self'",
+    'script-src': [
+        "'self'",
+        "'unsafe-inline'",
+        'https://cdnjs.cloudflare.com',
+        'https://code.jquery.com',
+        'https://code.jquery.com'
+    ],
+    'style-src': [
+        "'self'",
+        "'unsafe-inline'",
+        'https://cdnjs.cloudflare.com',
+        'https://code.jquery.com',
+        'https://fonts.googleapis.com'
+    ],
+    'font-src': [
+        "'self'",
+        'https://fonts.gstatic.com'
+    ],
+    'img-src': [
+        "'self'",
+        'data:',
+        'https:'
+    ],
+    'connect-src': [
+        "'self'"
+    ]
+}
+
+# Apply Content Security Policy
+Talisman(app, content_security_policy=csp)
+
 # Register blueprints
 app.register_blueprint(admin_bp)
 app.register_blueprint(api_bp)
 
 # Security headers (only in production)
 if settings.FLASK_ENV == "production":
-    # Configure Content Security Policy to allow external resources
-    csp = {
-        'default-src': "'self'",
-        'style-src': "'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://code.jquery.com",
-        'script-src': "'self' 'unsafe-inline' https://code.jquery.com https://cdnjs.cloudflare.com",
-        'font-src': "'self' https://cdnjs.cloudflare.com data:",
-        'img-src': "'self' data: https:",
-        'connect-src': "'self'"
-    }
-    
-    Talisman(app, force_https=True, content_security_policy=csp)
+    # Additional security headers can be added here
+    pass
 hospital_data = ds.get_hospital_info()
 if not hospital_data:
     hospital_data = {
@@ -149,11 +174,29 @@ def api_voice():
 # --- Page Routes ---
 @app.route("/")
 def index():
-    return render_template("language.html")  # Landing / language selection
+    # Get hospital_id from query parameter or default to xyz
+    hospital_id = request.args.get('hospital_id', 'xyz')
+    return render_template("language.html", hospital_id=hospital_id)  # Landing / language selection
 
 @app.route("/language")
 def language():
     return render_template("language.html")
+
+@app.route("/responsive-demo")
+def responsive_demo():
+    return render_template("responsive-demo.html")
+
+@app.route("/modern-chat")
+def modern_chat():
+    return render_template("modern-chat.html")
+
+@app.route("/premium-chat")
+def premium_chat():
+    return render_template("premium-chat.html")
+
+@app.route("/unified-chat")
+def unified_chat():
+    return render_template("unified-chat.html")
 
 @app.route("/assistant")
 def assistant():
@@ -161,7 +204,9 @@ def assistant():
 
 @app.route("/chat")
 def chat():
-    return render_template("chat.html")
+    # Get hospital_id from query parameter or default to xyz
+    hospital_id = request.args.get('hospital_id', 'xyz')
+    return render_template("chat.html", hospital_id=hospital_id)
 
 @app.route("/voice")
 def voice():
@@ -169,15 +214,18 @@ def voice():
 
 @app.route("/booking")
 def booking():
-    return render_template("chat_booking.html")
+    hospital_id = request.args.get('hospital_id', 'xyz')
+    return render_template("chat_booking.html", hospital_id=hospital_id)
 
 @app.route("/myappointments")
 def myappointments():
-    return render_template("chat_my_appointments.html")
+    hospital_id = request.args.get('hospital_id', 'xyz')
+    return render_template("chat_my_appointments.html", hospital_id=hospital_id)
 
 @app.route("/general")
 def general():
-    return render_template("chat_general_query.html")
+    hospital_id = request.args.get('hospital_id', 'xyz')
+    return render_template("chat_general_query.html", hospital_id=hospital_id)
 
 # ===== HOSPITAL ADMIN ROUTES =====
 @app.route("/admin/login")
@@ -234,8 +282,9 @@ def meta_depts():
             logger.info(f"Found {len(departments)} departments in JSON fallback")
             return jsonify(departments)
         
-        departments = ds.list_departments()
-        logger.info(f"Found {len(departments)} departments in Supabase")
+        hospital_id = request.args.get('hospital_id', 'xyz')
+        departments = ds.list_departments(hospital_id=hospital_id)
+        logger.info(f"Found {len(departments)} departments in Supabase for hospital {hospital_id}")
         return jsonify(departments)
     except Exception as e:
         logger.error(f"Error fetching departments: {e}")
@@ -265,8 +314,9 @@ def meta_doctors():
             logger.info(f"Found {len(doctors)} doctors in JSON fallback")
             return jsonify(doctors)
         
-        doctors = ds.list_doctors(dept)
-        logger.info(f"Found {len(doctors)} doctors in Supabase")
+        hospital_id = request.args.get('hospital_id', 'xyz')
+        doctors = ds.list_doctors(dept, hospital_id=hospital_id)
+        logger.info(f"Found {len(doctors)} doctors in Supabase for hospital {hospital_id}")
         return jsonify(doctors)
     except Exception as e:
         logger.error(f"Error fetching doctors: {e}")

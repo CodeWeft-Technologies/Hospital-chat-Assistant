@@ -96,50 +96,63 @@
       box-shadow: var(--shadow-glow);
     }
     
-    /* ✅ Chat Shell */
+    /* ✅ Chat Shell - Compact and Responsive */
     .chat-shell {
       margin: 0 auto;
-      margin-top: var(--space-lg);
+      margin-top: var(--space-md);
       width: 100%;
-      max-width: 100%;
-      height: calc(100vh - 200px);
-      min-height: 500px;
+      max-width: 800px;
+      height: 400px;
+      min-height: 400px;
       display: flex;
       flex-direction: column;
       background: var(--gradient-card);
-      border-radius: var(--radius-3xl);
+      border-radius: var(--radius-2xl);
       box-shadow: var(--shadow-3d);
       border: 1px solid rgba(255, 255, 255, 0.2);
       overflow: hidden;
-      flex: 1;
       backdrop-filter: blur(15px);
       animation: slideInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.4s both;
+      position: relative;
+      transition: all var(--transition-normal);
     }
     
-    /* ✅ Chat messages area */
+    .chat-shell::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--gradient-button);
+      border-radius: var(--radius-3xl) var(--radius-3xl) 0 0;
+      animation: glow 3s ease-in-out infinite;
+    }
+    
+    /* ✅ Chat messages area - Merged with chat box */
     .chat-messages {
       flex: 1;
-      background: linear-gradient(145deg, var(--neutral-white) 0%, var(--neutral-gray-50) 100%);
-      border-radius: var(--radius-2xl);
-      box-shadow: var(--shadow-3d);
-      padding: var(--space-lg);
+      background: transparent;
+      border-radius: 0;
+      box-shadow: none;
+      padding: var(--space-md);
       overflow-y: auto; 
       display: flex;
       flex-direction: column;
-      gap: var(--space-md);
-      margin: var(--space-md);
+      gap: var(--space-sm);
+      margin: 0;
       min-height: 0;
     }
     
-    /* Message bubbles */
+    /* Message bubbles - Compact */
     .chat-messages .msg {
       display: inline-block;
-      padding: var(--space-lg) var(--space-xl);
-      border-radius: var(--radius-2xl);
-      max-width: 75%;
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--radius-xl);
+      max-width: 80%;
       word-wrap: break-word;
-      line-height: 1.6;
-      font-size: var(--font-size-lg);
+      line-height: 1.4;
+      font-size: var(--font-size-base);
       font-weight: 500;
       box-shadow: var(--shadow-3d);
       transition: all var(--transition-normal);
@@ -149,10 +162,10 @@
       box-shadow: var(--shadow-lg);
     }
     .chat-messages .bot {
-      background: linear-gradient(145deg, var(--neutral-white) 0%, var(--neutral-gray-50) 100%);
+      background: linear-gradient(145deg, var(--neutral-gray-50) 0%, var(--neutral-gray-100) 100%);
       align-self: flex-start;
       border-bottom-left-radius: var(--radius-sm);
-      border: 1px solid var(--neutral-gray-200);
+      border: 1px solid var(--neutral-gray-300);
       color: var(--neutral-gray-800);
     }
     .chat-messages .user {
@@ -164,37 +177,38 @@
     
     /* Info / Tip messages */
     .chat-messages .info-msg {
-      background: #f8faff;
+      background: linear-gradient(145deg, var(--primary-blue-50) 0%, var(--primary-blue-100) 100%);
       font-size: 13px;
       line-height: 1.4;
-      color: #333;
+      color: var(--primary-blue-800);
       padding: 8px 12px;
       border-radius: 12px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      border: 1px solid var(--primary-blue-200);
       max-width: 90%;
       word-break: break-word;
       align-self: flex-start;
     }
     
-    /* Input box */
+    /* Input box - Merged with chat box */
     .chat-input {
       display: flex;
-      gap: var(--space-md);
-      margin: var(--space-md);
-      background: linear-gradient(145deg, var(--neutral-white) 0%, var(--neutral-gray-50) 100%);
-      border-radius: var(--radius-2xl);
-      padding: var(--space-lg);
-      box-shadow: var(--shadow-3d);
-      border: 1px solid var(--neutral-gray-200);
+      gap: var(--space-sm);
+      margin: 0;
+      padding: var(--space-md);
+      background: transparent;
+      border-radius: 0;
+      box-shadow: none;
+      border: none;
+      border-top: 1px solid var(--neutral-gray-200);
       flex-shrink: 0;
     }
     .chat-input input {
       flex: 1;
-      padding: var(--space-lg) var(--space-xl);
-      border-radius: var(--radius-xl);
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--radius-lg);
       border: 2px solid var(--neutral-gray-200);
       outline: none;
-      font-size: var(--font-size-lg);
+      font-size: var(--font-size-base);
       background: var(--neutral-white);
       color: var(--neutral-gray-800);
       font-weight: 500;
@@ -206,17 +220,17 @@
       transform: translateY(-2px);
     }
     .chat-input button {
-      padding: var(--space-lg) var(--space-2xl);
-      border-radius: var(--radius-xl);
+      padding: var(--space-sm) var(--space-lg);
+      border-radius: var(--radius-lg);
       border: none;
       background: var(--gradient-button);
       color: var(--neutral-white);
       cursor: pointer;
       box-shadow: var(--shadow-3d);
-      font-size: var(--font-size-lg);
-      font-weight: 700;
+      font-size: var(--font-size-base);
+      font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.3px;
       transition: all var(--transition-normal);
     }
     .chat-input button:hover {
@@ -225,15 +239,28 @@
       box-shadow: var(--shadow-xl);
     }
     
-    /* ✅ Menu / Dept / Doctor cards */
+    /* ✅ Enhanced Menu / Dept / Doctor cards - Responsive Grid */
     .menu, .department-list, .doctor-list {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: var(--space-lg);
       margin-top: var(--space-lg);
       flex-shrink: 0;
       animation: slideInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.6s both;
+      padding: 0 var(--space-md);
+    }
+    
+    /* Dynamic grid adjustments */
+    .menu {
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+    
+    .department-list {
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+    
+    .doctor-list {
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     }
     
     .menu-card, .dept-card, .doctor-card {
@@ -243,30 +270,52 @@
       border-radius: var(--radius-2xl);
       box-shadow: var(--shadow-3d);
       cursor: pointer;
+      user-select: none;
       transition: all var(--transition-bounce);
       text-align: center;
-      flex: 1 1 200px;   
-      max-width: 240px; 
+      width: 100%;
       word-wrap: break-word;
       line-height: 1.4;
       font-weight: 600;
       color: var(--neutral-gray-800);
-      min-height: 100px;
+      min-height: 120px;
       backdrop-filter: blur(10px);
       position: relative;
       overflow: hidden;
-
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
+      transform-style: preserve-3d;
+    }
+    
+    /* Enhanced hover effects with 3D transforms */
+    .menu-card::before, .dept-card::before, .doctor-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left var(--transition-slow);
     }
     .menu-card:hover, .dept-card:hover, .doctor-card:hover {
-      transform: translateY(-8px) scale(1.05);
+      transform: translateY(-8px) scale(1.05) rotateX(5deg);
       background: var(--gradient-card-hover);
       border-color: var(--primary-blue-300);
       box-shadow: var(--shadow-glow);
       color: var(--primary-blue-700);
+    }
+    
+    .menu-card:hover::before, .dept-card:hover::before, .doctor-card:hover::before {
+      left: 100%;
+    }
+    
+    /* Active state for touch devices */
+    .menu-card:active, .dept-card:active, .doctor-card:active {
+      transform: translateY(-4px) scale(1.02) rotateX(2deg);
+      transition: all var(--transition-fast);
     }
 
     /* Title big + subtitle small */
@@ -287,108 +336,303 @@
       line-height: 1.4;
     }
     
-    /* Responsive adjustments */
+    /* Enhanced Responsive adjustments with better breakpoints */
     
-    /* Large Desktop (1200px+) */
-    @media (min-width: 1200px) {
-      .container { max-width: 1200px; margin: 0 auto; }
-      .chat-shell { max-width: 1000px; }
-      .menu-card, .dept-card, .doctor-card {
-        flex: 1 1 280px;
-        max-width: 300px;
+    /* Large Desktop (1400px+) */
+    @media (min-width: 1400px) {
+      .container { 
+        max-width: 1400px; 
+        margin: 0 auto; 
+        padding: 0 var(--space-2xl);
+      }
+      .chat-shell { 
+        max-width: 800px; 
+        margin: var(--space-lg) auto;
+        height: 450px;
+      }
+      .menu {
+        grid-template-columns: repeat(3, 1fr);
+        max-width: 1000px;
+        margin: var(--space-xl) auto 0;
+      }
+      .department-list {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      }
+      .doctor-list {
+        grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+      }
+    }
+    
+    /* Large Desktop (1200px - 1399px) */
+    @media (min-width: 1200px) and (max-width: 1399px) {
+      .container { 
+        max-width: 1200px; 
+        margin: 0 auto;
+        padding: 0 var(--space-xl);
+      }
+      .chat-shell { 
+        max-width: 800px;
+        margin: var(--space-md) auto;
+        height: 420px;
+      }
+      .menu {
+        grid-template-columns: repeat(3, 1fr);
+        max-width: 900px;
+        margin: var(--space-lg) auto 0;
       }
     }
     
     /* Desktop (992px - 1199px) */
-    @media (max-width: 1199px) and (min-width: 992px) {
-      .container { max-width: 100%; }
-      .chat-shell { max-width: 100%; }
+    @media (min-width: 992px) and (max-width: 1199px) {
+      .container { 
+        max-width: 100%; 
+        padding: 0 var(--space-lg);
+      }
+      .chat-shell { 
+        max-width: 100%; 
+        margin: var(--space-lg) var(--space-md);
+      }
       .title { font-size: var(--font-size-3xl); }
       .subtitle { font-size: var(--font-size-lg); }
+      .menu {
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--space-md);
+        padding: 0 var(--space-sm);
+      }
+      .department-list {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      }
+      .doctor-list {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      }
       .menu-card, .dept-card, .doctor-card {
         font-size: var(--font-size-base);
         padding: var(--space-lg);
-        flex: 1 1 200px;
-        max-width: 250px;
+        min-height: 100px;
       }
       .chat-messages .msg { font-size: var(--font-size-base); }
       .chat-messages .info-msg { font-size: var(--font-size-sm); }
       .chat-input input, .chat-input button { font-size: var(--font-size-base); }
     }
     
-    /* Tablet Landscape (768px - 991px) */
-    @media (max-width: 991px) and (min-width: 768px) {
-      .container { padding: var(--space-sm); }
-      .header { padding: var(--space-md); }
-      .chat-shell { height: calc(100vh - 180px); }
-      .title { font-size: var(--font-size-2xl); }
-      .subtitle { font-size: var(--font-size-base); }
-      .menu-card, .dept-card, .doctor-card {
-        font-size: var(--font-size-sm);
-        padding: var(--space-md);
-        flex: 1 1 180px;
-        max-width: 200px;
+    /* Tablet Landscape (768px - 991px) - Mobile App Style */
+    @media (min-width: 768px) and (max-width: 991px) {
+      .container { 
+        padding: var(--space-xs);
       }
-      .chat-messages .msg { font-size: var(--font-size-sm); }
-      .chat-messages .info-msg { font-size: var(--font-size-xs); }
-      .chat-input input, .chat-input button { font-size: var(--font-size-sm); }
-    }
-    
-    /* Tablet Portrait (600px - 767px) */
-    @media (max-width: 767px) and (min-width: 600px) {
-      .container { padding: var(--space-xs); }
-      .header { padding: var(--space-sm); }
-      .chat-shell { height: calc(100vh - 160px); }
-      .title { font-size: var(--font-size-xl); }
+      .header { 
+        padding: var(--space-xs);
+        margin-bottom: var(--space-xs);
+      }
+      .chat-shell { 
+        height: 350px;
+        max-width: 100%;
+        margin: var(--space-xs);
+        border-radius: var(--radius-lg);
+      }
+      .title { 
+        font-size: var(--font-size-lg);
+        flex-direction: column;
+        gap: var(--space-xs);
+      }
       .subtitle { font-size: var(--font-size-sm); }
-      .menu-card, .dept-card, .doctor-card {
-        font-size: var(--font-size-sm);
-        padding: var(--space-sm);
-        flex: 1 1 150px;
-        max-width: 180px;
+      .menu {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-md);
+        padding: 0;
       }
-      .chat-messages .msg { font-size: var(--font-size-sm); }
-      .chat-messages .info-msg { font-size: var(--font-size-xs); }
-      .chat-input input, .chat-input button { font-size: var(--font-size-sm); }
-    }
-    
-    /* Mobile Landscape (480px - 599px) */
-    @media (max-width: 599px) and (min-width: 480px) {
-      .container { padding: var(--space-xs); }
-      .header { padding: var(--space-sm); }
-      .chat-shell { height: calc(100vh - 140px); }
-      .title { font-size: var(--font-size-lg); }
-      .subtitle { font-size: var(--font-size-sm); }
-      .menu-card, .dept-card, .doctor-card {
-        font-size: var(--font-size-xs);
-        padding: var(--space-sm);
-        flex: 1 1 120px;
-        max-width: 150px;
+      .department-list {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       }
-      .chat-messages .msg { font-size: var(--font-size-xs); }
-      .chat-messages .info-msg { font-size: var(--font-size-xs); }
-      .chat-input input, .chat-input button { font-size: var(--font-size-xs); }
-    }
-    
-    /* Mobile Portrait (320px - 479px) */
-    @media (max-width: 479px) {
-      .container { padding: var(--space-xs); }
-      .header { padding: var(--space-sm); }
-      .chat-shell { height: calc(100vh - 120px); }
-      .title { font-size: var(--font-size-base); }
-      .subtitle { font-size: var(--font-size-xs); }
+      .doctor-list {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      }
       .menu-card, .dept-card, .doctor-card {
         font-size: var(--font-size-xs);
         padding: var(--space-xs);
-        flex: 1 1 100px;
-        max-width: 120px;
-        min-height: 80px;
+        min-height: 45px;
       }
       .chat-messages .msg { font-size: var(--font-size-xs); }
       .chat-messages .info-msg { font-size: var(--font-size-xs); }
       .chat-input input, .chat-input button { font-size: var(--font-size-xs); }
-      .chat-input { padding: var(--space-sm); }
-      .action-buttons button { padding: var(--space-sm) var(--space-md); }
+      .action-buttons button { 
+        padding: var(--space-xs) var(--space-sm);
+        font-size: var(--font-size-xs);
+        min-height: 32px;
+      }
+    }
+    
+    /* Tablet Portrait (600px - 767px) - Mobile App Style */
+    @media (min-width: 600px) and (max-width: 767px) {
+      .container { 
+        padding: var(--space-xs);
+      }
+      .header { 
+        padding: var(--space-xs);
+        margin-bottom: var(--space-xs);
+      }
+      .chat-shell { 
+        height: 320px;
+        max-width: 100%;
+        margin: var(--space-xs);
+        border-radius: var(--radius-lg);
+      }
+      .title { 
+        font-size: var(--font-size-base);
+        flex-direction: column;
+        gap: var(--space-xs);
+      }
+      .subtitle { font-size: var(--font-size-xs); }
+      .menu {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-sm);
+        padding: 0;
+      }
+      .department-list {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      }
+      .doctor-list {
+        grid-template-columns: 1fr;
+        gap: var(--space-sm);
+      }
+      .menu-card, .dept-card, .doctor-card {
+        font-size: var(--font-size-xs);
+        padding: var(--space-xs);
+        min-height: 35px;
+      }
+      .chat-messages .msg { 
+        font-size: var(--font-size-xs);
+        max-width: 90%;
+        padding: var(--space-xs) var(--space-sm);
+      }
+      .chat-messages .info-msg { font-size: var(--font-size-xs); }
+      .chat-input input, .chat-input button { font-size: var(--font-size-xs); }
+      .action-buttons button { 
+        padding: var(--space-xs) var(--space-sm);
+        font-size: var(--font-size-xs);
+        min-height: 28px;
+      }
+    }
+    
+    /* Mobile Landscape (480px - 599px) - Mobile App Style */
+    @media (min-width: 480px) and (max-width: 599px) {
+      .container { 
+        padding: var(--space-xs);
+      }
+      .header { 
+        padding: var(--space-xs);
+        margin-bottom: var(--space-xs);
+      }
+      .chat-shell { 
+        height: 300px;
+        max-width: 100%;
+        margin: var(--space-xs);
+        border-radius: var(--radius-lg);
+      }
+      .title { 
+        font-size: var(--font-size-sm);
+        flex-direction: column;
+        gap: var(--space-xs);
+      }
+      .subtitle { font-size: var(--font-size-xs); }
+      .menu {
+        grid-template-columns: 1fr;
+        gap: var(--space-sm);
+        padding: 0;
+      }
+      .department-list {
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      }
+      .doctor-list {
+        grid-template-columns: 1fr;
+        gap: var(--space-xs);
+      }
+      .menu-card, .dept-card, .doctor-card {
+        font-size: var(--font-size-xs);
+        padding: var(--space-xs);
+        min-height: 30px;
+      }
+      .chat-messages .msg { 
+        font-size: var(--font-size-xs);
+        max-width: 95%;
+        padding: var(--space-xs) var(--space-sm);
+      }
+      .chat-messages .info-msg { font-size: var(--font-size-xs); }
+      .chat-input input, .chat-input button { 
+        font-size: var(--font-size-xs);
+        padding: var(--space-xs);
+      }
+      .action-buttons button { 
+        padding: var(--space-xs) var(--space-sm);
+        font-size: var(--font-size-xs);
+        min-height: 24px;
+      }
+    }
+    
+    /* Mobile Portrait (320px - 479px) - Mobile App Style */
+    @media (max-width: 479px) {
+      .container { 
+        padding: var(--space-xs);
+      }
+      .header { 
+        padding: var(--space-xs);
+        margin-bottom: var(--space-xs);
+      }
+      .chat-shell { 
+        height: 400px;
+        max-width: 100%;
+        margin: var(--space-xs);
+        border-radius: var(--radius-lg);
+      }
+      .title { 
+        font-size: var(--font-size-sm);
+        flex-direction: column;
+        gap: var(--space-xs);
+      }
+      .subtitle { font-size: var(--font-size-xs); }
+      .menu {
+        grid-template-columns: 1fr;
+        gap: var(--space-xs);
+        padding: 0;
+      }
+      .department-list {
+        grid-template-columns: 1fr;
+        gap: var(--space-xs);
+      }
+      .doctor-list {
+        grid-template-columns: 1fr;
+        gap: var(--space-xs);
+      }
+      .menu-card, .dept-card, .doctor-card {
+        font-size: var(--font-size-xs);
+        padding: var(--space-xs);
+        min-height: 25px;
+      }
+      .chat-messages .msg { 
+        font-size: var(--font-size-xs);
+        max-width: 95%;
+        padding: var(--space-xs) var(--space-sm);
+      }
+      .chat-messages .info-msg { font-size: var(--font-size-xs); }
+      .chat-input { 
+        padding: var(--space-sm);
+        flex-direction: column;
+        gap: var(--space-xs);
+      }
+      .chat-input input, .chat-input button { 
+        font-size: var(--font-size-xs);
+        padding: var(--space-xs);
+        min-height: 40px;
+      }
+      .action-buttons { 
+        flex-direction: column;
+        gap: var(--space-xs);
+      }
+      .action-buttons button { 
+        padding: var(--space-xs) var(--space-sm);
+        min-height: 20px;
+        font-size: var(--font-size-xs);
+      }
     }
     .appt-card {
   background: linear-gradient(145deg, var(--neutral-white) 0%, var(--neutral-gray-50) 100%);
@@ -449,12 +693,162 @@
   color: var(--neutral-gray-700);
 }
 
-/* Gradient Animation */
+/* Enhanced Gradient Animation */
 @keyframes gradientShift {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
+
+/* New Dynamic Animations */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes glow {
+  0%, 100% { 
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+  }
+  50% { 
+    box-shadow: 0 0 30px rgba(102, 126, 234, 0.6);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+/* Touch feedback animation */
+@keyframes touchFeedback {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Loading animation for dynamic content */
+@keyframes loading {
+  0% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.5;
+  }
+}
+
+/* Smooth transitions for responsive changes */
+@keyframes responsiveTransition {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Utility classes for dynamic interactions */
+.touch-feedback {
+  animation: touchFeedback 0.2s ease;
+}
+
+.loading-state {
+  animation: loading 1.5s ease-in-out infinite;
+}
+
+.responsive-transition {
+  animation: responsiveTransition 0.3s ease;
+}
+
+/* Enhanced focus states for accessibility */
+.menu-card:focus,
+.dept-card:focus,
+.doctor-card:focus {
+  outline: 3px solid var(--primary-blue-400);
+  outline-offset: 2px;
+  transform: translateY(-4px) scale(1.02);
+}
+
+    /* Widget Embed Mode - Extra Compact */
+    .widget-mode .chat-shell {
+      max-width: 400px;
+      height: 350px;
+      margin: var(--space-xs);
+      border-radius: var(--radius-lg);
+    }
+    
+    /* Mobile responsive adjustments for better proportions */
+    @media (max-width: 599px) {
+      .chat-shell {
+        min-height: 300px;
+      }
+    }
+    
+    @media (max-width: 479px) {
+      .chat-shell {
+        min-height: 350px;
+      }
+    }
+    
+    .widget-mode .chat-messages {
+      padding: var(--space-sm);
+      margin: 0;
+      gap: var(--space-xs);
+    }
+    
+    .widget-mode .chat-messages .msg {
+      padding: var(--space-xs) var(--space-sm);
+      font-size: var(--font-size-sm);
+      max-width: 85%;
+    }
+    
+    .widget-mode .chat-input {
+      padding: var(--space-sm);
+      margin: 0;
+      gap: var(--space-xs);
+    }
+    
+    .widget-mode .chat-input input {
+      padding: var(--space-xs) var(--space-sm);
+      font-size: var(--font-size-sm);
+    }
+    
+    .widget-mode .chat-input button {
+      padding: var(--space-xs) var(--space-md);
+      font-size: var(--font-size-sm);
+    }
+
+    /* Reduced motion support */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
 
   </style>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -471,7 +865,7 @@
           <div class="ai-pulse"></div>
           <div class="ai-circuit"></div>
         </div>
-        <span id="hospitalName">XYZ Hospital</span>
+        <span id="hospitalName">{{ hospital_id.title() if hospital_id else 'XYZ' }} Hospital</span>
       </div>
       <div id="chatHeading" class="subtitle">Chat Assistant - Main Menu</div>
       <div id="languageDisplay" class="language-label">Language: English</div>
@@ -485,17 +879,17 @@
 
     <!-- Menu Options -->
     <div id="menuSection" class="menu">
-      <div id="menuBookingCard" class="menu-card">
+      <div id="menuBookingCard" class="menu-card" onclick="startBookingChatFlow()">
         <i class="fas fa-calendar-plus" style="font-size: 2rem; color: var(--primary-blue-600); margin-bottom: var(--space-sm);"></i>
         <span id="menuBookingTitle" class="menu-title">Booking Appointment</span>
         <span id="menuBookingSub" class="menu-sub">Schedule a new visit</span>
       </div>
-      <div id="menuMyAppointmentCard" class="menu-card">
+      <div id="menuMyAppointmentCard" class="menu-card" onclick="startMyAppointmentChatFlow()">
         <i class="fas fa-calendar-check" style="font-size: 2rem; color: var(--secondary-green-600); margin-bottom: var(--space-sm);"></i>
         <span id="menuMyAppointmentTitle" class="menu-title">My Appointment</span>
         <span id="menuMyAppointmentSub" class="menu-sub">Check or edit your booking</span>
       </div>
-      <div id="menuGeneralCard" class="menu-card">
+      <div id="menuGeneralCard" class="menu-card" onclick="startGeneralQueryChatFlow()">
         <i class="fas fa-question-circle" style="font-size: 2rem; color: var(--accent-purple-600); margin-bottom: var(--space-sm);"></i>
         <span id="menuGeneralTitle" class="menu-title">General Query</span>
         <span id="menuGeneralSub" class="menu-sub">Ask a general question</span>
@@ -514,15 +908,132 @@
   </div>
 
   <!-- JS -->
+  <script src="{{ url_for('static', filename='js/responsive-interactions.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/dynamic-animations.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/responsive-testing.js') }}"></script>
   <script src="{{ url_for('static', filename='js/chat_booking.js') }}"></script>
   <script src="{{ url_for('static', filename='js/chat_myappointments.js') }}"></script>
   <script src="{{ url_for('static', filename='js/chat_general_query.js') }}"></script>
   <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
 
+
+  <!-- Menu Click Handlers -->
+  <script>
+    // Function to start booking chat flow
+    function startBookingChatFlow() {
+      console.log('Starting booking chat flow...');
+      
+      // Hide menu section and show chat shell
+      document.getElementById('menuSection').style.display = 'none';
+      document.getElementById('chatShell').style.display = '';
+      
+      // Update chat heading
+      document.getElementById('chatHeading').textContent = 'Booking Appointment';
+      
+      // Set current flow
+      sessionStorage.setItem('currentFlow', 'booking');
+      
+      // Start booking flow
+      if (window.startBookingFlow) {
+        window.startBookingFlow();
+      }
+    }
+
+    // Function to start my appointment chat flow
+    function startMyAppointmentChatFlow() {
+      console.log('Starting my appointment chat flow...');
+      
+      // Hide menu section and show chat shell
+      document.getElementById('menuSection').style.display = 'none';
+      document.getElementById('chatShell').style.display = '';
+      
+      // Update chat heading
+      document.getElementById('chatHeading').textContent = 'My Appointments';
+      
+      // Set current flow
+      sessionStorage.setItem('currentFlow', 'myAppointment');
+      
+      // Start my appointment flow
+      if (window.startMyAppointmentChatFlow) {
+        window.startMyAppointmentChatFlow(window.currentLang || 'english');
+      }
+    }
+
+    // Function to start general query chat flow
+    function startGeneralQueryChatFlow() {
+      console.log('Starting general query chat flow...');
+      
+      // Hide menu section and show chat shell
+      document.getElementById('menuSection').style.display = 'none';
+      document.getElementById('chatShell').style.display = '';
+      
+      // Update chat heading
+      document.getElementById('chatHeading').textContent = 'General Query';
+      
+      // Set current flow
+      sessionStorage.setItem('currentFlow', 'general');
+      
+      // Start general query flow
+      if (window.startGeneralQueryFlow) {
+        window.startGeneralQueryFlow(window.currentLang || 'english');
+      }
+    }
+
+    // Add hover effects to menu cards
+    document.addEventListener('DOMContentLoaded', function() {
+      const menuCards = document.querySelectorAll('.menu-card');
+      
+      menuCards.forEach(card => {
+        // Add hover effect
+        card.addEventListener('mouseenter', function() {
+          this.style.transform = 'translateY(-5px) scale(1.02)';
+          this.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.2)';
+          this.style.transition = 'all 0.3s ease';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+          this.style.transform = 'translateY(0) scale(1)';
+          this.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.1)';
+        });
+        
+        // Add click effect
+        card.addEventListener('click', function() {
+          this.style.transform = 'translateY(-2px) scale(0.98)';
+          setTimeout(() => {
+            this.style.transform = 'translateY(0) scale(1)';
+          }, 150);
+        });
+      });
+    });
+  </script>
+
+  <!-- Hospital-specific data loading -->
+  <script>
+    // Get hospital_id from URL parameter
+    function getHospitalId() {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get('hospital_id') || 'xyz';
+    }
+    
+    // Store hospital_id in session storage for use across pages
+    document.addEventListener("DOMContentLoaded", () => {
+      const hospitalId = getHospitalId();
+      sessionStorage.setItem('currentHospitalId', hospitalId);
+      
+      // Update hospital name display
+      const hospitalNameElement = document.getElementById('hospitalName');
+      if (hospitalNameElement && hospitalId !== 'xyz') {
+        hospitalNameElement.textContent = hospitalId.charAt(0).toUpperCase() + hospitalId.slice(1) + ' Hospital';
+      }
+    });
+  </script>
+
   <!-- Auto-start flow -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const path = window.location.pathname;
+      const hospitalId = getHospitalId();
+      
       if (path.includes("/booking") && window.startBookingFlow) {
         sessionStorage.setItem("currentFlow", "booking");
         document.getElementById("menuSection").style.display = "none";
@@ -545,5 +1056,6 @@
       }
     });
   </script>
+
 </body>
 </html>

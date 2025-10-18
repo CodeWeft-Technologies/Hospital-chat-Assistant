@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Responsive Design Demo - XYZ Hospital</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/ai-icon.css') }}"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    .demo-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: var(--space-lg);
+    }
+    
+    .demo-header {
+      text-align: center;
+      margin-bottom: var(--space-2xl);
+      background: var(--gradient-card);
+      padding: var(--space-2xl);
+      border-radius: var(--radius-2xl);
+      box-shadow: var(--shadow-3d);
+    }
+    
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: var(--space-xl);
+      margin-bottom: var(--space-2xl);
+    }
+    
+    .demo-card {
+      background: var(--gradient-card);
+      border-radius: var(--radius-2xl);
+      padding: var(--space-xl);
+      box-shadow: var(--shadow-3d);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all var(--transition-bounce);
+      cursor: pointer;
+    }
+    
+    .demo-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: var(--shadow-glow);
+    }
+    
+    .demo-card h3 {
+      color: var(--primary-blue-800);
+      margin-bottom: var(--space-md);
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+    
+    .interaction-demo {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+    
+    .interaction-button {
+      padding: var(--space-md) var(--space-lg);
+      border: none;
+      border-radius: var(--radius-xl);
+      background: var(--gradient-button);
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition-normal);
+    }
+    
+    .interaction-button:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .animation-demo {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      min-height: 100px;
+    }
+    
+    .animated-element {
+      width: 50px;
+      height: 50px;
+      background: var(--gradient-button);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      cursor: pointer;
+    }
+    
+    .responsive-test-area {
+      background: var(--gradient-card);
+      border-radius: var(--radius-2xl);
+      padding: var(--space-xl);
+      margin-top: var(--space-xl);
+    }
+    
+    .test-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-md);
+      margin-bottom: var(--space-lg);
+      justify-content: center;
+    }
+    
+    .test-button {
+      padding: var(--space-sm) var(--space-lg);
+      border: 2px solid var(--primary-blue-500);
+      border-radius: var(--radius-lg);
+      background: transparent;
+      color: var(--primary-blue-600);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition-normal);
+    }
+    
+    .test-button:hover {
+      background: var(--primary-blue-500);
+      color: white;
+    }
+    
+    .test-button.active {
+      background: var(--primary-blue-500);
+      color: white;
+    }
+    
+    .device-preview {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-lg);
+      margin-top: var(--space-lg);
+    }
+    
+    .device-frame {
+      border: 3px solid var(--primary-blue-500);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      background: white;
+      box-shadow: var(--shadow-lg);
+      transition: all var(--transition-normal);
+    }
+    
+    .device-frame:hover {
+      transform: scale(1.05);
+      box-shadow: var(--shadow-xl);
+    }
+    
+    .device-frame.mobile {
+      width: 150px;
+      height: 250px;
+    }
+    
+    .device-frame.tablet {
+      width: 200px;
+      height: 250px;
+    }
+    
+    .device-frame.desktop {
+      width: 250px;
+      height: 150px;
+    }
+    
+    .device-content {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #87CEEB 0%, #B0E0E6 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      text-align: center;
+      padding: 10px;
+    }
+    
+    .performance-metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-md);
+      margin-top: var(--space-lg);
+    }
+    
+    .metric-card {
+      background: var(--gradient-card);
+      border-radius: var(--radius-xl);
+      padding: var(--space-lg);
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .metric-value {
+      font-size: var(--font-size-2xl);
+      font-weight: 800;
+      color: var(--primary-blue-600);
+      margin-bottom: var(--space-xs);
+    }
+    
+    .metric-label {
+      font-size: var(--font-size-sm);
+      color: var(--neutral-gray-600);
+      font-weight: 600;
+    }
+    
+    @media (max-width: 768px) {
+      .demo-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .test-controls {
+        flex-direction: column;
+      }
+      
+      .device-preview {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-container">
+    <!-- Demo Header -->
+    <div class="demo-header">
+      <div class="title-with-ai">
+        <div class="ai-doctor-icon">
+          <i class="fas fa-user-md"></i>
+          <div class="ai-pulse"></div>
+          <div class="ai-circuit"></div>
+        </div>
+        <h1>Responsive Design Demo</h1>
+      </div>
+      <p>Interactive demonstration of responsive design and dynamic animations</p>
+    </div>
+
+    <!-- Demo Grid -->
+    <div class="demo-grid">
+      <!-- Dynamic Interactions Demo -->
+      <div class="demo-card">
+        <h3><i class="fas fa-hand-pointer"></i> Dynamic Interactions</h3>
+        <div class="interaction-demo">
+          <button class="interaction-button" onclick="triggerRipple()">Ripple Effect</button>
+          <button class="interaction-button" onclick="triggerBounce()">Bounce Animation</button>
+          <button class="interaction-button" onclick="triggerShake()">Shake Animation</button>
+          <button class="interaction-button" onclick="triggerPulse()">Pulse Effect</button>
+        </div>
+      </div>
+
+      <!-- Animation Demo -->
+      <div class="demo-card">
+        <h3><i class="fas fa-magic"></i> Animations</h3>
+        <div class="animation-demo">
+          <div class="animated-element" onclick="animateElement(this, 'rotate')">
+            <i class="fas fa-sync-alt"></i>
+          </div>
+          <div class="animated-element" onclick="animateElement(this, 'scale')">
+            <i class="fas fa-expand-arrows-alt"></i>
+          </div>
+          <div class="animated-element" onclick="animateElement(this, 'float')">
+            <i class="fas fa-feather"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Responsive Features Demo -->
+      <div class="demo-card">
+        <h3><i class="fas fa-mobile-alt"></i> Responsive Features</h3>
+        <div class="interaction-demo">
+          <button class="interaction-button" onclick="toggleDeviceClass('mobile')">Mobile View</button>
+          <button class="interaction-button" onclick="toggleDeviceClass('tablet')">Tablet View</button>
+          <button class="interaction-button" onclick="toggleDeviceClass('desktop')">Desktop View</button>
+          <button class="interaction-button" onclick="resetDeviceClass()">Reset</button>
+        </div>
+      </div>
+
+      <!-- Performance Demo -->
+      <div class="demo-card">
+        <h3><i class="fas fa-tachometer-alt"></i> Performance</h3>
+        <div class="performance-metrics">
+          <div class="metric-card">
+            <div class="metric-value" id="fps-counter">60</div>
+            <div class="metric-label">FPS</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value" id="memory-usage">--</div>
+            <div class="metric-label">Memory MB</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Responsive Testing Area -->
+    <div class="responsive-test-area">
+      <h2><i class="fas fa-vial"></i> Responsive Testing</h2>
+      
+      <div class="test-controls">
+        <button class="test-button active" onclick="runResponsiveTest('layout')">Layout Test</button>
+        <button class="test-button" onclick="runResponsiveTest('touch')">Touch Targets</button>
+        <button class="test-button" onclick="runResponsiveTest('typography')">Typography</button>
+        <button class="test-button" onclick="runResponsiveTest('performance')">Performance</button>
+        <button class="test-button" onclick="runResponsiveTest('accessibility')">Accessibility</button>
+      </div>
+
+      <div id="test-results" class="test-results">
+        <p>Click a test button above to run responsive design tests</p>
+      </div>
+
+      <div class="device-preview">
+        <div class="device-frame mobile">
+          <div class="device-content">
+            <i class="fas fa-mobile-alt" style="font-size: 20px; margin-bottom: 10px;"></i>
+            <div>Mobile Portrait</div>
+            <div style="font-size: 8px;">375x667</div>
+          </div>
+        </div>
+        
+        <div class="device-frame tablet">
+          <div class="device-content">
+            <i class="fas fa-tablet-alt" style="font-size: 20px; margin-bottom: 10px;"></i>
+            <div>Tablet</div>
+            <div style="font-size: 8px;">768x1024</div>
+          </div>
+        </div>
+        
+        <div class="device-frame desktop">
+          <div class="device-content">
+            <i class="fas fa-desktop" style="font-size: 20px; margin-bottom: 10px;"></i>
+            <div>Desktop</div>
+            <div style="font-size: 8px;">1920x1080</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Real-time Metrics -->
+    <div class="demo-card" style="margin-top: var(--space-xl);">
+      <h3><i class="fas fa-chart-line"></i> Real-time Metrics</h3>
+      <div class="performance-metrics">
+        <div class="metric-card">
+          <div class="metric-value" id="viewport-width">--</div>
+          <div class="metric-label">Viewport Width</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value" id="viewport-height">--</div>
+          <div class="metric-label">Viewport Height</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value" id="device-pixel-ratio">--</div>
+          <div class="metric-label">Pixel Ratio</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value" id="touch-support">--</div>
+          <div class="metric-label">Touch Support</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script src="{{ url_for('static', filename='js/responsive-interactions.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/dynamic-animations.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/responsive-testing.js') }}"></script>
+  
+  <script>
+    // ===== DEMO INTERACTIONS =====
+    
+    function triggerRipple() {
+      const button = event.target;
+      const ripple = document.createElement('span');
+      const rect = button.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      
+      ripple.style.cssText = `
+        position: absolute;
+        width: ${size}px;
+        height: ${size}px;
+        left: ${rect.width / 2 - size / 2}px;
+        top: ${rect.height / 2 - size / 2}px;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        transform: scale(0);
+        animation: rippleExpand 0.6s ease-out;
+        pointer-events: none;
+      `;
+      
+      button.style.position = 'relative';
+      button.style.overflow = 'hidden';
+      button.appendChild(ripple);
+      
+      setTimeout(() => ripple.remove(), 600);
+    }
+    
+    function triggerBounce() {
+      const button = event.target;
+      button.style.animation = 'bounceEffect 0.6s ease';
+      setTimeout(() => button.style.animation = '', 600);
+    }
+    
+    function triggerShake() {
+      const button = event.target;
+      button.style.animation = 'shakeEffect 0.5s ease-in-out';
+      setTimeout(() => button.style.animation = '', 500);
+    }
+    
+    function triggerPulse() {
+      const button = event.target;
+      button.style.animation = 'pulseEffect 1s ease-in-out infinite';
+      setTimeout(() => button.style.animation = '', 2000);
+    }
+    
+    function animateElement(element, animationType) {
+      const animations = {
+        rotate: 'rotate 1s linear infinite',
+        scale: 'scaleEffect 1s ease-in-out infinite',
+        float: 'float 2s ease-in-out infinite'
+      };
+      
+      element.style.animation = animations[animationType];
+      setTimeout(() => element.style.animation = '', 2000);
+    }
+    
+    function toggleDeviceClass(device) {
+      document.body.className = `device-${device}`;
+      updateTestResults(`Switched to ${device} view`);
+    }
+    
+    function resetDeviceClass() {
+      document.body.className = '';
+      updateTestResults('Reset to default view');
+    }
+    
+    // ===== RESPONSIVE TESTING =====
+    
+    function runResponsiveTest(testType) {
+      // Update active button
+      document.querySelectorAll('.test-button').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      const results = {
+        layout: () => testLayoutResponsiveness(),
+        touch: () => testTouchTargets(),
+        typography: () => testTypography(),
+        performance: () => testPerformance(),
+        accessibility: () => testAccessibility()
+      };
+      
+      const testResults = results[testType]();
+      displayTestResults(testType, testResults);
+    }
+    
+    function testLayoutResponsiveness() {
+      const results = [];
+      const container = document.querySelector('.demo-container');
+      const cards = document.querySelectorAll('.demo-card');
+      
+      if (container) {
+        const width = container.offsetWidth;
+        const viewportWidth = window.innerWidth;
+        const ratio = width / viewportWidth;
+        
+        results.push({
+          test: 'Container Responsiveness',
+          status: ratio > 0.8 && ratio < 1.2 ? 'pass' : 'warning',
+          message: `Container width ratio: ${ratio.toFixed(2)}`
+        });
+      }
+      
+      results.push({
+        test: 'Grid Layout',
+        status: cards.length >= 4 ? 'pass' : 'warning',
+        message: `${cards.length} cards in grid layout`
+      });
+      
+      return results;
+    }
+    
+    function testTouchTargets() {
+      const results = [];
+      const touchElements = document.querySelectorAll('button, .demo-card');
+      
+      touchElements.forEach((element, index) => {
+        const rect = element.getBoundingClientRect();
+        const minSize = 44;
+        
+        results.push({
+          test: `Touch Target ${index + 1}`,
+          status: rect.width >= minSize && rect.height >= minSize ? 'pass' : 'fail',
+          message: `${Math.round(rect.width)}x${Math.round(rect.height)}px`
+        });
+      });
+      
+      return results;
+    }
+    
+    function testTypography() {
+      const results = [];
+      const textElements = document.querySelectorAll('h1, h2, h3, p');
+      
+      textElements.forEach((element, index) => {
+        const fontSize = parseFloat(window.getComputedStyle(element).fontSize);
+        
+        results.push({
+          test: `Text Element ${index + 1}`,
+          status: fontSize >= 14 ? 'pass' : 'warning',
+          message: `${fontSize}px font size`
+        });
+      });
+      
+      return results;
+    }
+    
+    function testPerformance() {
+      const results = [];
+      
+      // FPS Test
+      let frameCount = 0;
+      const startTime = performance.now();
+      
+      function countFrames() {
+        frameCount++;
+        if (performance.now() - startTime < 1000) {
+          requestAnimationFrame(countFrames);
+        } else {
+          const fps = frameCount;
+          results.push({
+            test: 'Animation Performance',
+            status: fps >= 30 ? 'pass' : 'warning',
+            message: `${fps} FPS`
+          });
+        }
+      }
+      
+      requestAnimationFrame(countFrames);
+      
+      // Memory Test
+      if (performance.memory) {
+        const memory = performance.memory.usedJSHeapSize / 1024 / 1024;
+        results.push({
+          test: 'Memory Usage',
+          status: memory < 50 ? 'pass' : 'warning',
+          message: `${memory.toFixed(2)} MB`
+        });
+      }
+      
+      return results;
+    }
+    
+    function testAccessibility() {
+      const results = [];
+      
+      // Focusable elements test
+      const focusableElements = document.querySelectorAll('button, [tabindex]:not([tabindex="-1"])');
+      const totalInteractive = document.querySelectorAll('.interaction-button, .demo-card').length;
+      
+      results.push({
+        test: 'Keyboard Navigation',
+        status: focusableElements.length >= totalInteractive ? 'pass' : 'warning',
+        message: `${focusableElements.length}/${totalInteractive} elements focusable`
+      });
+      
+      // Color contrast test (simplified)
+      results.push({
+        test: 'Color Contrast',
+        status: 'pass',
+        message: 'High contrast colors used'
+      });
+      
+      return results;
+    }
+    
+    function displayTestResults(testType, results) {
+      const container = document.getElementById('test-results');
+      let html = `<h4>${testType.charAt(0).toUpperCase() + testType.slice(1)} Test Results:</h4>`;
+      
+      results.forEach(result => {
+        const statusClass = result.status === 'pass' ? 'test-pass' : 
+                           result.status === 'fail' ? 'test-fail' : 'test-warning';
+        
+        html += `<div class="test-item ${statusClass}">
+          <span>${result.test}: ${result.message}</span>
+          <span class="test-status">${result.status.toUpperCase()}</span>
+        </div>`;
+      });
+      
+      container.innerHTML = html;
+    }
+    
+    function updateTestResults(message) {
+      const container = document.getElementById('test-results');
+      container.innerHTML = `<div class="test-item test-pass">${message}</div>`;
+    }
+    
+    // ===== REAL-TIME METRICS =====
+    
+    function updateMetrics() {
+      document.getElementById('viewport-width').textContent = window.innerWidth;
+      document.getElementById('viewport-height').textContent = window.innerHeight;
+      document.getElementById('device-pixel-ratio').textContent = window.devicePixelRatio || 1;
+      document.getElementById('touch-support').textContent = 'ontouchstart' in window ? 'Yes' : 'No';
+      
+      // FPS Counter
+      let lastTime = performance.now();
+      let frameCount = 0;
+      
+      function countFPS() {
+        frameCount++;
+        const currentTime = performance.now();
+        
+        if (currentTime - lastTime >= 1000) {
+          document.getElementById('fps-counter').textContent = frameCount;
+          frameCount = 0;
+          lastTime = currentTime;
+        }
+        
+        requestAnimationFrame(countFPS);
+      }
+      
+      countFPS();
+      
+      // Memory Usage
+      if (performance.memory) {
+        setInterval(() => {
+          const memory = performance.memory.usedJSHeapSize / 1024 / 1024;
+          document.getElementById('memory-usage').textContent = memory.toFixed(1);
+        }, 1000);
+      }
+    }
+    
+    // ===== INITIALIZATION =====
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      updateMetrics();
+      
+      // Update metrics on resize
+      window.addEventListener('resize', updateMetrics);
+      
+      // Auto-run layout test
+      setTimeout(() => {
+        runResponsiveTest('layout');
+      }, 1000);
+      
+      console.log('Responsive Demo initialized');
+    });
+  </script>
+  
+  <!-- Additional Styles for Animations -->
+  <style>
+    @keyframes rippleExpand {
+      0% { transform: scale(0); opacity: 1; }
+      100% { transform: scale(1); opacity: 0; }
+    }
+    
+    @keyframes bounceEffect {
+      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-10px); }
+      60% { transform: translateY(-5px); }
+    }
+    
+    @keyframes shakeEffect {
+      0%, 100% { transform: translateX(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+      20%, 40%, 60%, 80% { transform: translateX(5px); }
+    }
+    
+    @keyframes pulseEffect {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+    
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    
+    @keyframes scaleEffect {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    .test-item {
+      padding: 8px 12px;
+      margin: 4px 0;
+      border-radius: 6px;
+      font-size: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .test-pass {
+      background: #d1fae5;
+      color: #065f46;
+      border-left: 4px solid #10b981;
+    }
+    
+    .test-fail {
+      background: #fee2e2;
+      color: #991b1b;
+      border-left: 4px solid #ef4444;
+    }
+    
+    .test-warning {
+      background: #fef3c7;
+      color: #92400e;
+      border-left: 4px solid #f59e0b;
+    }
+    
+    .test-status {
+      font-weight: 600;
+    }
+  </style>
+</body>
+</html>

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>XYZ Hospital - Modern Chat Assistant</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/modern-chat.css') }}"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    /* Additional styles for the modern chat interface */
+    .welcome-message {
+      text-align: center;
+      padding: 2rem;
+      color: rgba(255, 255, 255, 0.9);
+    }
+    
+    .welcome-message h2 {
+      margin: 0 0 1rem 0;
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+    
+    .welcome-message p {
+      margin: 0;
+      font-size: 1rem;
+      opacity: 0.8;
+    }
+    
+    .hidden {
+      display: none !important;
+    }
+    
+    /* Loading states */
+    .loading {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+    
+    /* Message timestamps */
+    .message-timestamp {
+      font-size: 0.7rem;
+      opacity: 0.6;
+      margin-top: 0.25rem;
+    }
+    
+    /* Quick reply buttons */
+    .quick-replies {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+    
+    .quick-reply-btn {
+      padding: 0.5rem 1rem;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 1rem;
+      color: rgba(255, 255, 255, 0.9);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.85rem;
+      backdrop-filter: blur(10px);
+    }
+    
+    .quick-reply-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-1px);
+    }
+    
+    /* File upload indicator */
+    .file-upload-indicator {
+      display: none;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 1rem;
+      margin: 0.5rem 0;
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.9);
+    }
+    
+    .file-upload-indicator.show {
+      display: flex;
+    }
+    
+    /* Connection status */
+    .connection-status {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      padding: 0.25rem 0.75rem;
+      background: rgba(16, 185, 129, 0.9);
+      color: white;
+      border-radius: 1rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      z-index: 1000;
+      animation: slideInDown 0.3s ease-out;
+    }
+    
+    .connection-status.offline {
+      background: rgba(239, 68, 68, 0.9);
+    }
+    
+    @keyframes slideInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="modern-chat-container">
+    <!-- Connection Status -->
+    <div class="connection-status" id="connectionStatus">
+      <i class="fas fa-wifi"></i> Online
+    </div>
+
+    <!-- Chat Header -->
+    <div class="modern-chat-header">
+      <div class="chat-header-content">
+        <div class="chat-avatar">
+          <i class="fas fa-user-md"></i>
+        </div>
+        <div class="chat-header-info">
+          <h3 id="hospitalName">XYZ Hospital</h3>
+          <p>
+            <span class="status-indicator"></span>
+            <span id="chatHeading">Chat Assistant - Online</span>
+          </p>
+        </div>
+      </div>
+      <div class="chat-header-actions">
+        <button class="header-btn" id="backBtn" title="Back">
+          <i class="fas fa-arrow-left"></i>
+        </button>
+        <button class="header-btn" id="languageBtn" title="Change Language">
+          <i class="fas fa-globe"></i>
+        </button>
+        <button class="header-btn" id="settingsBtn" title="Settings">
+          <i class="fas fa-cog"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Welcome Message -->
+    <div class="welcome-message" id="welcomeMessage">
+      <h2>Welcome to XYZ Hospital Chat Assistant</h2>
+      <p>How can I help you today?</p>
+    </div>
+
+    <!-- Chat Messages Area -->
+    <div class="modern-chat-messages" id="chatMessages">
+      <!-- Messages will be dynamically added here -->
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions" id="quickActions">
+      <button class="quick-action-btn" data-action="booking">
+        <i class="fas fa-calendar-plus"></i> Book Appointment
+      </button>
+      <button class="quick-action-btn" data-action="my-appointments">
+        <i class="fas fa-calendar-check"></i> My Appointments
+      </button>
+      <button class="quick-action-btn" data-action="general-query">
+        <i class="fas fa-question-circle"></i> General Query
+      </button>
+      <button class="quick-action-btn" data-action="emergency">
+        <i class="fas fa-ambulance"></i> Emergency
+      </button>
+    </div>
+
+    <!-- Chat Input Area -->
+    <div class="modern-chat-input">
+      <button class="attachment-button" id="attachmentBtn" title="Attach File">
+        <i class="fas fa-paperclip"></i>
+      </button>
+      <div class="input-container">
+        <textarea 
+          class="message-input" 
+          id="messageInput" 
+          placeholder="Type your message here..."
+          rows="1"
+        ></textarea>
+        <input type="file" id="fileInput" class="hidden" accept="image/*,application/pdf,.doc,.docx">
+      </div>
+      <button class="send-button" id="sendBtn" title="Send Message">
+        <i class="fas fa-paper-plane"></i>
+      </button>
+    </div>
+
+    <!-- File Upload Indicator -->
+    <div class="file-upload-indicator" id="fileUploadIndicator">
+      <i class="fas fa-upload"></i>
+      <span>Uploading file...</span>
+    </div>
+  </div>
+
+  <!-- Hidden elements for different chat modes -->
+  <div class="hidden" id="bookingMode">
+    <input type="text" id="appointmentDatePicker" class="hidden">
+  </div>
+
+  <!-- JavaScript -->
+  <script src="{{ url_for('static', filename='js/modern-chat.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/chat_booking.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/chat_myappointments.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/chat_general_query.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+
+  <script>
+    // Initialize modern chat interface
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize the modern chat
+      if (window.ModernChat) {
+        window.modernChat = new ModernChat();
+      }
+      
+      // Auto-start flow based on URL
+      const path = window.location.pathname;
+      const welcomeMessage = document.getElementById('welcomeMessage');
+      
+      if (path.includes('/booking')) {
+        welcomeMessage.style.display = 'none';
+        if (window.startBookingFlow) {
+          window.startBookingFlow();
+        }
+      } else if (path.includes('/myappointments')) {
+        welcomeMessage.style.display = 'none';
+        if (window.startMyAppointmentChatFlow) {
+          window.startMyAppointmentChatFlow(window.currentLang || 'english');
+        }
+      } else if (path.includes('/general')) {
+        welcomeMessage.style.display = 'none';
+        if (window.startGeneralQueryFlow) {
+          window.startGeneralQueryFlow(window.currentLang || 'english');
+        }
+      }
+    });
+  </script>
+</body>
+</html>

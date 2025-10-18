@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>XYZ Hospital - AI Chat Assistant</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/ai-3d-chat.css') }}"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    /* Additional AI-specific styles */
+    .ai-welcome-section {
+      text-align: center;
+      padding: 3rem 2rem;
+      color: rgba(255, 255, 255, 0.95);
+    }
+    
+    .ai-welcome-title {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin: 0 0 1rem 0;
+      background: linear-gradient(135deg, #ffffff, #e2e8f0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      animation: aiWelcomeGlow 4s ease-in-out infinite;
+    }
+    
+    .ai-welcome-subtitle {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      margin: 0;
+      font-weight: 500;
+    }
+    
+    .ai-flow-indicator {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.9));
+      border-radius: 2rem;
+      padding: 2rem;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      z-index: 20;
+      animation: aiFlowSlideIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      max-width: 90%;
+      text-align: center;
+    }
+    
+    .ai-flow-indicator h3 {
+      margin: 0 0 1rem 0;
+      font-size: 1.5rem;
+      color: #1f2937;
+      font-weight: 700;
+    }
+    
+    .ai-flow-indicator p {
+      margin: 0;
+      color: #6b7280;
+      font-size: 1rem;
+    }
+    
+    .hidden {
+      display: none !important;
+    }
+    
+    /* AI Message timestamps */
+    .ai-message-timestamp {
+      font-size: 0.75rem;
+      opacity: 0.6;
+      margin-top: 0.5rem;
+      font-weight: 400;
+    }
+    
+    /* AI Quick reply buttons */
+    .ai-quick-replies {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+    
+    .ai-quick-reply-btn {
+      padding: 0.75rem 1.5rem;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 1.5rem;
+      color: rgba(255, 255, 255, 0.95);
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-size: 0.9rem;
+      font-weight: 500;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      transform: perspective(1000px) rotateX(2deg);
+    }
+    
+    .ai-quick-reply-btn:hover {
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.2));
+      transform: perspective(1000px) rotateX(0deg) translateY(-3px) scale(1.05);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* AI Loading states */
+    .ai-loading {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+    
+    @keyframes aiWelcomeGlow {
+      0%, 100% { 
+        text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      }
+      50% { 
+        text-shadow: 0 4px 8px rgba(102, 126, 234, 0.5);
+      }
+    }
+    
+    @keyframes aiFlowSlideIn {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -60%) scale(0.8);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="ai-chat-container">
+    <!-- AI Chat Header -->
+    <div class="ai-chat-header">
+      <div class="ai-title-section">
+        <div class="ai-hospital-logo">
+          <i class="fas fa-user-md"></i>
+        </div>
+        <div class="ai-title-content">
+          <h1 id="aiHospitalName">XYZ Hospital</h1>
+          <p>
+            <span class="ai-status-indicator"></span>
+            <span id="aiChatHeading">AI Chat Assistant - Online</span>
+          </p>
+        </div>
+      </div>
+      <div class="ai-header-actions">
+        <button class="ai-3d-button" id="aiBackBtn">
+          <i class="fas fa-arrow-left"></i> Back
+        </button>
+        <button class="ai-3d-button" id="aiLanguageBtn">
+          <i class="fas fa-globe"></i> Language
+        </button>
+      </div>
+    </div>
+
+    <!-- AI Welcome Section -->
+    <div class="ai-welcome-section" id="aiWelcomeSection">
+      <h2 class="ai-welcome-title">Welcome to XYZ Hospital</h2>
+      <p class="ai-welcome-subtitle">Your AI-powered healthcare assistant is ready to help</p>
+    </div>
+
+    <!-- AI Chat Messages Area -->
+    <div class="ai-chat-messages" id="aiChatMessages">
+      <!-- Messages will be dynamically added here -->
+    </div>
+
+    <!-- AI Chat Input Area -->
+    <div class="ai-chat-input">
+      <div class="ai-input-container">
+        <textarea 
+          class="ai-message-input" 
+          id="aiMessageInput" 
+          placeholder="Type your message here..."
+          rows="1"
+        ></textarea>
+      </div>
+      <button class="ai-send-button" id="aiSendBtn" title="Send Message">
+        <i class="fas fa-paper-plane"></i>
+      </button>
+    </div>
+
+    <!-- AI Flow Indicator -->
+    <div class="ai-flow-indicator hidden" id="aiFlowIndicator">
+      <h3 id="aiFlowTitle">Processing...</h3>
+      <p id="aiFlowMessage">Please wait while we process your request</p>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script src="{{ url_for('static', filename='js/ai-3d-chat.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/chat_booking.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/chat_myappointments.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/chat_general_query.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+
+  <script>
+    // Initialize AI 3D chat interface
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize the AI chat
+      if (window.AIChat3D) {
+        window.aiChatInstance = new AIChat3D();
+      }
+      
+      // Auto-start flow based on URL
+      const path = window.location.pathname;
+      const welcomeSection = document.getElementById('aiWelcomeSection');
+      
+      if (path.includes('/booking')) {
+        welcomeSection.style.display = 'none';
+        if (window.startBookingFlow) {
+          window.startBookingFlow();
+        }
+      } else if (path.includes('/myappointments')) {
+        welcomeSection.style.display = 'none';
+        if (window.startMyAppointmentChatFlow) {
+          window.startMyAppointmentChatFlow(window.currentLang || 'english');
+        }
+      } else if (path.includes('/general')) {
+        welcomeSection.style.display = 'none';
+        if (window.startGeneralQueryFlow) {
+          window.startGeneralQueryFlow(window.currentLang || 'english');
+        }
+      }
+    });
+  </script>
+</body>
+</html>
