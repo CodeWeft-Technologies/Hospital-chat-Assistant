@@ -26,10 +26,12 @@ RUN pip install --no-cache-dir --upgrade pip --root-user-action=ignore \
 # Copy project
 COPY . .
 
-# Create necessary directories
+# Create necessary directories and ensure JSON data files exist
 RUN mkdir -p app/static/uploads \
     && mkdir -p app/data/slips \
-    && mkdir -p logs
+    && mkdir -p logs \
+    && chmod -R 755 app/data \
+    && ls -la app/data/
 
 # Create non-root user
 RUN adduser --disabled-password --gecos '' appuser \
