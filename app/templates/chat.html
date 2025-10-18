@@ -104,14 +104,16 @@
       
       /* Ensure all text is visible on mobile */
       .menu-card, .dept-card, .doctor-card {
-        color: var(--neutral-gray-800) !important;
+        color: #1f2937 !important; /* Explicit dark gray text */
+        background: linear-gradient(135deg, #ffffff, #f8fafc) !important; /* Explicit white background */
+        border: 1px solid #e5e7eb !important; /* Explicit border */
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important; /* Match desktop font */
       }
       
       .menu-card .menu-title,
       .dept-card .dept-title,
       .doctor-card .doctor-name {
-        color: var(--primary-blue-800) !important;
+        color: #1e40af !important; /* Explicit blue text */
         font-weight: 700;
         font-size: 1rem !important; /* Match desktop font size */
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important; /* Match desktop font */
@@ -120,34 +122,36 @@
       .menu-card .menu-sub,
       .dept-card .dept-sub,
       .doctor-card .doctor-info {
-        color: var(--neutral-gray-600) !important;
+        color: #4b5563 !important; /* Explicit gray text */
         font-size: 0.75rem !important; /* Match desktop font size */
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important; /* Match desktop font */
       }
       
       /* Vertical row format for doctor cards - mobile colors */
       .doctor-row-item {
-        color: var(--neutral-gray-800) !important;
+        color: #1f2937 !important; /* Explicit dark gray text */
+        background: linear-gradient(135deg, #ffffff, #f8fafc) !important; /* Explicit white background */
+        border: 1px solid #e5e7eb !important; /* Explicit border */
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
       }
       
       .field-label {
-        color: var(--primary-blue-700) !important;
+        color: #1d4ed8 !important; /* Explicit blue text */
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
       }
       
       .field-value {
-        color: var(--neutral-gray-800) !important;
+        color: #1f2937 !important; /* Explicit dark gray text */
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
       }
       
       .field-value.doctor-name {
-        color: var(--primary-blue-800) !important;
+        color: #1e40af !important; /* Explicit blue text */
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
       }
       
       .field-value.doctor-fees {
-        color: var(--secondary-green-600) !important;
+        color: #059669 !important; /* Explicit green text */
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
       }
       
@@ -176,14 +180,14 @@
       }
       
       .action-buttons button {
-        color: var(--neutral-white) !important;
+        color: #ffffff !important; /* Explicit white text */
         font-weight: 600;
         font-size: 0.875rem !important; /* Match desktop font size */
         padding: var(--space-sm) var(--space-md) !important; /* Reduce button size */
         min-height: 36px !important; /* Smaller button height */
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important; /* Match desktop font */
-        background: linear-gradient(135deg, var(--primary-blue-500), var(--primary-blue-600)) !important; /* Keep gradient color */
-        border: 1px solid var(--primary-blue-600) !important; /* Keep border */
+        background: linear-gradient(135deg, #3b82f6, #2563eb) !important; /* Explicit blue gradient */
+        border: 1px solid #2563eb !important; /* Explicit blue border */
         box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3) !important; /* Keep shadow */
       }
     }
@@ -403,6 +407,9 @@
       }
       
       .chat-input button {
+        color: #ffffff !important; /* Explicit white text */
+        background: linear-gradient(135deg, #3b82f6, #2563eb) !important; /* Explicit blue gradient */
+        border: 1px solid #2563eb !important; /* Explicit blue border */
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important; /* Match desktop font */
         font-size: 0.875rem !important; /* Match desktop font size */
         flex-shrink: 0 !important; /* Prevent button from shrinking */
@@ -818,27 +825,29 @@
       
       /* Vertical row format for doctor cards - mobile colors */
       .doctor-row-item {
-        color: var(--neutral-gray-800) !important;
+        color: #1f2937 !important; /* Explicit dark gray text */
+        background: linear-gradient(135deg, #ffffff, #f8fafc) !important; /* Explicit white background */
+        border: 1px solid #e5e7eb !important; /* Explicit border */
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
       }
       
       .field-label {
-        color: var(--primary-blue-700) !important;
+        color: #1d4ed8 !important; /* Explicit blue text */
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
       }
       
       .field-value {
-        color: var(--neutral-gray-800) !important;
+        color: #1f2937 !important; /* Explicit dark gray text */
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
       }
       
       .field-value.doctor-name {
-        color: var(--primary-blue-800) !important;
+        color: #1e40af !important; /* Explicit blue text */
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
       }
       
       .field-value.doctor-fees {
-        color: var(--secondary-green-600) !important;
+        color: #059669 !important; /* Explicit green text */
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
       }
     }
@@ -902,27 +911,29 @@
       
       /* Vertical row format for doctor cards - mobile colors */
       .doctor-row-item {
-        color: var(--neutral-gray-800) !important;
+        color: #1f2937 !important; /* Explicit dark gray text */
+        background: linear-gradient(135deg, #ffffff, #f8fafc) !important; /* Explicit white background */
+        border: 1px solid #e5e7eb !important; /* Explicit border */
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
       }
       
       .field-label {
-        color: var(--primary-blue-700) !important;
+        color: #1d4ed8 !important; /* Explicit blue text */
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
       }
       
       .field-value {
-        color: var(--neutral-gray-800) !important;
+        color: #1f2937 !important; /* Explicit dark gray text */
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
       }
       
       .field-value.doctor-name {
-        color: var(--primary-blue-800) !important;
+        color: #1e40af !important; /* Explicit blue text */
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
       }
       
       .field-value.doctor-fees {
-        color: var(--secondary-green-600) !important;
+        color: #059669 !important; /* Explicit green text */
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
       }
     }
@@ -1493,7 +1504,9 @@
       }
       
       .action-buttons button {
-        color: var(--neutral-white) !important;
+        color: #ffffff !important; /* Explicit white text */
+        background: linear-gradient(135deg, #3b82f6, #2563eb) !important; /* Explicit blue gradient */
+        border: 1px solid #2563eb !important; /* Explicit blue border */
       }
     }
     
