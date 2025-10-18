@@ -511,6 +511,9 @@
       background: linear-gradient(135deg, var(--neutral-white), var(--primary-blue-50));
       border: 2px solid var(--primary-blue-200);
       box-shadow: 0 6px 20px rgba(59, 130, 246, 0.15);
+      aspect-ratio: 1;
+      max-width: 280px;
+      margin: 0 auto;
     }
 
     .doctor-card:hover {
@@ -577,6 +580,65 @@
       padding: var(--space-xs) var(--space-sm);
       border-radius: var(--radius-md);
       display: inline-block;
+    }
+
+    /* Responsive doctor card adjustments */
+    @media (max-width: 768px) {
+      .doctor-card {
+        max-width: 200px;
+        min-height: 160px;
+        padding: var(--space-md);
+      }
+      
+      .doctor-photo {
+        width: 50px;
+        height: 50px;
+        margin-bottom: var(--space-xs);
+      }
+      
+      .doctor-card .doctor-name {
+        font-size: var(--font-size-base);
+        margin-bottom: var(--space-xs);
+      }
+      
+      .doctor-specialization {
+        font-size: var(--font-size-xs);
+        margin-bottom: var(--space-xs);
+      }
+      
+      .doctor-experience {
+        font-size: var(--font-size-xs);
+        padding: 2px var(--space-xs);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .doctor-card {
+        max-width: 160px;
+        min-height: 140px;
+        padding: var(--space-sm);
+      }
+      
+      .doctor-photo {
+        width: 40px;
+        height: 40px;
+        margin-bottom: var(--space-xs);
+      }
+      
+      .doctor-card .doctor-name {
+        font-size: var(--font-size-sm);
+        margin-bottom: 2px;
+      }
+      
+      .doctor-specialization {
+        font-size: var(--font-size-xs);
+        margin-bottom: 2px;
+      }
+      
+      .doctor-experience {
+        font-size: 10px;
+        padding: 1px var(--space-xs);
+      }
     }
     
     /* Enhanced Responsive adjustments with better breakpoints */
@@ -646,7 +708,8 @@
         grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       }
       .doctor-list {
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: var(--space-md);
       }
       .menu-card, .dept-card, .doctor-card {
         font-size: var(--font-size-base);
@@ -692,7 +755,8 @@
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       }
       .doctor-list {
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: var(--space-sm);
       }
       .menu-card, .dept-card, .doctor-card {
         font-size: var(--font-size-xs);
@@ -743,7 +807,7 @@
         grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       }
       .doctor-list {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
         gap: var(--space-sm);
       }
       .menu-card, .dept-card, .doctor-card {
@@ -799,7 +863,7 @@
         grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
       }
       .doctor-list {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
         gap: var(--space-xs);
       }
       .menu-card, .dept-card, .doctor-card {
