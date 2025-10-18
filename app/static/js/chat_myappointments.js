@@ -312,7 +312,7 @@ window.startMyAppointmentChatFlow = function (lang) {
       wrap.appendChild(
         createCard(
           `${translations["time"] || "Time"}: ${formattedTime}`,
-          () => selectTime(),
+          () => selectTimeSlots(),
           "⏰"
         )
       );
