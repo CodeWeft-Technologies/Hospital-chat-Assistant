@@ -156,6 +156,9 @@
         padding: var(--space-sm) var(--space-md) !important; /* Reduce button size */
         min-height: 36px !important; /* Smaller button height */
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important; /* Match desktop font */
+        background: linear-gradient(135deg, var(--primary-blue-500), var(--primary-blue-600)) !important; /* Keep gradient color */
+        border: 1px solid var(--primary-blue-600) !important; /* Keep border */
+        box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3) !important; /* Keep shadow */
       }
     }
     
@@ -359,15 +362,24 @@
     
     /* Mobile input text color fix */
     @media (max-width: 768px) {
+      .chat-input {
+        flex-direction: row !important; /* Keep horizontal layout */
+        display: flex !important;
+      }
+      
       .chat-input input {
         color: var(--neutral-gray-800) !important;
         font-size: 16px; /* Prevent zoom on iOS */
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important; /* Match desktop font */
+        flex: 1 !important; /* Make input stretchable */
+        width: auto !important; /* Allow width to be flexible */
+        min-width: 0 !important; /* Allow shrinking */
       }
       
       .chat-input button {
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important; /* Match desktop font */
         font-size: 0.875rem !important; /* Match desktop font size */
+        flex-shrink: 0 !important; /* Prevent button from shrinking */
       }
     }
     .chat-input input:focus {
@@ -788,13 +800,17 @@
       .chat-messages .info-msg { font-size: var(--font-size-xs); }
       .chat-input { 
         padding: var(--space-sm);
-        flex-direction: column;
+        flex-direction: row !important; /* Keep horizontal layout */
         gap: var(--space-xs);
       }
       .chat-input input, .chat-input button { 
         font-size: var(--font-size-xs);
         padding: var(--space-xs);
         min-height: 40px;
+      }
+      .chat-input input {
+        flex: 1 !important; /* Make input stretchable */
+        width: auto !important; /* Allow width to be flexible */
       }
       .action-buttons { 
         flex-direction: column;
