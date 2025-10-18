@@ -56,31 +56,11 @@ if settings.FLASK_ENV == "production":
     # Configure Content Security Policy to allow external resources
     csp = {
         'default-src': "'self'",
-        'style-src': [
-            "'self'",
-            "'unsafe-inline'",
-            'https://cdnjs.cloudflare.com',
-            'https://code.jquery.com'
-        ],
-        'script-src': [
-            "'self'",
-            "'unsafe-inline'",
-            'https://code.jquery.com',
-            'https://cdnjs.cloudflare.com'
-        ],
-        'font-src': [
-            "'self'",
-            'https://cdnjs.cloudflare.com',
-            'data:'
-        ],
-        'img-src': [
-            "'self'",
-            'data:',
-            'https:'
-        ],
-        'connect-src': [
-            "'self'"
-        ]
+        'style-src': "'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://code.jquery.com",
+        'script-src': "'self' 'unsafe-inline' https://code.jquery.com https://cdnjs.cloudflare.com",
+        'font-src': "'self' https://cdnjs.cloudflare.com data:",
+        'img-src': "'self' data: https:",
+        'connect-src': "'self'"
     }
     
     Talisman(app, force_https=True, content_security_policy=csp)
