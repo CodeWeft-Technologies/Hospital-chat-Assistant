@@ -20,3 +20,6 @@ reportlab
 Pillow
 google-cloud-translate
 google-cloud-texttospeech
+deep-translator
+qrcode
+PyJWT
