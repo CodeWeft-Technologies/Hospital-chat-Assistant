@@ -3,7 +3,7 @@ services:
     name: hospital-chat-assistant
     env: python
     plan: free
-    buildCommand: pip install -r requirements.txt && python migrate_db.py
+    buildCommand: pip install -r requirements.txt && python migrate_db.py && python app/migrate_data.py
     startCommand: gunicorn --bind 0.0.0.0:$PORT --workers 2 --timeout 120 wsgi:application
     envVars:
       - key: FLASK_ENV
