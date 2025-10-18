@@ -321,15 +321,26 @@ def meta_slots():
             # Fallback to JSON data service for development
             from services import data_service_json as json_ds
             slots_data = json_ds.list_slots(doctor_id, date_str)
+            logger.info(f"Found {len(slots_data.get('slots', []))} slots in JSON fallback")
         else:
             # Use DB-based service
             slots_data = ds.list_slots(doctor_id, date_str)
+            logger.info(f"Found {len(slots_data.get('slots', []))} slots in database")
 
         return jsonify(slots_data), 200
     except Exception as e:
         logger.error(f"Error fetching slots: {e}")
-        traceback.print_exc()
-        return jsonify({"slots": [], "error": str(e)}), 500
+        # Try JSON fallback even if database fails
+        try:
+            from services import data_service_json as json_ds
+            slots_data = json_ds.list_slots(doctor_id, date_str)
+            logger.info(f"Fallback successful: Found {len(slots_data.get('slots', []))} slots in JSON")
+            return jsonify(slots_data), 200
+        except Exception as fallback_error:
+            logger.error(f"JSON fallback also failed: {fallback_error}")
+            # Return empty slots instead of error to prevent frontend crashes
+            logger.warning("Returning empty slots array due to all fallbacks failing")
+            return jsonify({"slots": []}), 200
 
 
 @app.route("/appointments/confirm", methods=["POST"])

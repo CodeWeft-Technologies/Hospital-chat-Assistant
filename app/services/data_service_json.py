@@ -36,7 +36,27 @@ def list_slots(doctor_id, date_str):
     default_slots = ["09:00","09:30","10:00","10:30","11:00","11:30","14:00","14:30","15:00","15:30","16:00"]
     appts = _read(APPOINTMENTS_FILE)
     booked = {a["time"] for a in appts if a["doctor_id"]==doctor_id and a["date"]==date_str and a["status"] in ["pending","booked"]}
-    return [s for s in default_slots if s not in booked]
+    available_slots = [s for s in default_slots if s not in booked]
+    
+    # Convert to the same format as database service
+    formatted_slots = []
+    for slot in available_slots:
+        # Parse time and format for display
+        try:
+            from datetime import datetime
+            time_obj = datetime.strptime(slot, "%H:%M")
+            formatted_slots.append({
+                "value": slot,  # backend format (HH:MM)
+                "display": time_obj.strftime("%I:%M %p")  # frontend display (H:MM AM/PM)
+            })
+        except:
+            # Fallback if parsing fails
+            formatted_slots.append({
+                "value": slot,
+                "display": slot
+            })
+    
+    return {"slots": formatted_slots}
 
 def _next_id(appts):
     if not appts:
