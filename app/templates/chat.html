@@ -1547,17 +1547,17 @@
 
     <!-- Menu Options -->
     <div id="menuSection" class="menu">
-      <div id="menuBookingCard" class="menu-card">
+      <div id="menuBookingCard" class="menu-card" onclick="startBookingChatFlow()">
         <i class="fas fa-calendar-plus" style="font-size: 2rem; color: var(--primary-blue-600); margin-bottom: var(--space-sm);"></i>
         <span id="menuBookingTitle" class="menu-title">Booking Appointment</span>
         <span id="menuBookingSub" class="menu-sub">Schedule a new visit</span>
       </div>
-      <div id="menuMyAppointmentCard" class="menu-card">
+      <div id="menuMyAppointmentCard" class="menu-card" onclick="startMyAppointmentChatFlow()">
         <i class="fas fa-calendar-check" style="font-size: 2rem; color: var(--secondary-green-600); margin-bottom: var(--space-sm);"></i>
         <span id="menuMyAppointmentTitle" class="menu-title">My Appointment</span>
         <span id="menuMyAppointmentSub" class="menu-sub">Check or edit your booking</span>
       </div>
-      <div id="menuGeneralCard" class="menu-card">
+      <div id="menuGeneralCard" class="menu-card" onclick="startGeneralQueryChatFlow()">
         <i class="fas fa-question-circle" style="font-size: 2rem; color: var(--accent-purple-600); margin-bottom: var(--space-sm);"></i>
         <span id="menuGeneralTitle" class="menu-title">General Query</span>
         <span id="menuGeneralSub" class="menu-sub">Ask a general question</span>
@@ -1601,7 +1601,14 @@
       // Set current flow
       sessionStorage.setItem('currentFlow', 'booking');
       
-      // Start booking flow
+      // Clear chat messages and set placeholder
+      const chatMessages = document.getElementById('chatMessages');
+      if (chatMessages) chatMessages.innerHTML = '';
+      
+      const chatInput = document.getElementById('chatInput');
+      if (chatInput) chatInput.placeholder = 'Type your message here...';
+      
+      // Start booking flow immediately
       if (window.startBookingFlow) {
         window.startBookingFlow();
       }
@@ -1621,7 +1628,14 @@
       // Set current flow
       sessionStorage.setItem('currentFlow', 'myAppointment');
       
-      // Start my appointment flow
+      // Clear chat messages and set placeholder
+      const chatMessages = document.getElementById('chatMessages');
+      if (chatMessages) chatMessages.innerHTML = '';
+      
+      const chatInput = document.getElementById('chatInput');
+      if (chatInput) chatInput.placeholder = 'Type your message here...';
+      
+      // Start my appointment flow immediately
       if (window.startMyAppointmentChatFlow) {
         window.startMyAppointmentChatFlow(window.currentLang || 'english');
       }
@@ -1641,9 +1655,16 @@
       // Set current flow
       sessionStorage.setItem('currentFlow', 'general');
       
-      // Start general query flow
-      if (window.startGeneralQueryFlow) {
-        window.startGeneralQueryFlow(window.currentLang || 'english');
+      // Clear chat messages and set placeholder
+      const chatMessages = document.getElementById('chatMessages');
+      if (chatMessages) chatMessages.innerHTML = '';
+      
+      const chatInput = document.getElementById('chatInput');
+      if (chatInput) chatInput.placeholder = 'Type your message here...';
+      
+      // Start general query flow immediately
+      if (window.startGeneralQueryChatFlow) {
+        window.startGeneralQueryChatFlow(window.currentLang || 'english');
       }
     }
 
