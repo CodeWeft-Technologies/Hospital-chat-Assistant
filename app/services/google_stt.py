@@ -1,7 +1,7 @@
 # app/services/google_stt.py
 import requests
 import base64
-from ..config import settings
+from config import settings
 from google.cloud import speech
 
 def google_stt(audio_content, language_code="en-IN"):

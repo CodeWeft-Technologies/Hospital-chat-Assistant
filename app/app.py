@@ -8,18 +8,18 @@ from datetime import datetime, timedelta
 from flask import Flask, json, render_template, request, jsonify, send_file
 from flask_cors import CORS
 from flask_talisman import Talisman
-from .config import settings, BASE_DIR
-from .services import data_service_db as ds
-from .services.slips import generate_pdf_for_appointment
-from .services.ai import get_general_query_answer
-from .services.google_stt import google_stt
-from .services.google_tts import google_tts
-from .services.google_translate import google_translate
-from .config_db import SessionLocal
+from config import settings, BASE_DIR
+from services import data_service_db as ds
+from services.slips import generate_pdf_for_appointment
+from services.ai import get_general_query_answer
+from services.google_stt import google_stt
+from services.google_tts import google_tts
+from services.google_translate import google_translate
+from config_db import SessionLocal
 from sqlalchemy import text
-from .models import Appointment
-from .admin_routes import admin_bp
-from .api_routes import api_bp
+from models import Appointment
+from admin_routes import admin_bp
+from api_routes import api_bp
 
 # Configure logging
 logging.basicConfig(
