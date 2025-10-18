@@ -224,8 +224,14 @@ def widget_embed_js(hospital_id):
 @app.route("/meta/departments")
 def meta_depts():
     try:
+        # Check if we're using the correct database
+        from config_db import DATABASE_URL
+        if not DATABASE_URL.startswith("postgresql"):
+            logger.warning("Using SQLite database - departments may not be available")
+            return jsonify({"error": "Using SQLite database - please use Supabase PostgreSQL for full functionality"}), 500
+        
         departments = ds.list_departments()
-        logger.info(f"Found {len(departments)} departments")
+        logger.info(f"Found {len(departments)} departments in Supabase")
         return jsonify(departments)
     except Exception as e:
         logger.error(f"Error fetching departments: {e}")

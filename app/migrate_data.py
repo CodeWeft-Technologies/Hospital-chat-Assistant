@@ -43,6 +43,14 @@ def parse_boolean(bool_str):
     return bool_str.lower() == "true"
 
 def migrate():
+    # Check if we're using PostgreSQL (Supabase) or SQLite
+    from config_db import DATABASE_URL
+    if not DATABASE_URL.startswith("postgresql"):
+        print("⚠️  Skipping data migration - not using PostgreSQL database")
+        print("   Data migration only works with Supabase PostgreSQL")
+        return
+    
+    print("🔄 Starting data migration to Supabase PostgreSQL...")
     session = SessionLocal()
     try:
         # --- USERS ---
