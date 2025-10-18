@@ -12,7 +12,7 @@ if app_dir not in sys.path:
     sys.path.insert(0, app_dir)
 
 try:
-    from config_db import engine
+    from app.config_db import engine
     from sqlalchemy import text, inspect
     
     def migrate_database():

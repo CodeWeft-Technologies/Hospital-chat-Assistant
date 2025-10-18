@@ -1,6 +1,6 @@
 # app/services/google_tts.py
 import requests
-from config import settings
+from ..config import settings
 
 def google_tts(text, out_file, lang="en-IN", voice="en-IN-Wavenet-D"):
     url = f"https://texttospeech.googleapis.com/v1/text:synthesize?key={settings.GOOGLE_TTS_API_KEY}"

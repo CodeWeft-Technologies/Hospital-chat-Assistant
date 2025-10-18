@@ -1,8 +1,8 @@
 # services/data_service_db.py
 from datetime import datetime, timedelta
 import traceback
-from config_db import SessionLocal
-from models import Appointment, Doctor, Department, User, HospitalInfo
+from ..config_db import SessionLocal
+from ..models import Appointment, Doctor, Department, User, HospitalInfo
 from sqlalchemy.orm.exc import NoResultFound
 
 # Departments

@@ -8,8 +8,8 @@ from email.mime.multipart import MIMEMultipart
 import traceback
 import json
 from werkzeug.security import check_password_hash, generate_password_hash
-from config_db import SessionLocal
-from models import User, Department, Doctor, Appointment, HospitalInfo
+from .config_db import SessionLocal
+from .models import User, Department, Doctor, Appointment, HospitalInfo
 from sqlalchemy import exc, cast, String as SQLString, or_, and_
 from collections import defaultdict
 import re

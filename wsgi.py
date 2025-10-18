@@ -14,11 +14,11 @@ sys.path.insert(0, app_dir)
 os.chdir(app_dir)
 
 # Import the Flask app
-from app import app
+import app
 
 # This is the WSGI application object that Gunicorn will use
-application = app
+application = app.app
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=False)
+    app.app.run(host="0.0.0.0", port=port, debug=False)

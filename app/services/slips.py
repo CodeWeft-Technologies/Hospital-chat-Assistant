@@ -11,7 +11,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.lib.enums import TA_CENTER, TA_LEFT
 from reportlab import rl_config
 
-from config import BASE_DIR
+from ..config import BASE_DIR
 
 # --- Ensure ReportLab uses UTF-8 ---
 rl_config.warnOnMissingFontGlyphs = 0

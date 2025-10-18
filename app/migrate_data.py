@@ -1,8 +1,8 @@
 import csv
 import json
 from datetime import datetime
-from config_db import SessionLocal, engine, Base
-from models import User, Department, Doctor, Appointment, HospitalInfo
+from .config_db import SessionLocal, engine, Base
+from .models import User, Department, Doctor, Appointment, HospitalInfo
 
 # Create tables (if not already created)
 Base.metadata.create_all(bind=engine)
